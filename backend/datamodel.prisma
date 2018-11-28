@@ -1,19 +1,94 @@
-enum Permission {
+enum Role {
   ADMIN
-  USER
-  ITEM_CREATE
-  ITEM_UPDATE
-  ITEM_DELETE
+  BOARD_MEMBER
+  RUN_LEADER
+  FULL_MEMBER
+  EMERITUS_MEMBER
+  ASSOCIATE_MEMBER
+  GUEST_MEMBER
+}
+
+enum AccountStatus {
+  ACTIVE
+  PAST_DUE
+  DELINQUENT
+  REMOVED
+  RESIGNED
+  INACTIVE
+  LOCKED
+}
+
+enum Permission {
+  DASHBOARD_AREA
+  ADMIN_AREA
+  USER_CREATE
+  USER_UPDATE
+  USER_DELETE
+  ROSTER_READ
   PERMISSION_UPDATE
 }
 
+enum Poll {
+  ELECTION
+  RUN_SELECTION
+}
+
+scalar DateTime
+
+
+
 type User {
   id: ID! @unique
+  acctCreated: DateTime!
+  joined: DateTime
   firstName: String!
   lastName: String!
-  email: String!
+  username: String! @unique
+  email: String! @unique
   password: String!
   resetToken: String
   resetTokenExpiry: Float
+  avatarSmall: String
+  vehicle: Vehicle
+  role: Role! @default(value: GUEST_MEMBER)
   permissions: [Permission]
+  accountStatus: AccountStatus! @default(value: LOCKED)
+  candidateFor: [Ballot]! @relation(name: "CandidateUser")
+  votesReceived: [Vote]! @relation(name: "VotesRecdUser")
+  votedFor: [Vote]! @relation(name: "VotedUser")
 }
+
+type Election {
+  id: ID! @unique
+  electionName: String!
+  startTime: DateTime
+  endTime: DateTime
+  races: [Ballot!]!
+}
+
+type Ballot {
+  id: ID! @unique
+  title: String!
+  desc: String
+  candidates: [User!]! @relation(name: "CandidateUser")
+  votes: [Vote] @relation(name: "BallotVote")
+}
+
+type Vote {
+  id: ID! @unique
+  ballot: Ballot! @relation(name: "BallotVote")
+  dateTime: DateTime
+  candidate: User @relation(name: "VotesRecdUser")
+  voter: User! @relation(name: "VotedUser")
+}
+
+type Vehicle  {
+  id: ID! @unique
+  year: Int!
+  make: String!
+  model: String!
+  name: String
+  trim: String
+  image: String
+}
+
