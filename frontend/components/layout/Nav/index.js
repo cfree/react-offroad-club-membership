@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import styled from 'styled-components';
 import { clearFix } from 'polished';
+import User from '../../User';
+import Logout from '../../Login/Logout';
 
 const StyledList = styled.ul`
   ${clearFix()}
@@ -22,24 +24,44 @@ const StyledList = styled.ul`
 
 const Nav = () => {
   return <nav>
-      <StyledList>
-        <li>
-          <Link>
-            <a>Dashboard</a>
-          </Link>
-        </li>
-        <li>
-          <Link>
-          <a>Admin</a>
-          </Link>
-        </li>
-        <li>
-          <Link>
-          <a>Account</a>
-          </Link>
-        </li>
-      </StyledList>
-    </nav>;
+    <StyledList>
+      <User>
+        {({ data: { myself } }) => myself ? (
+          <>
+            <li>
+              <Link href="/">
+                <a>Dashboard</a>
+              </Link>
+            </li>
+            {/* <li>
+              <Link href="/roster">
+                <a>Roster</a>
+              </Link>
+            </li> */}
+            <li>
+              <Link href="/admin">
+                <a>Admin</a>
+              </Link>
+            </li>
+            {/* <li>
+              <Link href="/account">
+                <a>Account</a>
+              </Link>
+            </li> */}
+            <li>
+              <Logout />
+            </li>
+          </>
+        ) : (
+          <li>
+            <Link href="/login">
+              <a>Log In</a>
+            </Link>
+          </li>
+        )}
+      </User>
+    </StyledList>
+  </nav>;
 };
 
 export default Nav;

@@ -8,6 +8,7 @@ const StyledHeader = styled.header`
   padding: 10px;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 20px;
 
   &:last-child {
     margin-left: auto;
@@ -21,6 +22,7 @@ const StyledHeader = styled.header`
   h1 {
     float: left;
     margin: 0 0 0 10px;
+    text-transform: uppercase;
   }
 `;
 

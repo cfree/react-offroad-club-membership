@@ -6,7 +6,9 @@ export default {
     black_light: '#888888',
     grey: '#E1E1E1',
     grey_light: '#4B5767',
-    offWhite: '#EDEDED',
+    grey_lighter: '#879CB9',
+    white_dark: '#EDEDED',
+    green: '#62bb47',
   },
   breakpoints: {
     sm: '',
