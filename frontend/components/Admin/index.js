@@ -16,8 +16,11 @@ const Admin = () => (
           </Link>
         </li> */}
         <li>
-          <Link href="/election-management">
-            <a>Election Management</a>
+          <Link href={{
+            pathname: '/elections',
+            query: { action: 'create' },
+          }}>
+            <a>Create New Election</a>
           </Link>
         </li>
         {/* <li>
@@ -28,9 +31,8 @@ const Admin = () => (
       </ul>
     </div>
     <div>
-      <h3>Election Results</h3>
       <PollingPlace admin />
-      <ul>
+      {/* <ul>
         <li>
           Active election&nbsp;
           <Link
@@ -56,7 +58,7 @@ const Admin = () => (
             </li>
           </ul>
         </li>
-      </ul>
+      </ul> */}
       {/* <Results admin /> */}
     </div>
     {/* <div>New Members</div> */}

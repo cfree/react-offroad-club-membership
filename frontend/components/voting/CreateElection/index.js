@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { format, addWeeks } from 'date-fns';
+import Router from 'next/router';
 import AddOffice from '../AddOffice';
-
 
 const ELECTION_CANDIDATES_QUERY = gql`
   query ELECTION_CANDIDATES_QUERY {
@@ -20,14 +20,14 @@ const ELECTION_CANDIDATES_QUERY = gql`
 `;
 
 const SUBMIT_ELECTION_MUTATION = gql`
-  mutation SUBMIT_ELECTION_MUTATION($election: election) {
+  mutation SUBMIT_ELECTION_MUTATION($election: ElectionInput!) {
     submitElection(election: $election) {
       id
     }
   }
 `;
 
-class ElectionMgmt extends Component {
+class CreateElection extends Component {
   state = {
     title: '',
     startTime: format(Date.now(), 'YYYY-MM-DD'),
@@ -46,16 +46,26 @@ class ElectionMgmt extends Component {
     });
   };
 
-  handleSubmit = submit => {
-    submit();
-    // Redirect to list
+  handleSubmit = async submit => {
+    await submit();
+    Router.push('/admin');
+    // @TODO Refetch queries?
   };
 
   render() {
     return (
       <Query query={ELECTION_CANDIDATES_QUERY}>
-        {({ data: { electionCandidates } }) => (
-          <>
+        {({ loading, error, data }) => {
+          if (loading) {
+            return <div>Loading...</div>;
+          }
+          if (error) {
+            return <div>Error: {error.message}</div>;
+          }
+
+          const { electionCandidates } = data;
+
+          return (<>
             <h3>Create New Election</h3>
 
             <p>
@@ -67,7 +77,6 @@ class ElectionMgmt extends Component {
                   value={this.state.title}
                   onChange={this.updateState}
                   type="text"
-                  id="title"
                 />
               </label>
             </p>
@@ -104,7 +113,9 @@ class ElectionMgmt extends Component {
             {this.state.races.map(race => (
               <div key={race.id}>
                 {race.title}
-                {race.candidates.map(candidate => <span key={candidate.id}>{candidate.firstName}</span>)}
+                {race.candidates.map(candidate => (
+                  <span key={candidate.id}>{candidate.firstName}</span>
+                ))}
               </div>
             ))}
 
@@ -117,7 +128,18 @@ class ElectionMgmt extends Component {
 
             <Mutation
               mutation={SUBMIT_ELECTION_MUTATION}
-              variables={{ election: this.state }}
+              variables={{
+                election: {
+                  electionName: this.state.title,
+                  startTime: this.state.startTime,
+                  endTime: this.state.endTime,
+                  races: this.state.races.map(race => {
+                    delete race.id;
+                    race.candidates = race.candidates.map(candidate => ({ id: candidate.id }));
+                    return race;
+                  }),
+                }
+              }}
             >
               {submitElection => (
                 <button
@@ -128,11 +150,11 @@ class ElectionMgmt extends Component {
                 </button>
               )}
             </Mutation>
-          </>
-        )}
+          </>);
+        }}
       </Query>
     );
   }
 }
 
-export default ElectionMgmt;
+export default CreateElection;

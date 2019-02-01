@@ -14,12 +14,14 @@ const SIGNUP_MUTATION = gql`
     $firstName: String!
     $lastName: String!
     $password: String!
+    $username: String!
   ) {
     signUp(
       email: $email
       firstName: $firstName
       lastName: $lastName
       password: $password
+      username: $username
     ) {
       id
       email
@@ -34,6 +36,7 @@ export default class Signup extends Component {
     firstName: '',
     lastName: '',
     password: '',
+    username: '',
   }
 
   saveToState = (e) => {
@@ -54,6 +57,7 @@ export default class Signup extends Component {
                 firstName: '',
                 lastName: '',
                 password: '',
+                username: '',
               });
             }}>
             <h2>Sign up for an account</h2>
@@ -67,6 +71,9 @@ export default class Signup extends Component {
               </label>
               <label htmlFor="lastName">
                 <input type="text" id="lastName" name="lastName" placeholder="Last Name" value={this.state.lastName} onChange={this.saveToState} />
+              </label>
+              <label htmlFor="username">
+                <input type="text" id="username" name="username" placeholder="Username" value={this.state.username} onChange={this.saveToState} />
               </label>
               <label htmlFor="password">
                 <input type="password" id="password" name="password" placeholder="Password" value={this.state.password} onChange={this.saveToState} />

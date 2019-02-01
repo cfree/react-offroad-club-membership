@@ -48,7 +48,7 @@ export default class Login extends Component {
           e.preventDefault();
           const res = await login();
 
-          Router.push('/');
+          Router.push(this.props.redirect || '/');
         }}>
           <h2>Login</h2>
           <ErrorMessage error={error} />

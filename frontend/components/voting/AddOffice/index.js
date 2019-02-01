@@ -18,7 +18,7 @@ class Office extends Component {
     candidates: [],
   };
 
-  addToBallot = (candidate) => {
+  addToBallot = candidate => {
     // Add to list of candidates on ballot
     let updatedCandidates = [...this.state.candidates];
     updatedCandidates.push(candidate);
@@ -36,10 +36,12 @@ class Office extends Component {
     });
   };
 
-  removeFromBallot = (candidate) => {
+  removeFromBallot = candidate => {
     // Remove from candidates on ballot
     let updatedCandidates = [...this.state.candidates];
-    updatedCandidates.filter(candidateOnList => candidateOnList.id !== candidate.id);
+    updatedCandidates = updatedCandidates.filter(
+      candidateOnList => candidateOnList.id !== candidate.id,
+    );
 
     // Add to eligible members
     const updatedMembers = [...this.state.availableMembers];
@@ -47,15 +49,31 @@ class Office extends Component {
 
     // Update state
     this.setState({
-      candidates: updatedOffice,
+      candidates: updatedCandidates,
       availableMembers: updatedMembers,
     });
   };
 
-  handleSubmit = (e) => {
+  handleSubmit = e => {
     e.preventDefault();
-    this.props.handleSubmit(this.state);
-    
+    this.props.handleSubmit({
+      candidates: this.state.candidates,
+      title: this.state.title,
+      desc: this.state.desc,
+    });
+
+    this.setState({
+      candidates: [],
+      title: '',
+      desc: '',
+    });
+  };
+
+  updateState = e => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  cancelOffice = () => {
     this.setState({
       candidates: [],
       title: '',
@@ -63,26 +81,36 @@ class Office extends Component {
     });
   }
 
-  updateState = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
-  }
-
   render() {
-    return <form className="Offices" onSubmit={this.handleSubmit}>
+    return (
+      <form className="Offices" onSubmit={this.handleSubmit}>
         <StyledOffice>
           <div className="Office-Picker">
             <h3>Create Ballot for Office</h3>
             <p>
               <label htmlFor="officeTitle">
                 Title of Office&nbsp;
-                <input type="text" name="title" id="officeTitle" value={this.state.title} onChange={this.updateState} />
+                <input
+                  type="text"
+                  name="title"
+                  id="officeTitle"
+                  value={this.state.title}
+                  onChange={this.updateState}
+                  required
+                />
               </label>
             </p>
 
             <p>
               <label htmlFor="officeDesc">
                 Description&nbsp;
-                <textarea type="text" name="desc" id="officeDesc" value={this.state.desc} onChange={this.updateState} />
+                <textarea
+                  type="text"
+                  name="desc"
+                  id="officeDesc"
+                  value={this.state.desc}
+                  onChange={this.updateState}
+                />
               </label>
             </p>
 
@@ -107,12 +135,20 @@ class Office extends Component {
                     }
                     return 0;
                   })
-                  .map(user => <p key={user.id}>
+                  .map(user => (
+                    <p key={user.id}>
                       {user.firstName} {user.lastName}
-                      <button type="button" onClick={() => this.addToBallot(user)} disabled={user.officeRunningFor}>
-                        {user.officeRunningFor ? `Running for ${user.officeRunningFor}` : 'Add'}
+                      <button
+                        type="button"
+                        onClick={() => this.addToBallot(user)}
+                        disabled={user.officeRunningFor}
+                      >
+                        {user.officeRunningFor
+                          ? `Running for ${user.officeRunningFor}`
+                          : 'Add'}
                       </button>
-                    </p>)}
+                    </p>
+                  ))}
               </div>
             </div>
           </div>
@@ -131,18 +167,29 @@ class Office extends Component {
                 }
                 return 0;
               })
-              .map(candidate => <p key={candidate.id}>
+              .map(candidate => (
+                <p key={candidate.id}>
                   {candidate.firstName} {candidate.lastName}
-                  <button onClick={() => this.removeFromBallot(candidate)}>
+                  <button
+                    type="button"
+                    onClick={() => this.removeFromBallot(candidate)}
+                  >
                     x
                   </button>
-                </p>)}
+                </p>
+              ))}
           </div>
         </StyledOffice>
 
-        <button>Cancel</button>
-        <button disabled={this.state.candidates.length < 1} type="submit">Save Office Ballot</button>
-      </form>;
+        <button type="button" onClick={this.cancelOffice}>Cancel</button>
+        <button
+          disabled={this.state.candidates.length < 1 || !this.state.title}
+          type="submit"
+        >
+          Save Office Ballot
+        </button>
+      </form>
+    );
   }
 }
 

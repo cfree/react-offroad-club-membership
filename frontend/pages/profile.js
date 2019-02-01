@@ -1,10 +1,10 @@
-import React from 'react';
+import Gate from '../components/Login/Gate';
 
 const ProfilePage = props => {
   return (
-    <div>
+    <Gate>
       Profile for {props.query.user}
-    </div>
+    </Gate>
   )
 }
 

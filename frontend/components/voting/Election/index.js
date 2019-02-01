@@ -30,9 +30,34 @@ const GET_ELECTION_QUERY = gql`
   }
 `;
 
+const GET_USER_VOTE = gql`
+  query GET_USER_VOTE($ballot: ID) {
+    getUserVote(ballot: $ballot) {
+      candidate {
+        id
+      }
+    }
+  }
+`;
+
 class Election extends Component {
   static defaultProps = {
     id: null
+  }
+
+  getVoteId = (voteInfo) => {
+    // Is there a vote?
+    if (voteInfo.length <= 0) {
+      return false;
+    }
+
+    // Was it an abstain vote?
+    if (voteInfo[0].candidate === null) {
+      return 1;
+    }
+
+    // It was a vote for a person
+    return voteInfo[0].candidate.id;
   }
 
   render() {
@@ -48,11 +73,24 @@ class Election extends Component {
             <h2>{data.getElection.electionName} Election</h2>
 
             {data.getElection.races.map(race => (
-              <Race
+              <Query
+                query={GET_USER_VOTE}
+                variables={{ ballot: race.id }}
                 key={race.id}
-                pollId={`${data.getElection.electionName.replace(' ', '_')}_${race.title.replace(' ', '_')}`}
-                {...race}
-              />
+              >
+                {({ loading: voteLoading, error: voteError, data: voteData }) => {
+                  if (voteLoading) { return <div>Loading...</div> }
+                  if (voteError) { return <div>Error: {voteError.message}</div> }
+                  
+                  return (
+                    <Race
+                      pollId={`${data.getElection.electionName.replace(' ', '_')}_${race.title.replace(' ', '_')}`}
+                      userVotedFor={this.getVoteId(voteData.getUserVote)}
+                      {...race}
+                    />
+                  );
+                }}
+              </Query>
             ))}
           </>
         );
