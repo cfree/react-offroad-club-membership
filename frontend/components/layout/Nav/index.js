@@ -34,21 +34,21 @@ const Nav = () => {
                   <a>Dashboard</a>
                 </Link>
               </li>
-              {/* <li>
+              <li>
                 <Link href="/roster">
                   <a>Roster</a>
                 </Link>
-              </li> */}
+              </li>
               {isAtLeastBoardMember(myself.role) && <li>
                   <Link href="/admin">
                     <a>Admin</a>
                   </Link>
                 </li>}
-              {/* <li>
+              <li>
                 <Link href="/account">
                   <a>Account</a>
                 </Link>
-              </li> */}
+              </li>
               <li>
                 <Logout />
               </li>

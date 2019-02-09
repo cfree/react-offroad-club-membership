@@ -1,6 +1,6 @@
 import Signup from '../components/Login/Signup';
 
-const JoinPage = () => {
+const RegisterPage = () => {
   return (
     <div>
       <Signup />
@@ -8,4 +8,4 @@ const JoinPage = () => {
   )
 };
 
-export default JoinPage;
+export default RegisterPage;
