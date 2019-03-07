@@ -1,5 +1,5 @@
-import Account from '../components/User/Account';
-import Gate from '../components/Login/Gate';
+import Account from '../components/user/Account';
+import Gate from '../components/login/Gate';
 
 const AccountPage = props => {
   return <Gate redirect="/account">

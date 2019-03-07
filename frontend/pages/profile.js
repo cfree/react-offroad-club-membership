@@ -1,4 +1,4 @@
-import Gate from '../components/Login/Gate';
+import Gate from '../components/login/Gate';
 
 const ProfilePage = props => {
   return (

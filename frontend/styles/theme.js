@@ -8,17 +8,22 @@ export default {
     grey_light: '#4B5767',
     grey_lighter: '#879CB9',
     white_dark: '#EDEDED',
+    white: '#FFFFFF',
     green: '#62bb47',
   },
   breakpoints: {
-    sm: '',
-    md: '',
-    lg: '',
-    xl: '',
+    sm: '480px',
+    md: '720px',
+    lg: '960px',
+    xl: '1800px',
     maxWidth: '1000px',
+    content: '760px',
   },
-  typography: {},
-  vars: {
-    bs: '0 12px 24px 0 rgba(0, 0, 0, 0.09)',
+  typography: {
+    space: '20',
+  },
+  shape: {
+    boxShadow: '0 12px 24px 0 rgba(0, 0, 0, 0.09)',
+    borderRadius: '3px',
   },
 };

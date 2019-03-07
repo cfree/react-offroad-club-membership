@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import PollingPlace from '../voting/PollingPlace';
+import PollingPlace from '../../voting/PollingPlace';
 
 const Admin = () => (
   <>

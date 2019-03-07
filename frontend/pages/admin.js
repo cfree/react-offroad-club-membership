@@ -1,5 +1,5 @@
-import Admin from '../components/Admin';
-import Gate from '../components/Login/Gate';
+import Admin from '../components/admin/Admin';
+import Gate from '../components/login/Gate';
 import { isAtLeastBoardMember, isNotLocked } from '../lib/utils';
 
 const AdminPage = props => {

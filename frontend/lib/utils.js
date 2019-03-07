@@ -1,5 +1,17 @@
 import { roles, statuses } from './constants';
 
+export const getMemberType = role => {
+  switch (role) {
+    case roles.FULL_MEMBER:
+    case roles.RUN_LEADER:
+    case roles.EXECUTIVE_COMMITTEE:
+    case roles.ADMIN:
+      return 'Full Member';
+    default:
+      return role.replace('_', ' ');
+  }
+};
+
 export const isAdmin = role => role === roles.ADMIN;
 
 export const isBoardMember = role => role === roles.EXECUTIVE_COMMITTEE;

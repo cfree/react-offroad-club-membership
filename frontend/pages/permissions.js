@@ -1,5 +1,5 @@
-import Permissions from '../components/Admin/Permissions';
-import Gate from '../components/Login/Gate';
+import Permissions from '../components/admin/Permissions';
+import Gate from '../components/login/Gate';
 import { isAtLeastBoardMember, isNotLocked } from '../lib/utils';
 
 const PermissionsPage = () => {

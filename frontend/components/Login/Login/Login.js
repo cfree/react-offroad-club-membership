@@ -3,9 +3,9 @@ import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import styled from 'styled-components';
 import Router from 'next/router';
-import Loading from '../utility/Loading';
-import ErrorMessage from '../utility/ErrorMessage';
-import CURRENT_USER_QUERY from '../User';
+import Loading from '../../utility/Loading';
+import ErrorMessage from '../../utility/ErrorMessage';
+import CURRENT_USER_QUERY from '../../user/User/User';
 import { assertResolveFunctionsPresent } from 'graphql-tools';
 
 const StyledForm = styled.form``;

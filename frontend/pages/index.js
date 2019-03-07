@@ -1,5 +1,5 @@
 import Dashboard from '../components/Dashboard';
-import Gate from '../components/Login/Gate';
+import Gate from '../components/login/Gate';
 import { isAtLeastGuestMember, isNotLocked } from '../lib/utils';
 
 const Home = () => (

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import Login from '../components/Login';
-import ForgotPassword from '../components/Login/ForgotPassword';
+import Login from '../components/login/Login';
+import ForgotPassword from '../components/login/ForgotPassword';
 
 const StyledLogin = styled.div`
   display: grid;
