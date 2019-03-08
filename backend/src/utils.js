@@ -1,24 +1,35 @@
-module.exports.hasPermission = function hasPermission(user, permissionsNeeded) {
-  const matchedPermissions = user.permissions.filter(permissionTheyHave =>
-    permissionsNeeded.includes(permissionTheyHave),
-  );
-  if (!matchedPermissions.length) {
-    throw new Error(`You do not have sufficient permissions
-      : ${permissionsNeeded}
-      You Have:
-      ${user.permissions}
-      `);
-  }
-}
-
 module.exports.hasRole = function hasRole(user, rolesNeeded) {
   const matchedRoles = rolesNeeded.includes(user.role);
 
   if (!matchedRoles) {
-    throw new Error(`You do not have necessary roles
+    throw new Error(`You do not have the necessary role
       : ${rolesNeeded}
       You Have
       : ${user.role}
+    `);
+  }
+};
+
+module.exports.hasAccountStatus = function hasAccountStatus(user, statusNeeded) {
+  const matchedStatus = statusNeeded.includes(user.accountStatus);
+
+  if (!matchedStatus) {
+    throw new Error(`You do not have the necessary account status
+      : ${statusNeeded}
+      You Have
+      : ${user.accountStatus}
+    `);
+  }
+};
+
+module.exports.hasAccountType = function hasAccountType(user, statusNeeded) {
+  const matchedStatus = statusNeeded.includes(user.accountType);
+
+  if (!matchedStatus) {
+    throw new Error(`You do not have the necessary account type
+      : ${statusNeeded}
+      You Have
+      : ${user.accountType}
     `);
   }
 };

@@ -1,4 +1,5 @@
-const { hasRole } = require('../utils');
+const { addFragmentToInfo } = require('graphql-binding');
+const { hasRole, hasAccountType, hasAccountStatus } = require('../utils');
 
 const Query = {
   myself(parent, args, ctx, info) {
@@ -15,20 +16,122 @@ const Query = {
     );
   },
   async users(parent, args, ctx, info) {
-    // Loggin in?
+    // Logged in?
     if (!ctx.request.userId) {
       throw new Error('You must be logged in');
     }
-    // Check if user has proper role to query users
-    hasRoles(ctx.request.user, [
-      'ADMIN',
-      'EXECUTIVE_COMMITTEE',
-      'RUN_LEADER',
-      'FULL_MEMBER',
+    // Requesting user has proper account type?
+    hasAccountType(ctx.request.user, [
+      'FULL',
+      'ASSOCIATE',
+      'EMERITUS',
     ]);
 
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+
     // If they do, query all the users
+    if (args.roles) {
+      return ctx.db.query.users(
+        {
+          where: {
+            role_in: args.roles,
+            accountStatus: args.accountStatus,
+          },
+        },
+        info,
+      );
+    }
+
     return ctx.db.query.users({}, info);
+  },
+  async user(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+    // Requesting user has proper account type?
+    hasAccountType(ctx.request.user, [
+      'FULL',
+      'ASSOCIATE',
+      'EMERITUS',
+    ]);
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+
+    // If they do, query all the users
+    if (args.username) {
+      return ctx.db.query.user(
+        {
+          where: {
+            username: args.username,
+          },
+        },
+        info,
+      );
+    }
+
+    return ctx.db.query.user(
+      {
+        where: {
+          id: ctx.request.user.id,
+        },
+      },
+      info,
+    );
+  },
+  async getOfficers(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+    // Requesting user has proper account type?
+    hasAccountType(ctx.request.user, [
+      'FULL',
+      'ASSOCIATE',
+      'EMERITUS',
+    ]);
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+
+    // If they do, query all the users
+    return ctx.db.query.users(
+      {
+        // where: {
+        //   role_in: args.roles,
+        //   accountStatus: args.accountStatus,
+        // },
+      },
+      info,
+    );
+  },
+  async getMembers(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+    // Requesting user has proper account type?
+    hasAccountType(ctx.request.user, [
+      'FULL',
+      'ASSOCIATE',
+      'EMERITUS',
+    ]);
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+
+    // If they do, query all the users
+    return ctx.db.query.users(
+      {
+        // where: {
+        //   role_in: args.roles,
+        //   accountStatus: args.accountStatus,
+        // },
+      },
+      info,
+    );
   },
   async electionCandidates(parent, args, ctx, info) {
     // Logged in?
@@ -36,16 +139,22 @@ const Query = {
       throw new Error('You must be logged in');
     }
 
-    // Requesting user has proper roles?
-    hasRole(ctx.request.user, ['ADMIN', 'EXECUTIVE_COMMITTEE']);
+    // Requesting user has proper role?
+    hasRole(ctx.request.user, ['ADMIN', 'OFFICER']);
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ['ACTIVE']);
 
     // If they do, query all the users
-    return ctx.db.query.users({
-      where: {
-        role_in: args.roles,
-        accountStatus: args.accountStatus,
+    return ctx.db.query.users(
+      {
+        where: {
+          role_in: args.roles,
+          accountStatus: args.accountStatus,
+        },
       },
-    }, info);
+      info,
+    );
   },
   getActiveElections(parent, args, ctx, info) {
     // Logged in?
@@ -53,33 +162,99 @@ const Query = {
       throw new Error('You must be logged in');
     }
 
-    // Requesting user has proper roles?
-    hasRole(ctx.request.user, ['FULL_MEMBER', 'RUN_LEADER', 'ADMIN', 'EXECUTIVE_COMMITTEE']);
+    // Requesting user has proper account type?
+    hasAccountType(ctx.request.user, ['FULL']);
 
-    return ctx.db.query.elections({
-      where: {
-        AND: [
-          { startTime_lte: new Date().toISOString() },
-          { endTime_gt: new Date().toISOString() },
-        ],
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+
+    return ctx.db.query.elections(
+      {
+        where: {
+          AND: [
+            { startTime_lte: new Date().toISOString() },
+            { endTime_gt: new Date().toISOString() },
+          ],
+        },
+        orderBy: 'endTime_ASC',
       },
-      orderBy: 'endTime_ASC',
-    }, info);
+      info,
+    );
+  },
+  getActiveElectionsWithResults(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    // Requesting user has proper role?
+    hasRole(ctx.request.user, ['ADMIN', 'OFFICER']);
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+
+    return ctx.db.query.elections(
+      {
+        where: {
+          AND: [
+            { startTime_lte: new Date().toISOString() },
+            { endTime_gt: new Date().toISOString() },
+          ],
+        },
+        orderBy: 'endTime_ASC',
+      },
+      info,
+    );
   },
   getElection(parent, args, ctx, info) {
     // Logged in?
-    // if (!ctx.request.userId) {
-    //   throw new Error('You must be logged in');
-    // }
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
 
-    // Requesting user has proper roles?
-    // hasRole(ctx.request.user, ['FULL_MEMBER', 'RUN_LEADER', 'ADMIN', 'EXECUTIVE_COMMITTEE']);
+    // Requesting user has proper account type?
+    hasAccountType(ctx.request.user, ['FULL']);
 
-    return ctx.db.query.election({
-      where: {
-        id: args.id
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+
+    return ctx.db.query.election(
+      {
+        where: {
+          id: args.id,
+        },
       },
-    }, info);
+      info,
+    );
+  },
+  async getUserVote(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    // Requesting user has proper account type?
+    hasAccountType(ctx.request.user, ['FULL']);
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+
+    const votes = await ctx.db.query.votes(
+      {
+        where: {
+          AND: [
+            { ballot: { id: args.ballot } },
+            { voter: { id: ctx.request.userId } },
+          ],
+        },
+        first: true,
+      },
+      info,
+    );
+
+    // console.log('VOTEs', votes);
+
+    return votes;
   },
 };
 

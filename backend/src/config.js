@@ -1,45 +1,53 @@
 module.exports = {
+  // Deprecated in favor of roles
+  // 'permissions': [
+  //   'DASHBOARD_AREA', // All except locked/inactive/resigned/removed
+  //   'ADMIN_AREA', // Board, admin
+  //   'VOTE_READ', // Full member
+  //   'USER_DELETE', // Admin
+  //   'ROSTER_READ', // Full members, emeritus, board, admin
+  //   'PERMISSION_UPDATE', // Admin
+  // ],
   'roles': [
-    'ADMIN', // Manage permissions 
-    'EXECUTIVE_COMMITTEE', // Administrative area
-    'RUN_LEADER', // Able to create events
-    'FULL_MEMBER', 
-    'EMERITUS_MEMBER', // Associate + roster, no voting rights
-    'ASSOCIATE_MEMBER', // No roster, no voting rights, no member's only events/discussion
-    'GUEST_MEMBER', // confirmed user - default
+    'ADMIN', // Manage permissions
+    'OFFICER', // Administrative area
+    'RUN_MASTER', // Able to create events
+    'RUN_LEADER', // Able to view extra event details, log run report
+    'USER', // DEFAULT
   ],
   'accountStatus': [
     'ACTIVE',
     'PAST_DUE', // account overdue - active, must pay
-    'DELINQUENT', // account 3 months overdue - locked, must pay
+    'DELINQUENT', // account 3 months to 1 year overdue - locked, contact, must pay
     'REMOVED', // cannot do anything - locked, contact
     'RESIGNED', // cannot do anything - locked, contact 
-    'INACTIVE', // cannot do anything - locked, contact 
-    'LOCKED', // must be approved
+    'INACTIVE', // account 1+ year overdue - locked, contact
+    'LIMITED', // attended too many runs - locked, must become member
+    'LOCKED', // DEFAULT - must be approved
   ],
-  'permissions': [
-    'DASHBOARD_AREA', // All except locked/inactive/resigned/removed
-    'ADMIN_AREA', // Board, admin
-    'VOTE_READ', // Full member
-    'USER_DELETE', // Admin
-    'ROSTER_READ', // Full members, emeritus, board, admin
-    'PERMISSION_UPDATE', // Admin
+  'accountType': [
+    'FULL',
+    'ASSOCIATE', // No voting rights, no member's only events/discussion
+    'EMERITUS', // Same as Associate
+    'GUEST', // DEFAULT - confirmed user. No roster, no voting rights, no member's only events/discussion
   ],
-  'titles': [
-    'PRESIDENT', // unique
-    'VICE_PRESIDENT', // unique
-    'SECRETARY', // unique
-    'TREASURER', // unique
-    'WEBMASTER', // unique
-    'RUNMASTER', // unique
-    'RUN_LEADER',
-    'CHARTER_MEMBER',
-    'EMERITUS_MEMBER',
-  ],
+  'offices': {
+    'PRESIDENT': 'President', // unique
+    'VICE_PRESIDENT': 'Vice President', // unique
+    'SECRETARY': 'Secretary', // unique
+    'TREASURER': 'Treasurer', // unique
+  },
+  'titles': {
+    'WEBMASTER': 'Webmaster', // unique
+    'RUN_MASTER': 'Run Master', // unique
+    'RUN_LEADER': 'Run Leader',
+    'EMERITUS_MEMBER': 'Emeritus Member',
+    'CHARTER_MEMBER': 'Charter Member',
+  },
 };
 
 /**
  * Check Logged-in
- * Check Permission
+ * Check Role
  * Check Account Status
  */

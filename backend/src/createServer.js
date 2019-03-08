@@ -1,6 +1,8 @@
 const { GraphQLServer } = require('graphql-yoga');
 const Mutation = require('./resolvers/Mutation');
 const Query = require('./resolvers/Query');
+const Election = require('./resolvers/Election');
+const Ballot = require('./resolvers/Ballot');
 const db = require('./db');
 
 // Create GraphQL yoga server
@@ -10,9 +12,11 @@ function createServer() {
     resolvers: {
       Mutation,
       Query,
+      Election,
+      Ballot,
     },
     resolverValidationOptions: {
-      requireResolversForResolveType: false
+      requireResolversForResolveType: false,
     },
     context: req => ({ ...req, db }),
   });

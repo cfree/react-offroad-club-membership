@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/four-players-co/four-players-co/dev
-# timestamp: Tue Nov 27 2018 19:56:01 GMT-0700 (MST)
+# timestamp: Thu Mar 07 2019 14:36:43 GMT-0700 (Mountain Standard Time)
 
 enum AccountStatus {
   ACTIVE
@@ -303,6 +303,7 @@ input BallotUpdateManyDataInput {
 input BallotUpdateManyInput {
   create: [BallotCreateInput!]
   connect: [BallotWhereUniqueInput!]
+  set: [BallotWhereUniqueInput!]
   disconnect: [BallotWhereUniqueInput!]
   delete: [BallotWhereUniqueInput!]
   update: [BallotUpdateWithWhereUniqueNestedInput!]
@@ -319,6 +320,7 @@ input BallotUpdateManyMutationInput {
 input BallotUpdateManyWithoutCandidatesInput {
   create: [BallotCreateWithoutCandidatesInput!]
   connect: [BallotWhereUniqueInput!]
+  set: [BallotWhereUniqueInput!]
   disconnect: [BallotWhereUniqueInput!]
   delete: [BallotWhereUniqueInput!]
   update: [BallotUpdateWithWhereUniqueWithoutCandidatesInput!]
@@ -843,13 +845,12 @@ type PageInfo {
 }
 
 enum Permission {
-  DASHBOARD_AREA
-  ADMIN_AREA
-  USER_CREATE
-  USER_UPDATE
-  USER_DELETE
-  ROSTER_READ
-  PERMISSION_UPDATE
+  ADMIN
+  USER
+  ITEMCREATE
+  ITEMUPDATE
+  ITEMDELETE
+  PERMISSIONUPDATE
 }
 
 type Query {
@@ -1591,6 +1592,7 @@ input UserUpdateManyMutationInput {
 input UserUpdateManyWithoutCandidateForInput {
   create: [UserCreateWithoutCandidateForInput!]
   connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
   disconnect: [UserWhereUniqueInput!]
   delete: [UserWhereUniqueInput!]
   update: [UserUpdateWithWhereUniqueWithoutCandidateForInput!]
@@ -2779,6 +2781,7 @@ input VoteUpdateManyMutationInput {
 input VoteUpdateManyWithoutBallotInput {
   create: [VoteCreateWithoutBallotInput!]
   connect: [VoteWhereUniqueInput!]
+  set: [VoteWhereUniqueInput!]
   disconnect: [VoteWhereUniqueInput!]
   delete: [VoteWhereUniqueInput!]
   update: [VoteUpdateWithWhereUniqueWithoutBallotInput!]
@@ -2790,6 +2793,7 @@ input VoteUpdateManyWithoutBallotInput {
 input VoteUpdateManyWithoutCandidateInput {
   create: [VoteCreateWithoutCandidateInput!]
   connect: [VoteWhereUniqueInput!]
+  set: [VoteWhereUniqueInput!]
   disconnect: [VoteWhereUniqueInput!]
   delete: [VoteWhereUniqueInput!]
   update: [VoteUpdateWithWhereUniqueWithoutCandidateInput!]
@@ -2801,6 +2805,7 @@ input VoteUpdateManyWithoutCandidateInput {
 input VoteUpdateManyWithoutVoterInput {
   create: [VoteCreateWithoutVoterInput!]
   connect: [VoteWhereUniqueInput!]
+  set: [VoteWhereUniqueInput!]
   disconnect: [VoteWhereUniqueInput!]
   delete: [VoteWhereUniqueInput!]
   update: [VoteUpdateWithWhereUniqueWithoutVoterInput!]

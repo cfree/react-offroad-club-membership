@@ -6,7 +6,7 @@ const { promisify } = require('util');
 const HASH_SECRET = process.env.HASH_SECRET;
 const JWT_SECRET = process.env.JWT_SECRET;
 const { transport, makeANiceEmail } = require('../mail');
-const { yearInMs, resetTokenTimeoutInMs, hasRole } = require('../utils');
+const { yearInMs, resetTokenTimeoutInMs, hasRole, hasAccountStatus, hasAccountType } = require('../utils');
 
 const getHash = async pw => {
   const salt = await bcrypt.hash(HASH_SECRET, 10);
@@ -35,8 +35,8 @@ const Mutations = {
           ...args,
           email,
           password,
-          role: 'GUEST_MEMBER',
-          avatarSmall: '/static/img/default-user.jpg'
+          avatarSmall: '/static/img/default-user.jpg',
+          acctCreated: new Date().toISOString()
         },
       },
       info,
@@ -150,7 +150,7 @@ const Mutations = {
     // Return the new user
     return updatedUser;
   },
-  async updatePermissions(parent, args, ctx, info) {
+  async updateRole(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {
       throw new Error('User must be logged in');
@@ -162,13 +162,16 @@ const Mutations = {
     }, info);
 
     // Have proper roles to do this?
-    hasRole(currentUser, ['ADMIN', 'EXECUTIVE_COMMITTEE']);
+    hasRole(currentUser, ['ADMIN']);
 
-    // Update permissions
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+
+    // Update role
     return ctx.db.mutation.updateUser({
       data: {
-        permissions: {
-          set: args.permissions,
+        role: {
+          set: args.role,
         }
       },
       where: {
@@ -178,29 +181,27 @@ const Mutations = {
   },
   async submitElection(parent, args, ctx, info) {
     // Logged in?
-    // if (!ctx.request.userId) {
-    //   throw new Error('User must be logged in');
-    // }
-
-    // Query the current user
-    // const currentUser = await ctx.db.query.user({
-    //   where: { id: ctx.request.userId }
-    // }, info);
+    if (!ctx.request.userId) {
+      throw new Error('User must be logged in');
+    }
 
     // Have proper roles to do this?
-    // hasRole(currentUser, ['ADMIN', 'EXECUTIVE_COMMITTEE']);
+    hasRole(ctx.request.user, ['ADMIN', 'OFFICER']);
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ['ACTIVE']);
 
     const { election } = args;
 
     // Format races
     const races = election.races.map(race => {
       race.candidates = {
-        connect: race.candidates.map(candidate => ({ id: candidate.id }))
+        connect: race.candidates,
       };
       return race;
     });
 
-    // Update permissions
+    // Update election
     return ctx.db.mutation.createElection({
       data: {
         electionName: election.electionName,
@@ -209,6 +210,58 @@ const Mutations = {
         races: { create: races },
       },
     }, info);
+  },
+  async submitVote(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error('User must be logged in');
+    }
+
+    // Requesting user has proper account type?
+    hasAccountType(ctx.request.user, ['FULL']);
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+
+    // Have they voted for this ballot before?
+    const { vote } = args;
+    const votes = await ctx.db.query.votes({
+      where: {
+        AND: [
+          { ballot: { id: vote.ballot } },
+          { voter: { id: ctx.request.userId } },
+        ],
+      },
+    }, info);
+
+    if (votes.length > 0) {
+      throw new Error('User has voted already');
+    }
+
+    const data = {
+      dateTime: new Date(vote.dateTime),
+      ballot: {
+        connect: {
+          id: vote.ballot,
+        },
+      },
+      voter: {
+        connect: {
+          id: ctx.request.userId,
+        },
+      },
+    };
+
+    if (vote.candidate) {
+      data.candidate = {
+        connect: { id: vote.candidate },
+      };
+    }
+
+    // Record vote
+    await ctx.db.mutation.createVote({ data });
+
+    return { message: 'Thank you for voting' };
   },
 };
 

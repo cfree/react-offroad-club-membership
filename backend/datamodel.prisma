@@ -1,11 +1,9 @@
 enum Role {
   ADMIN
-  BOARD_MEMBER
+  OFFICER
+  RUN_MASTER
   RUN_LEADER
-  FULL_MEMBER
-  EMERITUS_MEMBER
-  ASSOCIATE_MEMBER
-  GUEST_MEMBER
+  USER
 }
 
 enum AccountStatus {
@@ -15,17 +13,22 @@ enum AccountStatus {
   REMOVED
   RESIGNED
   INACTIVE
+  LIMITED
   LOCKED
 }
 
-enum Permission {
-  DASHBOARD_AREA
-  ADMIN_AREA
-  USER_CREATE
-  USER_UPDATE
-  USER_DELETE
-  ROSTER_READ
-  PERMISSION_UPDATE
+enum AccountType {
+  FULL
+  ASSOCIATE
+  EMERITUS
+  GUEST
+}
+
+enum Office {
+  PRESIDENT
+  VICE_PRESIDENT
+  SECRETARY
+  TREASURER
 }
 
 enum Poll {
@@ -34,8 +37,6 @@ enum Poll {
 }
 
 scalar DateTime
-
-
 
 type User {
   id: ID! @unique
@@ -49,13 +50,17 @@ type User {
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
+  isCharterMember: Boolean! @default(value: false)
   vehicle: Vehicle
-  role: Role! @default(value: GUEST_MEMBER)
-  permissions: [Permission]
+  titles: [Title]
+  role: Role! @default(value: USER)
   accountStatus: AccountStatus! @default(value: LOCKED)
+  accountType: AccountType! @default(value: GUEST)
+  office: Officer
   candidateFor: [Ballot]! @relation(name: "CandidateUser")
   votesReceived: [Vote]! @relation(name: "VotesRecdUser")
   votedFor: [Vote]! @relation(name: "VotedUser")
+  
 }
 
 type Election {
@@ -82,7 +87,7 @@ type Vote {
   voter: User! @relation(name: "VotedUser")
 }
 
-type Vehicle  {
+type Vehicle {
   id: ID! @unique
   year: Int!
   make: String!
@@ -91,4 +96,3 @@ type Vehicle  {
   trim: String
   image: String
 }
-

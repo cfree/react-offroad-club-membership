@@ -4,21 +4,28 @@ type SuccessMessage {
 }
 
 type Mutation {
-  signUp(email: String!, password: String!, firstName: String!, lastName: String!): User!
+  signUp(email: String!, password: String!, firstName: String!, lastName: String!, username: String!): User!
   login(email: String!, password: String!): User!
   logout: SuccessMessage
   requestReset(email: String!): SuccessMessage
   resetPassword(resetToken: String!, password: String!, confirmPassword: String!): User!
-  updatePermissions(permissions: [Permission], userId: ID!): User
+  updateRole(role: Role, userId: ID!): User
   submitElection(election: ElectionInput!): Election
+  submitVote(vote: VoteInput): SuccessMessage
 }
 
 type Query {
   myself: User
-  users: [User]!
-  electionCandidates(roles: [Role]!, accountStatus: AccountStatus!): [User]!
+  users(roles: [Role], accountStatus: AccountStatus, accountType: AccountType): [User]!
+  user(username: String): User!
+  getOfficers: [User!]!
+  getMembers(accountTypes: [AccountType]): [User!]!
+  electionCandidates(accountType: AccountType!, accountStatus: AccountStatus!): [User]!
   getActiveElections: [Election]!
+  getActiveElectionsWithResults: [Election]!
   getElection(id: ID!): Election!
+  getUserVote(ballot: ID): [Vote]!
+  getElections(startTime: DateTime, endTime: DateTime): [Election]!
 }
 
 type User {
@@ -29,10 +36,26 @@ type User {
   lastName: String!
   email: String!
   avatarSmall: String
+  titles: [String]
   role: Role!
-  permissions: [Permission]!
-  # memberType: MemberType!
+  accountStatus: AccountStatus!
+  accountType: AccountType!
+  phone: String
   vehicle: Vehicle
+}
+
+type Result {
+  candidate: User
+  count: Int!
+}
+
+type Ballot {
+  id: ID!
+  title: String!
+  desc: String
+  candidates: [User!]!
+  votes: [Vote]
+  results: [Result]
 }
 
 input ElectionInput {
@@ -43,6 +66,7 @@ input ElectionInput {
 }
 
 input BallotInput {
+  id: String,
   title: String!
   desc: String
   candidates: [UserInput!]!
@@ -53,9 +77,8 @@ input UserInput {
   id: ID!
 }
 
-# input VoteInput {
-#   ballot: Ballot!
-#   dateTime: DateTime
-#   candidate: User @relation(name: "VotesRecdUser")
-#   voter: User! @relation(name: "VotedUser")
-# }
+input VoteInput {
+  ballot: ID!
+  dateTime: DateTime!
+  candidate: ID
+}

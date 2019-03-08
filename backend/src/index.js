@@ -12,7 +12,7 @@ server.express.use(cookieParser());
 // Decode the JWT to get user ID on each request
 server.express.use(async (req, res, next) => {
   const { token } = req.cookies;
-  
+
   if (token) {
     const { userId } = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = userId;
