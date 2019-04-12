@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import { format, getTime, distanceInWordsToNow } from 'date-fns';
+import getConfig from 'next/config'
+const { publicRuntimeConfig } = getConfig()
 
 import { trailDifficulties, trailConditions } from '../../../lib/constants';
 import Calendar from '../Calendar';
@@ -76,15 +78,13 @@ export default class EventDetails extends Component {
 
           const { event, myself } = data;
 
-          console.log(event);
-
           const isPastEvent = Date.now() < getTime(event.startTime);
 
           const attendees = event.rsvps.filter(
             rsvp => rsvp.status === 'GOING',
           );
 
-          console.log('attendees', attendees);
+          console.log('event', event);
 
           const attendeeCount = attendees.length;
 
@@ -267,7 +267,7 @@ export default class EventDetails extends Component {
                             width="250"
                             height="100"
                             src={`https://maps.googleapis.com/maps/api/staticmap?zoom=8&size=500x200&maptype=roadmap&markers=size:mid%7Ccolor:red%7C${encodedAddress}&key=${
-                              process.env.GOOGLE_MAPS_API_KEY
+                              publicRuntimeConfig.env.GOOGLE_MAPS_API_KEY
                             }`}
                             alt={`${event.title} map`}
                             onError={this.onMapImgError}
