@@ -31,9 +31,43 @@ enum Office {
   TREASURER
 }
 
+enum Title {
+  WEBMASTER
+  RUN_MASTER
+  RUN_LEADER
+  EMERITUS_MEMBER
+  CHARTER_MEMBER
+}
+
 enum Poll {
   ELECTION
   RUN_SELECTION
+}
+
+enum TrailDifficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum MigrationStatus {
+  NEEDED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum RSVPStatus {
+  NONE
+  CANT_GO
+  GOING
+  MAYBE
+}
+
+enum TrailCondition {
+  CLEAR
+  MINOR_ISSUES
+  MAJOR_ISSUES
+  CLOSED
 }
 
 scalar DateTime
@@ -50,17 +84,104 @@ type User {
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
-  isCharterMember: Boolean! @default(value: false)
+  isCharterMember: Boolean @default(value: false)
   vehicle: Vehicle
   titles: [Title]
   role: Role! @default(value: USER)
   accountStatus: AccountStatus! @default(value: LOCKED)
   accountType: AccountType! @default(value: GUEST)
-  office: Officer
+  office: Office @unique
   candidateFor: [Ballot]! @relation(name: "CandidateUser")
   votesReceived: [Vote]! @relation(name: "VotesRecdUser")
   votedFor: [Vote]! @relation(name: "VotedUser")
+  comfortLevel: String
+  log: [LogItem] @relation(name: "LogMember")
+  membershipLog: [MembershipLogItem] @relation(name: "LogItemMember")
+  membershipLogContributions: [MembershipLogItem] @relation(name: "LogItemInitiator")
+  eventsCreated: [Event] @relation(name: "EventCreator")
+  eventsRSVPd: [RSVP] @relation(name: "UserRSVP")
+  eventsHosted: [Event] @relation(name: "EventHost")
+  trailsVisited: [Trail] @relation(name: "TrailVisitor")
+  bandaids: [Bandaid] @relation(name: "BandaidSubject")
+  runReportsLogged: [RunReport]! @relation(name: "RunReporter")
+  #trailsFavorited: [Trail]
+}
+
+type Event {
+  id: ID! @unique
+  title: String!
+  creator: User! @relation(name: "EventCreator")
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  host: User @relation(name: "EventHost")
+  rsvps: [RSVP] @relation(name: "EventRSVP")
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  trail: Trail @relation(name: "EventTrail")
+  bandaids: [Bandaid] @relation(name: "EventBandaid")
+  runReports: [RunReport] @relation(name: "EventRunReport")
+  membersOnly: Boolean
   
+}
+
+type RSVP {
+  id: ID! @unique
+  member: User! @relation(name: "UserRSVP")
+  event: Event! @relation(name: "EventRSVP")
+  status: RSVPStatus! @default(value: NONE)
+}
+
+type Trail {
+  id: ID! @unique
+  slug: String!
+  name: String
+  description: String
+  trailheadCoords: String
+  address: String
+  avgDifficulty: TrailDifficulty #computed
+  avgRatings: Float #computed
+  currentConditions: String #computed
+  conditionsLastReported: DateTime #computed
+  favoriteCount: Int #computed
+  pastEvents: [Event] @relation(name: "EventTrail")
+  visitors: [User] @relation(name: "TrailVisitor")
+  runReports: [RunReport] @relation(name: "TrailRunReport")
+}
+
+type RunReport {
+  id: ID! @unique
+  startTime: DateTime!
+  endTime: DateTime!
+  reportFiled: DateTime!
+  reporter: User! @relation(name: "RunReporter")
+  title: String!
+  description: String
+  trail: Trail! @relation(name: "TrailRunReport")
+  event: Event @relation(name: "EventRunReport")
+  weather: String!
+  difficulty: TrailDifficulty!
+  rating: Float!
+  condition: Condition @relation(name: "RunCondition")
+  favorite: Boolean
+}
+
+type Condition {
+  id: ID! @unique
+  report: RunReport! @relation(name: "RunCondition")
+  dateReported: DateTime!
+  status: TrailCondition!
+  notes: String
+}
+
+type Bandaid {
+  id: ID! @unique
+  occurred: DateTime
+  event: Event @relation(name: "EventBandaid")
+  memberInvolved: User @relation(name: "BandaidSubject")
+  title: String
+  description: String
 }
 
 type Election {
@@ -95,4 +216,22 @@ type Vehicle {
   name: String
   trim: String
   image: String
+  mods: [String]
+}
+
+type LogItem {
+  id: ID! @unique
+  time: DateTime
+  message: String!
+  user: User! @relation(name: "LogMember")
+  event: Event
+}
+
+type MembershipLogItem {
+  id: ID! @unique
+  startTime: DateTime!
+  endTime: DateTime
+  message: String!
+  user: User! @relation(name: "LogItemMember")
+  initiator: User! @relation(name: "LogItemInitiator")
 }

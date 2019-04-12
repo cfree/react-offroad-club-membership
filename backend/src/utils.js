@@ -35,4 +35,5 @@ module.exports.hasAccountType = function hasAccountType(user, statusNeeded) {
 };
 
 module.exports.yearInMs = (1000 * 60 * 60 * 24 * 365); // 1 year
+module.exports.monthInMs = (1000 * 60 * 60 * 24 * 30);
 module.exports.resetTokenTimeoutInMs = 3600000;  // 1 hour

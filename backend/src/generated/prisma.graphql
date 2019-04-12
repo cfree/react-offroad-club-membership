@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/four-players-co/four-players-co/dev
-# timestamp: Thu Mar 07 2019 14:36:43 GMT-0700 (Mountain Standard Time)
+# timestamp: Thu Apr 11 2019 19:12:06 GMT-0600 (MDT)
 
 enum AccountStatus {
   ACTIVE
@@ -8,14 +8,54 @@ enum AccountStatus {
   REMOVED
   RESIGNED
   INACTIVE
+  LIMITED
   LOCKED
+}
+
+enum AccountType {
+  FULL
+  ASSOCIATE
+  EMERITUS
+  GUEST
 }
 
 type AggregateBallot {
   count: Int!
 }
 
+type AggregateBandaid {
+  count: Int!
+}
+
+type AggregateCondition {
+  count: Int!
+}
+
 type AggregateElection {
+  count: Int!
+}
+
+type AggregateEvent {
+  count: Int!
+}
+
+type AggregateLogItem {
+  count: Int!
+}
+
+type AggregateMembershipLogItem {
+  count: Int!
+}
+
+type AggregateRSVP {
+  count: Int!
+}
+
+type AggregateRunReport {
+  count: Int!
+}
+
+type AggregateTrail {
   count: Int!
 }
 
@@ -50,6 +90,7 @@ type BallotConnection {
 }
 
 input BallotCreateInput {
+  id: ID
   title: String!
   desc: String
   candidates: UserCreateManyWithoutCandidateForInput
@@ -72,12 +113,14 @@ input BallotCreateOneWithoutVotesInput {
 }
 
 input BallotCreateWithoutCandidatesInput {
+  id: ID
   title: String!
   desc: String
   votes: VoteCreateManyWithoutBallotInput
 }
 
 input BallotCreateWithoutVotesInput {
+  id: ID
   title: String!
   desc: String
   candidates: UserCreateManyWithoutCandidateForInput
@@ -521,9 +564,799 @@ input BallotWhereUniqueInput {
   id: ID
 }
 
+type Bandaid implements Node {
+  id: ID!
+  occurred: DateTime
+  event: Event
+  memberInvolved: User
+  title: String
+  description: String
+}
+
+"""A connection to a list of items."""
+type BandaidConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [BandaidEdge]!
+  aggregate: AggregateBandaid!
+}
+
+input BandaidCreateInput {
+  id: ID
+  occurred: DateTime
+  title: String
+  description: String
+  event: EventCreateOneWithoutBandaidsInput
+  memberInvolved: UserCreateOneWithoutBandaidsInput
+}
+
+input BandaidCreateManyWithoutEventInput {
+  create: [BandaidCreateWithoutEventInput!]
+  connect: [BandaidWhereUniqueInput!]
+}
+
+input BandaidCreateManyWithoutMemberInvolvedInput {
+  create: [BandaidCreateWithoutMemberInvolvedInput!]
+  connect: [BandaidWhereUniqueInput!]
+}
+
+input BandaidCreateWithoutEventInput {
+  id: ID
+  occurred: DateTime
+  title: String
+  description: String
+  memberInvolved: UserCreateOneWithoutBandaidsInput
+}
+
+input BandaidCreateWithoutMemberInvolvedInput {
+  id: ID
+  occurred: DateTime
+  title: String
+  description: String
+  event: EventCreateOneWithoutBandaidsInput
+}
+
+"""An edge in a connection."""
+type BandaidEdge {
+  """The item at the end of the edge."""
+  node: Bandaid!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum BandaidOrderByInput {
+  id_ASC
+  id_DESC
+  occurred_ASC
+  occurred_DESC
+  title_ASC
+  title_DESC
+  description_ASC
+  description_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type BandaidPreviousValues {
+  id: ID!
+  occurred: DateTime
+  title: String
+  description: String
+}
+
+input BandaidScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [BandaidScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [BandaidScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [BandaidScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  occurred: DateTime
+
+  """All values that are not equal to given value."""
+  occurred_not: DateTime
+
+  """All values that are contained in given list."""
+  occurred_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  occurred_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  occurred_lt: DateTime
+
+  """All values less than or equal the given value."""
+  occurred_lte: DateTime
+
+  """All values greater than the given value."""
+  occurred_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  occurred_gte: DateTime
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
+}
+
+type BandaidSubscriptionPayload {
+  mutation: MutationType!
+  node: Bandaid
+  updatedFields: [String!]
+  previousValues: BandaidPreviousValues
+}
+
+input BandaidSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [BandaidSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [BandaidSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [BandaidSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: BandaidWhereInput
+}
+
+input BandaidUpdateInput {
+  occurred: DateTime
+  title: String
+  description: String
+  event: EventUpdateOneWithoutBandaidsInput
+  memberInvolved: UserUpdateOneWithoutBandaidsInput
+}
+
+input BandaidUpdateManyDataInput {
+  occurred: DateTime
+  title: String
+  description: String
+}
+
+input BandaidUpdateManyMutationInput {
+  occurred: DateTime
+  title: String
+  description: String
+}
+
+input BandaidUpdateManyWithoutEventInput {
+  create: [BandaidCreateWithoutEventInput!]
+  connect: [BandaidWhereUniqueInput!]
+  set: [BandaidWhereUniqueInput!]
+  disconnect: [BandaidWhereUniqueInput!]
+  delete: [BandaidWhereUniqueInput!]
+  update: [BandaidUpdateWithWhereUniqueWithoutEventInput!]
+  updateMany: [BandaidUpdateManyWithWhereNestedInput!]
+  deleteMany: [BandaidScalarWhereInput!]
+  upsert: [BandaidUpsertWithWhereUniqueWithoutEventInput!]
+}
+
+input BandaidUpdateManyWithoutMemberInvolvedInput {
+  create: [BandaidCreateWithoutMemberInvolvedInput!]
+  connect: [BandaidWhereUniqueInput!]
+  set: [BandaidWhereUniqueInput!]
+  disconnect: [BandaidWhereUniqueInput!]
+  delete: [BandaidWhereUniqueInput!]
+  update: [BandaidUpdateWithWhereUniqueWithoutMemberInvolvedInput!]
+  updateMany: [BandaidUpdateManyWithWhereNestedInput!]
+  deleteMany: [BandaidScalarWhereInput!]
+  upsert: [BandaidUpsertWithWhereUniqueWithoutMemberInvolvedInput!]
+}
+
+input BandaidUpdateManyWithWhereNestedInput {
+  where: BandaidScalarWhereInput!
+  data: BandaidUpdateManyDataInput!
+}
+
+input BandaidUpdateWithoutEventDataInput {
+  occurred: DateTime
+  title: String
+  description: String
+  memberInvolved: UserUpdateOneWithoutBandaidsInput
+}
+
+input BandaidUpdateWithoutMemberInvolvedDataInput {
+  occurred: DateTime
+  title: String
+  description: String
+  event: EventUpdateOneWithoutBandaidsInput
+}
+
+input BandaidUpdateWithWhereUniqueWithoutEventInput {
+  where: BandaidWhereUniqueInput!
+  data: BandaidUpdateWithoutEventDataInput!
+}
+
+input BandaidUpdateWithWhereUniqueWithoutMemberInvolvedInput {
+  where: BandaidWhereUniqueInput!
+  data: BandaidUpdateWithoutMemberInvolvedDataInput!
+}
+
+input BandaidUpsertWithWhereUniqueWithoutEventInput {
+  where: BandaidWhereUniqueInput!
+  update: BandaidUpdateWithoutEventDataInput!
+  create: BandaidCreateWithoutEventInput!
+}
+
+input BandaidUpsertWithWhereUniqueWithoutMemberInvolvedInput {
+  where: BandaidWhereUniqueInput!
+  update: BandaidUpdateWithoutMemberInvolvedDataInput!
+  create: BandaidCreateWithoutMemberInvolvedInput!
+}
+
+input BandaidWhereInput {
+  """Logical AND on all given filters."""
+  AND: [BandaidWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [BandaidWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [BandaidWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  occurred: DateTime
+
+  """All values that are not equal to given value."""
+  occurred_not: DateTime
+
+  """All values that are contained in given list."""
+  occurred_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  occurred_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  occurred_lt: DateTime
+
+  """All values less than or equal the given value."""
+  occurred_lte: DateTime
+
+  """All values greater than the given value."""
+  occurred_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  occurred_gte: DateTime
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
+  event: EventWhereInput
+  memberInvolved: UserWhereInput
+}
+
+input BandaidWhereUniqueInput {
+  id: ID
+}
+
 type BatchPayload {
   """The number of nodes that have been affected by the Batch operation."""
   count: Long!
+}
+
+type Condition implements Node {
+  id: ID!
+  report: RunReport!
+  dateReported: DateTime!
+  status: TrailCondition!
+  notes: String
+}
+
+"""A connection to a list of items."""
+type ConditionConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ConditionEdge]!
+  aggregate: AggregateCondition!
+}
+
+input ConditionCreateInput {
+  id: ID
+  dateReported: DateTime!
+  status: TrailCondition!
+  notes: String
+  report: RunReportCreateOneWithoutConditionInput!
+}
+
+input ConditionCreateOneWithoutReportInput {
+  create: ConditionCreateWithoutReportInput
+  connect: ConditionWhereUniqueInput
+}
+
+input ConditionCreateWithoutReportInput {
+  id: ID
+  dateReported: DateTime!
+  status: TrailCondition!
+  notes: String
+}
+
+"""An edge in a connection."""
+type ConditionEdge {
+  """The item at the end of the edge."""
+  node: Condition!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum ConditionOrderByInput {
+  id_ASC
+  id_DESC
+  dateReported_ASC
+  dateReported_DESC
+  status_ASC
+  status_DESC
+  notes_ASC
+  notes_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type ConditionPreviousValues {
+  id: ID!
+  dateReported: DateTime!
+  status: TrailCondition!
+  notes: String
+}
+
+type ConditionSubscriptionPayload {
+  mutation: MutationType!
+  node: Condition
+  updatedFields: [String!]
+  previousValues: ConditionPreviousValues
+}
+
+input ConditionSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ConditionSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ConditionSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ConditionSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ConditionWhereInput
+}
+
+input ConditionUpdateInput {
+  dateReported: DateTime
+  status: TrailCondition
+  notes: String
+  report: RunReportUpdateOneRequiredWithoutConditionInput
+}
+
+input ConditionUpdateManyMutationInput {
+  dateReported: DateTime
+  status: TrailCondition
+  notes: String
+}
+
+input ConditionUpdateOneWithoutReportInput {
+  create: ConditionCreateWithoutReportInput
+  connect: ConditionWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: ConditionUpdateWithoutReportDataInput
+  upsert: ConditionUpsertWithoutReportInput
+}
+
+input ConditionUpdateWithoutReportDataInput {
+  dateReported: DateTime
+  status: TrailCondition
+  notes: String
+}
+
+input ConditionUpsertWithoutReportInput {
+  update: ConditionUpdateWithoutReportDataInput!
+  create: ConditionCreateWithoutReportInput!
+}
+
+input ConditionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ConditionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ConditionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ConditionWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  dateReported: DateTime
+
+  """All values that are not equal to given value."""
+  dateReported_not: DateTime
+
+  """All values that are contained in given list."""
+  dateReported_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  dateReported_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  dateReported_lt: DateTime
+
+  """All values less than or equal the given value."""
+  dateReported_lte: DateTime
+
+  """All values greater than the given value."""
+  dateReported_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  dateReported_gte: DateTime
+  status: TrailCondition
+
+  """All values that are not equal to given value."""
+  status_not: TrailCondition
+
+  """All values that are contained in given list."""
+  status_in: [TrailCondition!]
+
+  """All values that are not contained in given list."""
+  status_not_in: [TrailCondition!]
+  notes: String
+
+  """All values that are not equal to given value."""
+  notes_not: String
+
+  """All values that are contained in given list."""
+  notes_in: [String!]
+
+  """All values that are not contained in given list."""
+  notes_not_in: [String!]
+
+  """All values less than the given value."""
+  notes_lt: String
+
+  """All values less than or equal the given value."""
+  notes_lte: String
+
+  """All values greater than the given value."""
+  notes_gt: String
+
+  """All values greater than or equal the given value."""
+  notes_gte: String
+
+  """All values containing the given string."""
+  notes_contains: String
+
+  """All values not containing the given string."""
+  notes_not_contains: String
+
+  """All values starting with the given string."""
+  notes_starts_with: String
+
+  """All values not starting with the given string."""
+  notes_not_starts_with: String
+
+  """All values ending with the given string."""
+  notes_ends_with: String
+
+  """All values not ending with the given string."""
+  notes_not_ends_with: String
+  report: RunReportWhereInput
+}
+
+input ConditionWhereUniqueInput {
+  id: ID
 }
 
 scalar DateTime
@@ -547,6 +1380,7 @@ type ElectionConnection {
 }
 
 input ElectionCreateInput {
+  id: ID
   electionName: String!
   startTime: DateTime
   endTime: DateTime
@@ -778,41 +1612,2088 @@ input ElectionWhereUniqueInput {
   id: ID
 }
 
+type Event implements Node {
+  id: ID!
+  title: String!
+  creator: User!
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  host: User
+  rsvps(where: RSVPWhereInput, orderBy: RSVPOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [RSVP!]
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  trail: Trail
+  bandaids(where: BandaidWhereInput, orderBy: BandaidOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bandaid!]
+  runReports(where: RunReportWhereInput, orderBy: RunReportOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [RunReport!]
+  membersOnly: Boolean
+}
+
+"""A connection to a list of items."""
+type EventConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [EventEdge]!
+  aggregate: AggregateEvent!
+}
+
+input EventCreateInput {
+  id: ID
+  title: String!
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+  creator: UserCreateOneWithoutEventsCreatedInput!
+  host: UserCreateOneWithoutEventsHostedInput
+  rsvps: RSVPCreateManyWithoutEventInput
+  trail: TrailCreateOneWithoutPastEventsInput
+  bandaids: BandaidCreateManyWithoutEventInput
+  runReports: RunReportCreateManyWithoutEventInput
+}
+
+input EventCreateManyWithoutCreatorInput {
+  create: [EventCreateWithoutCreatorInput!]
+  connect: [EventWhereUniqueInput!]
+}
+
+input EventCreateManyWithoutHostInput {
+  create: [EventCreateWithoutHostInput!]
+  connect: [EventWhereUniqueInput!]
+}
+
+input EventCreateManyWithoutTrailInput {
+  create: [EventCreateWithoutTrailInput!]
+  connect: [EventWhereUniqueInput!]
+}
+
+input EventCreateOneInput {
+  create: EventCreateInput
+  connect: EventWhereUniqueInput
+}
+
+input EventCreateOneWithoutBandaidsInput {
+  create: EventCreateWithoutBandaidsInput
+  connect: EventWhereUniqueInput
+}
+
+input EventCreateOneWithoutRsvpsInput {
+  create: EventCreateWithoutRsvpsInput
+  connect: EventWhereUniqueInput
+}
+
+input EventCreateOneWithoutRunReportsInput {
+  create: EventCreateWithoutRunReportsInput
+  connect: EventWhereUniqueInput
+}
+
+input EventCreateWithoutBandaidsInput {
+  id: ID
+  title: String!
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+  creator: UserCreateOneWithoutEventsCreatedInput!
+  host: UserCreateOneWithoutEventsHostedInput
+  rsvps: RSVPCreateManyWithoutEventInput
+  trail: TrailCreateOneWithoutPastEventsInput
+  runReports: RunReportCreateManyWithoutEventInput
+}
+
+input EventCreateWithoutCreatorInput {
+  id: ID
+  title: String!
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+  host: UserCreateOneWithoutEventsHostedInput
+  rsvps: RSVPCreateManyWithoutEventInput
+  trail: TrailCreateOneWithoutPastEventsInput
+  bandaids: BandaidCreateManyWithoutEventInput
+  runReports: RunReportCreateManyWithoutEventInput
+}
+
+input EventCreateWithoutHostInput {
+  id: ID
+  title: String!
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+  creator: UserCreateOneWithoutEventsCreatedInput!
+  rsvps: RSVPCreateManyWithoutEventInput
+  trail: TrailCreateOneWithoutPastEventsInput
+  bandaids: BandaidCreateManyWithoutEventInput
+  runReports: RunReportCreateManyWithoutEventInput
+}
+
+input EventCreateWithoutRsvpsInput {
+  id: ID
+  title: String!
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+  creator: UserCreateOneWithoutEventsCreatedInput!
+  host: UserCreateOneWithoutEventsHostedInput
+  trail: TrailCreateOneWithoutPastEventsInput
+  bandaids: BandaidCreateManyWithoutEventInput
+  runReports: RunReportCreateManyWithoutEventInput
+}
+
+input EventCreateWithoutRunReportsInput {
+  id: ID
+  title: String!
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+  creator: UserCreateOneWithoutEventsCreatedInput!
+  host: UserCreateOneWithoutEventsHostedInput
+  rsvps: RSVPCreateManyWithoutEventInput
+  trail: TrailCreateOneWithoutPastEventsInput
+  bandaids: BandaidCreateManyWithoutEventInput
+}
+
+input EventCreateWithoutTrailInput {
+  id: ID
+  title: String!
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+  creator: UserCreateOneWithoutEventsCreatedInput!
+  host: UserCreateOneWithoutEventsHostedInput
+  rsvps: RSVPCreateManyWithoutEventInput
+  bandaids: BandaidCreateManyWithoutEventInput
+  runReports: RunReportCreateManyWithoutEventInput
+}
+
+"""An edge in a connection."""
+type EventEdge {
+  """The item at the end of the edge."""
+  node: Event!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum EventOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  description_ASC
+  description_DESC
+  startTime_ASC
+  startTime_DESC
+  endTime_ASC
+  endTime_DESC
+  address_ASC
+  address_DESC
+  rallyAddress_ASC
+  rallyAddress_DESC
+  rallyTime_ASC
+  rallyTime_DESC
+  membersOnly_ASC
+  membersOnly_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type EventPreviousValues {
+  id: ID!
+  title: String!
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+}
+
+input EventScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [EventScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [EventScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [EventScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
+  startTime: DateTime
+
+  """All values that are not equal to given value."""
+  startTime_not: DateTime
+
+  """All values that are contained in given list."""
+  startTime_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  startTime_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  startTime_lt: DateTime
+
+  """All values less than or equal the given value."""
+  startTime_lte: DateTime
+
+  """All values greater than the given value."""
+  startTime_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  startTime_gte: DateTime
+  endTime: DateTime
+
+  """All values that are not equal to given value."""
+  endTime_not: DateTime
+
+  """All values that are contained in given list."""
+  endTime_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  endTime_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  endTime_lt: DateTime
+
+  """All values less than or equal the given value."""
+  endTime_lte: DateTime
+
+  """All values greater than the given value."""
+  endTime_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  endTime_gte: DateTime
+  address: String
+
+  """All values that are not equal to given value."""
+  address_not: String
+
+  """All values that are contained in given list."""
+  address_in: [String!]
+
+  """All values that are not contained in given list."""
+  address_not_in: [String!]
+
+  """All values less than the given value."""
+  address_lt: String
+
+  """All values less than or equal the given value."""
+  address_lte: String
+
+  """All values greater than the given value."""
+  address_gt: String
+
+  """All values greater than or equal the given value."""
+  address_gte: String
+
+  """All values containing the given string."""
+  address_contains: String
+
+  """All values not containing the given string."""
+  address_not_contains: String
+
+  """All values starting with the given string."""
+  address_starts_with: String
+
+  """All values not starting with the given string."""
+  address_not_starts_with: String
+
+  """All values ending with the given string."""
+  address_ends_with: String
+
+  """All values not ending with the given string."""
+  address_not_ends_with: String
+  rallyAddress: String
+
+  """All values that are not equal to given value."""
+  rallyAddress_not: String
+
+  """All values that are contained in given list."""
+  rallyAddress_in: [String!]
+
+  """All values that are not contained in given list."""
+  rallyAddress_not_in: [String!]
+
+  """All values less than the given value."""
+  rallyAddress_lt: String
+
+  """All values less than or equal the given value."""
+  rallyAddress_lte: String
+
+  """All values greater than the given value."""
+  rallyAddress_gt: String
+
+  """All values greater than or equal the given value."""
+  rallyAddress_gte: String
+
+  """All values containing the given string."""
+  rallyAddress_contains: String
+
+  """All values not containing the given string."""
+  rallyAddress_not_contains: String
+
+  """All values starting with the given string."""
+  rallyAddress_starts_with: String
+
+  """All values not starting with the given string."""
+  rallyAddress_not_starts_with: String
+
+  """All values ending with the given string."""
+  rallyAddress_ends_with: String
+
+  """All values not ending with the given string."""
+  rallyAddress_not_ends_with: String
+  rallyTime: DateTime
+
+  """All values that are not equal to given value."""
+  rallyTime_not: DateTime
+
+  """All values that are contained in given list."""
+  rallyTime_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  rallyTime_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  rallyTime_lt: DateTime
+
+  """All values less than or equal the given value."""
+  rallyTime_lte: DateTime
+
+  """All values greater than the given value."""
+  rallyTime_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  rallyTime_gte: DateTime
+  membersOnly: Boolean
+
+  """All values that are not equal to given value."""
+  membersOnly_not: Boolean
+}
+
+type EventSubscriptionPayload {
+  mutation: MutationType!
+  node: Event
+  updatedFields: [String!]
+  previousValues: EventPreviousValues
+}
+
+input EventSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [EventSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [EventSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [EventSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: EventWhereInput
+}
+
+input EventUpdateDataInput {
+  title: String
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+  creator: UserUpdateOneRequiredWithoutEventsCreatedInput
+  host: UserUpdateOneWithoutEventsHostedInput
+  rsvps: RSVPUpdateManyWithoutEventInput
+  trail: TrailUpdateOneWithoutPastEventsInput
+  bandaids: BandaidUpdateManyWithoutEventInput
+  runReports: RunReportUpdateManyWithoutEventInput
+}
+
+input EventUpdateInput {
+  title: String
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+  creator: UserUpdateOneRequiredWithoutEventsCreatedInput
+  host: UserUpdateOneWithoutEventsHostedInput
+  rsvps: RSVPUpdateManyWithoutEventInput
+  trail: TrailUpdateOneWithoutPastEventsInput
+  bandaids: BandaidUpdateManyWithoutEventInput
+  runReports: RunReportUpdateManyWithoutEventInput
+}
+
+input EventUpdateManyDataInput {
+  title: String
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+}
+
+input EventUpdateManyMutationInput {
+  title: String
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+}
+
+input EventUpdateManyWithoutCreatorInput {
+  create: [EventCreateWithoutCreatorInput!]
+  connect: [EventWhereUniqueInput!]
+  set: [EventWhereUniqueInput!]
+  disconnect: [EventWhereUniqueInput!]
+  delete: [EventWhereUniqueInput!]
+  update: [EventUpdateWithWhereUniqueWithoutCreatorInput!]
+  updateMany: [EventUpdateManyWithWhereNestedInput!]
+  deleteMany: [EventScalarWhereInput!]
+  upsert: [EventUpsertWithWhereUniqueWithoutCreatorInput!]
+}
+
+input EventUpdateManyWithoutHostInput {
+  create: [EventCreateWithoutHostInput!]
+  connect: [EventWhereUniqueInput!]
+  set: [EventWhereUniqueInput!]
+  disconnect: [EventWhereUniqueInput!]
+  delete: [EventWhereUniqueInput!]
+  update: [EventUpdateWithWhereUniqueWithoutHostInput!]
+  updateMany: [EventUpdateManyWithWhereNestedInput!]
+  deleteMany: [EventScalarWhereInput!]
+  upsert: [EventUpsertWithWhereUniqueWithoutHostInput!]
+}
+
+input EventUpdateManyWithoutTrailInput {
+  create: [EventCreateWithoutTrailInput!]
+  connect: [EventWhereUniqueInput!]
+  set: [EventWhereUniqueInput!]
+  disconnect: [EventWhereUniqueInput!]
+  delete: [EventWhereUniqueInput!]
+  update: [EventUpdateWithWhereUniqueWithoutTrailInput!]
+  updateMany: [EventUpdateManyWithWhereNestedInput!]
+  deleteMany: [EventScalarWhereInput!]
+  upsert: [EventUpsertWithWhereUniqueWithoutTrailInput!]
+}
+
+input EventUpdateManyWithWhereNestedInput {
+  where: EventScalarWhereInput!
+  data: EventUpdateManyDataInput!
+}
+
+input EventUpdateOneInput {
+  create: EventCreateInput
+  connect: EventWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: EventUpdateDataInput
+  upsert: EventUpsertNestedInput
+}
+
+input EventUpdateOneRequiredWithoutRsvpsInput {
+  create: EventCreateWithoutRsvpsInput
+  connect: EventWhereUniqueInput
+  update: EventUpdateWithoutRsvpsDataInput
+  upsert: EventUpsertWithoutRsvpsInput
+}
+
+input EventUpdateOneWithoutBandaidsInput {
+  create: EventCreateWithoutBandaidsInput
+  connect: EventWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: EventUpdateWithoutBandaidsDataInput
+  upsert: EventUpsertWithoutBandaidsInput
+}
+
+input EventUpdateOneWithoutRunReportsInput {
+  create: EventCreateWithoutRunReportsInput
+  connect: EventWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: EventUpdateWithoutRunReportsDataInput
+  upsert: EventUpsertWithoutRunReportsInput
+}
+
+input EventUpdateWithoutBandaidsDataInput {
+  title: String
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+  creator: UserUpdateOneRequiredWithoutEventsCreatedInput
+  host: UserUpdateOneWithoutEventsHostedInput
+  rsvps: RSVPUpdateManyWithoutEventInput
+  trail: TrailUpdateOneWithoutPastEventsInput
+  runReports: RunReportUpdateManyWithoutEventInput
+}
+
+input EventUpdateWithoutCreatorDataInput {
+  title: String
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+  host: UserUpdateOneWithoutEventsHostedInput
+  rsvps: RSVPUpdateManyWithoutEventInput
+  trail: TrailUpdateOneWithoutPastEventsInput
+  bandaids: BandaidUpdateManyWithoutEventInput
+  runReports: RunReportUpdateManyWithoutEventInput
+}
+
+input EventUpdateWithoutHostDataInput {
+  title: String
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+  creator: UserUpdateOneRequiredWithoutEventsCreatedInput
+  rsvps: RSVPUpdateManyWithoutEventInput
+  trail: TrailUpdateOneWithoutPastEventsInput
+  bandaids: BandaidUpdateManyWithoutEventInput
+  runReports: RunReportUpdateManyWithoutEventInput
+}
+
+input EventUpdateWithoutRsvpsDataInput {
+  title: String
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+  creator: UserUpdateOneRequiredWithoutEventsCreatedInput
+  host: UserUpdateOneWithoutEventsHostedInput
+  trail: TrailUpdateOneWithoutPastEventsInput
+  bandaids: BandaidUpdateManyWithoutEventInput
+  runReports: RunReportUpdateManyWithoutEventInput
+}
+
+input EventUpdateWithoutRunReportsDataInput {
+  title: String
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+  creator: UserUpdateOneRequiredWithoutEventsCreatedInput
+  host: UserUpdateOneWithoutEventsHostedInput
+  rsvps: RSVPUpdateManyWithoutEventInput
+  trail: TrailUpdateOneWithoutPastEventsInput
+  bandaids: BandaidUpdateManyWithoutEventInput
+}
+
+input EventUpdateWithoutTrailDataInput {
+  title: String
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  address: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean
+  creator: UserUpdateOneRequiredWithoutEventsCreatedInput
+  host: UserUpdateOneWithoutEventsHostedInput
+  rsvps: RSVPUpdateManyWithoutEventInput
+  bandaids: BandaidUpdateManyWithoutEventInput
+  runReports: RunReportUpdateManyWithoutEventInput
+}
+
+input EventUpdateWithWhereUniqueWithoutCreatorInput {
+  where: EventWhereUniqueInput!
+  data: EventUpdateWithoutCreatorDataInput!
+}
+
+input EventUpdateWithWhereUniqueWithoutHostInput {
+  where: EventWhereUniqueInput!
+  data: EventUpdateWithoutHostDataInput!
+}
+
+input EventUpdateWithWhereUniqueWithoutTrailInput {
+  where: EventWhereUniqueInput!
+  data: EventUpdateWithoutTrailDataInput!
+}
+
+input EventUpsertNestedInput {
+  update: EventUpdateDataInput!
+  create: EventCreateInput!
+}
+
+input EventUpsertWithoutBandaidsInput {
+  update: EventUpdateWithoutBandaidsDataInput!
+  create: EventCreateWithoutBandaidsInput!
+}
+
+input EventUpsertWithoutRsvpsInput {
+  update: EventUpdateWithoutRsvpsDataInput!
+  create: EventCreateWithoutRsvpsInput!
+}
+
+input EventUpsertWithoutRunReportsInput {
+  update: EventUpdateWithoutRunReportsDataInput!
+  create: EventCreateWithoutRunReportsInput!
+}
+
+input EventUpsertWithWhereUniqueWithoutCreatorInput {
+  where: EventWhereUniqueInput!
+  update: EventUpdateWithoutCreatorDataInput!
+  create: EventCreateWithoutCreatorInput!
+}
+
+input EventUpsertWithWhereUniqueWithoutHostInput {
+  where: EventWhereUniqueInput!
+  update: EventUpdateWithoutHostDataInput!
+  create: EventCreateWithoutHostInput!
+}
+
+input EventUpsertWithWhereUniqueWithoutTrailInput {
+  where: EventWhereUniqueInput!
+  update: EventUpdateWithoutTrailDataInput!
+  create: EventCreateWithoutTrailInput!
+}
+
+input EventWhereInput {
+  """Logical AND on all given filters."""
+  AND: [EventWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [EventWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [EventWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
+  startTime: DateTime
+
+  """All values that are not equal to given value."""
+  startTime_not: DateTime
+
+  """All values that are contained in given list."""
+  startTime_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  startTime_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  startTime_lt: DateTime
+
+  """All values less than or equal the given value."""
+  startTime_lte: DateTime
+
+  """All values greater than the given value."""
+  startTime_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  startTime_gte: DateTime
+  endTime: DateTime
+
+  """All values that are not equal to given value."""
+  endTime_not: DateTime
+
+  """All values that are contained in given list."""
+  endTime_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  endTime_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  endTime_lt: DateTime
+
+  """All values less than or equal the given value."""
+  endTime_lte: DateTime
+
+  """All values greater than the given value."""
+  endTime_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  endTime_gte: DateTime
+  address: String
+
+  """All values that are not equal to given value."""
+  address_not: String
+
+  """All values that are contained in given list."""
+  address_in: [String!]
+
+  """All values that are not contained in given list."""
+  address_not_in: [String!]
+
+  """All values less than the given value."""
+  address_lt: String
+
+  """All values less than or equal the given value."""
+  address_lte: String
+
+  """All values greater than the given value."""
+  address_gt: String
+
+  """All values greater than or equal the given value."""
+  address_gte: String
+
+  """All values containing the given string."""
+  address_contains: String
+
+  """All values not containing the given string."""
+  address_not_contains: String
+
+  """All values starting with the given string."""
+  address_starts_with: String
+
+  """All values not starting with the given string."""
+  address_not_starts_with: String
+
+  """All values ending with the given string."""
+  address_ends_with: String
+
+  """All values not ending with the given string."""
+  address_not_ends_with: String
+  rallyAddress: String
+
+  """All values that are not equal to given value."""
+  rallyAddress_not: String
+
+  """All values that are contained in given list."""
+  rallyAddress_in: [String!]
+
+  """All values that are not contained in given list."""
+  rallyAddress_not_in: [String!]
+
+  """All values less than the given value."""
+  rallyAddress_lt: String
+
+  """All values less than or equal the given value."""
+  rallyAddress_lte: String
+
+  """All values greater than the given value."""
+  rallyAddress_gt: String
+
+  """All values greater than or equal the given value."""
+  rallyAddress_gte: String
+
+  """All values containing the given string."""
+  rallyAddress_contains: String
+
+  """All values not containing the given string."""
+  rallyAddress_not_contains: String
+
+  """All values starting with the given string."""
+  rallyAddress_starts_with: String
+
+  """All values not starting with the given string."""
+  rallyAddress_not_starts_with: String
+
+  """All values ending with the given string."""
+  rallyAddress_ends_with: String
+
+  """All values not ending with the given string."""
+  rallyAddress_not_ends_with: String
+  rallyTime: DateTime
+
+  """All values that are not equal to given value."""
+  rallyTime_not: DateTime
+
+  """All values that are contained in given list."""
+  rallyTime_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  rallyTime_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  rallyTime_lt: DateTime
+
+  """All values less than or equal the given value."""
+  rallyTime_lte: DateTime
+
+  """All values greater than the given value."""
+  rallyTime_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  rallyTime_gte: DateTime
+  membersOnly: Boolean
+
+  """All values that are not equal to given value."""
+  membersOnly_not: Boolean
+  creator: UserWhereInput
+  host: UserWhereInput
+  rsvps_every: RSVPWhereInput
+  rsvps_some: RSVPWhereInput
+  rsvps_none: RSVPWhereInput
+  trail: TrailWhereInput
+  bandaids_every: BandaidWhereInput
+  bandaids_some: BandaidWhereInput
+  bandaids_none: BandaidWhereInput
+  runReports_every: RunReportWhereInput
+  runReports_some: RunReportWhereInput
+  runReports_none: RunReportWhereInput
+}
+
+input EventWhereUniqueInput {
+  id: ID
+}
+
+type LogItem implements Node {
+  id: ID!
+  time: DateTime
+  message: String!
+  user: User!
+  event: Event
+}
+
+"""A connection to a list of items."""
+type LogItemConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [LogItemEdge]!
+  aggregate: AggregateLogItem!
+}
+
+input LogItemCreateInput {
+  id: ID
+  time: DateTime
+  message: String!
+  user: UserCreateOneWithoutLogInput!
+  event: EventCreateOneInput
+}
+
+input LogItemCreateManyWithoutUserInput {
+  create: [LogItemCreateWithoutUserInput!]
+  connect: [LogItemWhereUniqueInput!]
+}
+
+input LogItemCreateWithoutUserInput {
+  id: ID
+  time: DateTime
+  message: String!
+  event: EventCreateOneInput
+}
+
+"""An edge in a connection."""
+type LogItemEdge {
+  """The item at the end of the edge."""
+  node: LogItem!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum LogItemOrderByInput {
+  id_ASC
+  id_DESC
+  time_ASC
+  time_DESC
+  message_ASC
+  message_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type LogItemPreviousValues {
+  id: ID!
+  time: DateTime
+  message: String!
+}
+
+input LogItemScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [LogItemScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [LogItemScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [LogItemScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  time: DateTime
+
+  """All values that are not equal to given value."""
+  time_not: DateTime
+
+  """All values that are contained in given list."""
+  time_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  time_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  time_lt: DateTime
+
+  """All values less than or equal the given value."""
+  time_lte: DateTime
+
+  """All values greater than the given value."""
+  time_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  time_gte: DateTime
+  message: String
+
+  """All values that are not equal to given value."""
+  message_not: String
+
+  """All values that are contained in given list."""
+  message_in: [String!]
+
+  """All values that are not contained in given list."""
+  message_not_in: [String!]
+
+  """All values less than the given value."""
+  message_lt: String
+
+  """All values less than or equal the given value."""
+  message_lte: String
+
+  """All values greater than the given value."""
+  message_gt: String
+
+  """All values greater than or equal the given value."""
+  message_gte: String
+
+  """All values containing the given string."""
+  message_contains: String
+
+  """All values not containing the given string."""
+  message_not_contains: String
+
+  """All values starting with the given string."""
+  message_starts_with: String
+
+  """All values not starting with the given string."""
+  message_not_starts_with: String
+
+  """All values ending with the given string."""
+  message_ends_with: String
+
+  """All values not ending with the given string."""
+  message_not_ends_with: String
+}
+
+type LogItemSubscriptionPayload {
+  mutation: MutationType!
+  node: LogItem
+  updatedFields: [String!]
+  previousValues: LogItemPreviousValues
+}
+
+input LogItemSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [LogItemSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [LogItemSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [LogItemSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: LogItemWhereInput
+}
+
+input LogItemUpdateInput {
+  time: DateTime
+  message: String
+  user: UserUpdateOneRequiredWithoutLogInput
+  event: EventUpdateOneInput
+}
+
+input LogItemUpdateManyDataInput {
+  time: DateTime
+  message: String
+}
+
+input LogItemUpdateManyMutationInput {
+  time: DateTime
+  message: String
+}
+
+input LogItemUpdateManyWithoutUserInput {
+  create: [LogItemCreateWithoutUserInput!]
+  connect: [LogItemWhereUniqueInput!]
+  set: [LogItemWhereUniqueInput!]
+  disconnect: [LogItemWhereUniqueInput!]
+  delete: [LogItemWhereUniqueInput!]
+  update: [LogItemUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [LogItemUpdateManyWithWhereNestedInput!]
+  deleteMany: [LogItemScalarWhereInput!]
+  upsert: [LogItemUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input LogItemUpdateManyWithWhereNestedInput {
+  where: LogItemScalarWhereInput!
+  data: LogItemUpdateManyDataInput!
+}
+
+input LogItemUpdateWithoutUserDataInput {
+  time: DateTime
+  message: String
+  event: EventUpdateOneInput
+}
+
+input LogItemUpdateWithWhereUniqueWithoutUserInput {
+  where: LogItemWhereUniqueInput!
+  data: LogItemUpdateWithoutUserDataInput!
+}
+
+input LogItemUpsertWithWhereUniqueWithoutUserInput {
+  where: LogItemWhereUniqueInput!
+  update: LogItemUpdateWithoutUserDataInput!
+  create: LogItemCreateWithoutUserInput!
+}
+
+input LogItemWhereInput {
+  """Logical AND on all given filters."""
+  AND: [LogItemWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [LogItemWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [LogItemWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  time: DateTime
+
+  """All values that are not equal to given value."""
+  time_not: DateTime
+
+  """All values that are contained in given list."""
+  time_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  time_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  time_lt: DateTime
+
+  """All values less than or equal the given value."""
+  time_lte: DateTime
+
+  """All values greater than the given value."""
+  time_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  time_gte: DateTime
+  message: String
+
+  """All values that are not equal to given value."""
+  message_not: String
+
+  """All values that are contained in given list."""
+  message_in: [String!]
+
+  """All values that are not contained in given list."""
+  message_not_in: [String!]
+
+  """All values less than the given value."""
+  message_lt: String
+
+  """All values less than or equal the given value."""
+  message_lte: String
+
+  """All values greater than the given value."""
+  message_gt: String
+
+  """All values greater than or equal the given value."""
+  message_gte: String
+
+  """All values containing the given string."""
+  message_contains: String
+
+  """All values not containing the given string."""
+  message_not_contains: String
+
+  """All values starting with the given string."""
+  message_starts_with: String
+
+  """All values not starting with the given string."""
+  message_not_starts_with: String
+
+  """All values ending with the given string."""
+  message_ends_with: String
+
+  """All values not ending with the given string."""
+  message_not_ends_with: String
+  user: UserWhereInput
+  event: EventWhereInput
+}
+
+input LogItemWhereUniqueInput {
+  id: ID
+}
+
 """
 The `Long` scalar type represents non-fractional signed whole numeric values.
 Long can represent values between -(2^63) and 2^63 - 1.
 """
 scalar Long
 
+type MembershipLogItem implements Node {
+  id: ID!
+  startTime: DateTime!
+  endTime: DateTime
+  message: String!
+  user: User!
+  initiator: User!
+}
+
+"""A connection to a list of items."""
+type MembershipLogItemConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [MembershipLogItemEdge]!
+  aggregate: AggregateMembershipLogItem!
+}
+
+input MembershipLogItemCreateInput {
+  id: ID
+  startTime: DateTime!
+  endTime: DateTime
+  message: String!
+  user: UserCreateOneWithoutMembershipLogInput!
+  initiator: UserCreateOneWithoutMembershipLogContributionsInput!
+}
+
+input MembershipLogItemCreateManyWithoutInitiatorInput {
+  create: [MembershipLogItemCreateWithoutInitiatorInput!]
+  connect: [MembershipLogItemWhereUniqueInput!]
+}
+
+input MembershipLogItemCreateManyWithoutUserInput {
+  create: [MembershipLogItemCreateWithoutUserInput!]
+  connect: [MembershipLogItemWhereUniqueInput!]
+}
+
+input MembershipLogItemCreateWithoutInitiatorInput {
+  id: ID
+  startTime: DateTime!
+  endTime: DateTime
+  message: String!
+  user: UserCreateOneWithoutMembershipLogInput!
+}
+
+input MembershipLogItemCreateWithoutUserInput {
+  id: ID
+  startTime: DateTime!
+  endTime: DateTime
+  message: String!
+  initiator: UserCreateOneWithoutMembershipLogContributionsInput!
+}
+
+"""An edge in a connection."""
+type MembershipLogItemEdge {
+  """The item at the end of the edge."""
+  node: MembershipLogItem!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum MembershipLogItemOrderByInput {
+  id_ASC
+  id_DESC
+  startTime_ASC
+  startTime_DESC
+  endTime_ASC
+  endTime_DESC
+  message_ASC
+  message_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type MembershipLogItemPreviousValues {
+  id: ID!
+  startTime: DateTime!
+  endTime: DateTime
+  message: String!
+}
+
+input MembershipLogItemScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [MembershipLogItemScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [MembershipLogItemScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [MembershipLogItemScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  startTime: DateTime
+
+  """All values that are not equal to given value."""
+  startTime_not: DateTime
+
+  """All values that are contained in given list."""
+  startTime_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  startTime_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  startTime_lt: DateTime
+
+  """All values less than or equal the given value."""
+  startTime_lte: DateTime
+
+  """All values greater than the given value."""
+  startTime_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  startTime_gte: DateTime
+  endTime: DateTime
+
+  """All values that are not equal to given value."""
+  endTime_not: DateTime
+
+  """All values that are contained in given list."""
+  endTime_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  endTime_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  endTime_lt: DateTime
+
+  """All values less than or equal the given value."""
+  endTime_lte: DateTime
+
+  """All values greater than the given value."""
+  endTime_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  endTime_gte: DateTime
+  message: String
+
+  """All values that are not equal to given value."""
+  message_not: String
+
+  """All values that are contained in given list."""
+  message_in: [String!]
+
+  """All values that are not contained in given list."""
+  message_not_in: [String!]
+
+  """All values less than the given value."""
+  message_lt: String
+
+  """All values less than or equal the given value."""
+  message_lte: String
+
+  """All values greater than the given value."""
+  message_gt: String
+
+  """All values greater than or equal the given value."""
+  message_gte: String
+
+  """All values containing the given string."""
+  message_contains: String
+
+  """All values not containing the given string."""
+  message_not_contains: String
+
+  """All values starting with the given string."""
+  message_starts_with: String
+
+  """All values not starting with the given string."""
+  message_not_starts_with: String
+
+  """All values ending with the given string."""
+  message_ends_with: String
+
+  """All values not ending with the given string."""
+  message_not_ends_with: String
+}
+
+type MembershipLogItemSubscriptionPayload {
+  mutation: MutationType!
+  node: MembershipLogItem
+  updatedFields: [String!]
+  previousValues: MembershipLogItemPreviousValues
+}
+
+input MembershipLogItemSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [MembershipLogItemSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [MembershipLogItemSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [MembershipLogItemSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: MembershipLogItemWhereInput
+}
+
+input MembershipLogItemUpdateInput {
+  startTime: DateTime
+  endTime: DateTime
+  message: String
+  user: UserUpdateOneRequiredWithoutMembershipLogInput
+  initiator: UserUpdateOneRequiredWithoutMembershipLogContributionsInput
+}
+
+input MembershipLogItemUpdateManyDataInput {
+  startTime: DateTime
+  endTime: DateTime
+  message: String
+}
+
+input MembershipLogItemUpdateManyMutationInput {
+  startTime: DateTime
+  endTime: DateTime
+  message: String
+}
+
+input MembershipLogItemUpdateManyWithoutInitiatorInput {
+  create: [MembershipLogItemCreateWithoutInitiatorInput!]
+  connect: [MembershipLogItemWhereUniqueInput!]
+  set: [MembershipLogItemWhereUniqueInput!]
+  disconnect: [MembershipLogItemWhereUniqueInput!]
+  delete: [MembershipLogItemWhereUniqueInput!]
+  update: [MembershipLogItemUpdateWithWhereUniqueWithoutInitiatorInput!]
+  updateMany: [MembershipLogItemUpdateManyWithWhereNestedInput!]
+  deleteMany: [MembershipLogItemScalarWhereInput!]
+  upsert: [MembershipLogItemUpsertWithWhereUniqueWithoutInitiatorInput!]
+}
+
+input MembershipLogItemUpdateManyWithoutUserInput {
+  create: [MembershipLogItemCreateWithoutUserInput!]
+  connect: [MembershipLogItemWhereUniqueInput!]
+  set: [MembershipLogItemWhereUniqueInput!]
+  disconnect: [MembershipLogItemWhereUniqueInput!]
+  delete: [MembershipLogItemWhereUniqueInput!]
+  update: [MembershipLogItemUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [MembershipLogItemUpdateManyWithWhereNestedInput!]
+  deleteMany: [MembershipLogItemScalarWhereInput!]
+  upsert: [MembershipLogItemUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input MembershipLogItemUpdateManyWithWhereNestedInput {
+  where: MembershipLogItemScalarWhereInput!
+  data: MembershipLogItemUpdateManyDataInput!
+}
+
+input MembershipLogItemUpdateWithoutInitiatorDataInput {
+  startTime: DateTime
+  endTime: DateTime
+  message: String
+  user: UserUpdateOneRequiredWithoutMembershipLogInput
+}
+
+input MembershipLogItemUpdateWithoutUserDataInput {
+  startTime: DateTime
+  endTime: DateTime
+  message: String
+  initiator: UserUpdateOneRequiredWithoutMembershipLogContributionsInput
+}
+
+input MembershipLogItemUpdateWithWhereUniqueWithoutInitiatorInput {
+  where: MembershipLogItemWhereUniqueInput!
+  data: MembershipLogItemUpdateWithoutInitiatorDataInput!
+}
+
+input MembershipLogItemUpdateWithWhereUniqueWithoutUserInput {
+  where: MembershipLogItemWhereUniqueInput!
+  data: MembershipLogItemUpdateWithoutUserDataInput!
+}
+
+input MembershipLogItemUpsertWithWhereUniqueWithoutInitiatorInput {
+  where: MembershipLogItemWhereUniqueInput!
+  update: MembershipLogItemUpdateWithoutInitiatorDataInput!
+  create: MembershipLogItemCreateWithoutInitiatorInput!
+}
+
+input MembershipLogItemUpsertWithWhereUniqueWithoutUserInput {
+  where: MembershipLogItemWhereUniqueInput!
+  update: MembershipLogItemUpdateWithoutUserDataInput!
+  create: MembershipLogItemCreateWithoutUserInput!
+}
+
+input MembershipLogItemWhereInput {
+  """Logical AND on all given filters."""
+  AND: [MembershipLogItemWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [MembershipLogItemWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [MembershipLogItemWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  startTime: DateTime
+
+  """All values that are not equal to given value."""
+  startTime_not: DateTime
+
+  """All values that are contained in given list."""
+  startTime_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  startTime_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  startTime_lt: DateTime
+
+  """All values less than or equal the given value."""
+  startTime_lte: DateTime
+
+  """All values greater than the given value."""
+  startTime_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  startTime_gte: DateTime
+  endTime: DateTime
+
+  """All values that are not equal to given value."""
+  endTime_not: DateTime
+
+  """All values that are contained in given list."""
+  endTime_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  endTime_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  endTime_lt: DateTime
+
+  """All values less than or equal the given value."""
+  endTime_lte: DateTime
+
+  """All values greater than the given value."""
+  endTime_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  endTime_gte: DateTime
+  message: String
+
+  """All values that are not equal to given value."""
+  message_not: String
+
+  """All values that are contained in given list."""
+  message_in: [String!]
+
+  """All values that are not contained in given list."""
+  message_not_in: [String!]
+
+  """All values less than the given value."""
+  message_lt: String
+
+  """All values less than or equal the given value."""
+  message_lte: String
+
+  """All values greater than the given value."""
+  message_gt: String
+
+  """All values greater than or equal the given value."""
+  message_gte: String
+
+  """All values containing the given string."""
+  message_contains: String
+
+  """All values not containing the given string."""
+  message_not_contains: String
+
+  """All values starting with the given string."""
+  message_starts_with: String
+
+  """All values not starting with the given string."""
+  message_not_starts_with: String
+
+  """All values ending with the given string."""
+  message_ends_with: String
+
+  """All values not ending with the given string."""
+  message_not_ends_with: String
+  user: UserWhereInput
+  initiator: UserWhereInput
+}
+
+input MembershipLogItemWhereUniqueInput {
+  id: ID
+}
+
 type Mutation {
   createUser(data: UserCreateInput!): User!
+  createRSVP(data: RSVPCreateInput!): RSVP!
+  createTrail(data: TrailCreateInput!): Trail!
+  createRunReport(data: RunReportCreateInput!): RunReport!
+  createCondition(data: ConditionCreateInput!): Condition!
+  createBandaid(data: BandaidCreateInput!): Bandaid!
   createElection(data: ElectionCreateInput!): Election!
   createVote(data: VoteCreateInput!): Vote!
+  createLogItem(data: LogItemCreateInput!): LogItem!
+  createMembershipLogItem(data: MembershipLogItemCreateInput!): MembershipLogItem!
+  createEvent(data: EventCreateInput!): Event!
   createBallot(data: BallotCreateInput!): Ballot!
   createVehicle(data: VehicleCreateInput!): Vehicle!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateRSVP(data: RSVPUpdateInput!, where: RSVPWhereUniqueInput!): RSVP
+  updateTrail(data: TrailUpdateInput!, where: TrailWhereUniqueInput!): Trail
+  updateRunReport(data: RunReportUpdateInput!, where: RunReportWhereUniqueInput!): RunReport
+  updateCondition(data: ConditionUpdateInput!, where: ConditionWhereUniqueInput!): Condition
+  updateBandaid(data: BandaidUpdateInput!, where: BandaidWhereUniqueInput!): Bandaid
   updateElection(data: ElectionUpdateInput!, where: ElectionWhereUniqueInput!): Election
   updateVote(data: VoteUpdateInput!, where: VoteWhereUniqueInput!): Vote
+  updateLogItem(data: LogItemUpdateInput!, where: LogItemWhereUniqueInput!): LogItem
+  updateMembershipLogItem(data: MembershipLogItemUpdateInput!, where: MembershipLogItemWhereUniqueInput!): MembershipLogItem
+  updateEvent(data: EventUpdateInput!, where: EventWhereUniqueInput!): Event
   updateBallot(data: BallotUpdateInput!, where: BallotWhereUniqueInput!): Ballot
   updateVehicle(data: VehicleUpdateInput!, where: VehicleWhereUniqueInput!): Vehicle
   deleteUser(where: UserWhereUniqueInput!): User
+  deleteRSVP(where: RSVPWhereUniqueInput!): RSVP
+  deleteTrail(where: TrailWhereUniqueInput!): Trail
+  deleteRunReport(where: RunReportWhereUniqueInput!): RunReport
+  deleteCondition(where: ConditionWhereUniqueInput!): Condition
+  deleteBandaid(where: BandaidWhereUniqueInput!): Bandaid
   deleteElection(where: ElectionWhereUniqueInput!): Election
   deleteVote(where: VoteWhereUniqueInput!): Vote
+  deleteLogItem(where: LogItemWhereUniqueInput!): LogItem
+  deleteMembershipLogItem(where: MembershipLogItemWhereUniqueInput!): MembershipLogItem
+  deleteEvent(where: EventWhereUniqueInput!): Event
   deleteBallot(where: BallotWhereUniqueInput!): Ballot
   deleteVehicle(where: VehicleWhereUniqueInput!): Vehicle
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertRSVP(where: RSVPWhereUniqueInput!, create: RSVPCreateInput!, update: RSVPUpdateInput!): RSVP!
+  upsertTrail(where: TrailWhereUniqueInput!, create: TrailCreateInput!, update: TrailUpdateInput!): Trail!
+  upsertRunReport(where: RunReportWhereUniqueInput!, create: RunReportCreateInput!, update: RunReportUpdateInput!): RunReport!
+  upsertCondition(where: ConditionWhereUniqueInput!, create: ConditionCreateInput!, update: ConditionUpdateInput!): Condition!
+  upsertBandaid(where: BandaidWhereUniqueInput!, create: BandaidCreateInput!, update: BandaidUpdateInput!): Bandaid!
   upsertElection(where: ElectionWhereUniqueInput!, create: ElectionCreateInput!, update: ElectionUpdateInput!): Election!
   upsertVote(where: VoteWhereUniqueInput!, create: VoteCreateInput!, update: VoteUpdateInput!): Vote!
+  upsertLogItem(where: LogItemWhereUniqueInput!, create: LogItemCreateInput!, update: LogItemUpdateInput!): LogItem!
+  upsertMembershipLogItem(where: MembershipLogItemWhereUniqueInput!, create: MembershipLogItemCreateInput!, update: MembershipLogItemUpdateInput!): MembershipLogItem!
+  upsertEvent(where: EventWhereUniqueInput!, create: EventCreateInput!, update: EventUpdateInput!): Event!
   upsertBallot(where: BallotWhereUniqueInput!, create: BallotCreateInput!, update: BallotUpdateInput!): Ballot!
   upsertVehicle(where: VehicleWhereUniqueInput!, create: VehicleCreateInput!, update: VehicleUpdateInput!): Vehicle!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  updateManyRSVPs(data: RSVPUpdateManyMutationInput!, where: RSVPWhereInput): BatchPayload!
+  updateManyTrails(data: TrailUpdateManyMutationInput!, where: TrailWhereInput): BatchPayload!
+  updateManyRunReports(data: RunReportUpdateManyMutationInput!, where: RunReportWhereInput): BatchPayload!
+  updateManyConditions(data: ConditionUpdateManyMutationInput!, where: ConditionWhereInput): BatchPayload!
+  updateManyBandaids(data: BandaidUpdateManyMutationInput!, where: BandaidWhereInput): BatchPayload!
   updateManyElections(data: ElectionUpdateManyMutationInput!, where: ElectionWhereInput): BatchPayload!
   updateManyVotes(data: VoteUpdateManyMutationInput!, where: VoteWhereInput): BatchPayload!
+  updateManyLogItems(data: LogItemUpdateManyMutationInput!, where: LogItemWhereInput): BatchPayload!
+  updateManyMembershipLogItems(data: MembershipLogItemUpdateManyMutationInput!, where: MembershipLogItemWhereInput): BatchPayload!
+  updateManyEvents(data: EventUpdateManyMutationInput!, where: EventWhereInput): BatchPayload!
   updateManyBallots(data: BallotUpdateManyMutationInput!, where: BallotWhereInput): BatchPayload!
   updateManyVehicles(data: VehicleUpdateManyMutationInput!, where: VehicleWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyRSVPs(where: RSVPWhereInput): BatchPayload!
+  deleteManyTrails(where: TrailWhereInput): BatchPayload!
+  deleteManyRunReports(where: RunReportWhereInput): BatchPayload!
+  deleteManyConditions(where: ConditionWhereInput): BatchPayload!
+  deleteManyBandaids(where: BandaidWhereInput): BatchPayload!
   deleteManyElections(where: ElectionWhereInput): BatchPayload!
   deleteManyVotes(where: VoteWhereInput): BatchPayload!
+  deleteManyLogItems(where: LogItemWhereInput): BatchPayload!
+  deleteManyMembershipLogItems(where: MembershipLogItemWhereInput): BatchPayload!
+  deleteManyEvents(where: EventWhereInput): BatchPayload!
   deleteManyBallots(where: BallotWhereInput): BatchPayload!
   deleteManyVehicles(where: VehicleWhereInput): BatchPayload!
 }
@@ -827,6 +3708,13 @@ enum MutationType {
 interface Node {
   """The id of the object."""
   id: ID!
+}
+
+enum Office {
+  PRESIDENT
+  VICE_PRESIDENT
+  SECRETARY
+  TREASURER
 }
 
 """Information about pagination in a connection."""
@@ -844,29 +3732,44 @@ type PageInfo {
   endCursor: String
 }
 
-enum Permission {
-  ADMIN
-  USER
-  ITEMCREATE
-  ITEMUPDATE
-  ITEMDELETE
-  PERMISSIONUPDATE
-}
-
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  rSVPs(where: RSVPWhereInput, orderBy: RSVPOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [RSVP]!
+  trails(where: TrailWhereInput, orderBy: TrailOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Trail]!
+  runReports(where: RunReportWhereInput, orderBy: RunReportOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [RunReport]!
+  conditions(where: ConditionWhereInput, orderBy: ConditionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Condition]!
+  bandaids(where: BandaidWhereInput, orderBy: BandaidOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bandaid]!
   elections(where: ElectionWhereInput, orderBy: ElectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Election]!
   votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote]!
+  logItems(where: LogItemWhereInput, orderBy: LogItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [LogItem]!
+  membershipLogItems(where: MembershipLogItemWhereInput, orderBy: MembershipLogItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [MembershipLogItem]!
+  events(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Event]!
   ballots(where: BallotWhereInput, orderBy: BallotOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Ballot]!
   vehicles(where: VehicleWhereInput, orderBy: VehicleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vehicle]!
   user(where: UserWhereUniqueInput!): User
+  rSVP(where: RSVPWhereUniqueInput!): RSVP
+  trail(where: TrailWhereUniqueInput!): Trail
+  runReport(where: RunReportWhereUniqueInput!): RunReport
+  condition(where: ConditionWhereUniqueInput!): Condition
+  bandaid(where: BandaidWhereUniqueInput!): Bandaid
   election(where: ElectionWhereUniqueInput!): Election
   vote(where: VoteWhereUniqueInput!): Vote
+  logItem(where: LogItemWhereUniqueInput!): LogItem
+  membershipLogItem(where: MembershipLogItemWhereUniqueInput!): MembershipLogItem
+  event(where: EventWhereUniqueInput!): Event
   ballot(where: BallotWhereUniqueInput!): Ballot
   vehicle(where: VehicleWhereUniqueInput!): Vehicle
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  rSVPsConnection(where: RSVPWhereInput, orderBy: RSVPOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RSVPConnection!
+  trailsConnection(where: TrailWhereInput, orderBy: TrailOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TrailConnection!
+  runReportsConnection(where: RunReportWhereInput, orderBy: RunReportOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RunReportConnection!
+  conditionsConnection(where: ConditionWhereInput, orderBy: ConditionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ConditionConnection!
+  bandaidsConnection(where: BandaidWhereInput, orderBy: BandaidOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BandaidConnection!
   electionsConnection(where: ElectionWhereInput, orderBy: ElectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ElectionConnection!
   votesConnection(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): VoteConnection!
+  logItemsConnection(where: LogItemWhereInput, orderBy: LogItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LogItemConnection!
+  membershipLogItemsConnection(where: MembershipLogItemWhereInput, orderBy: MembershipLogItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MembershipLogItemConnection!
+  eventsConnection(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EventConnection!
   ballotsConnection(where: BallotWhereInput, orderBy: BallotOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BallotConnection!
   vehiclesConnection(where: VehicleWhereInput, orderBy: VehicleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): VehicleConnection!
 
@@ -879,20 +3782,2409 @@ type Query {
 
 enum Role {
   ADMIN
-  BOARD_MEMBER
+  OFFICER
+  RUN_MASTER
   RUN_LEADER
-  FULL_MEMBER
-  EMERITUS_MEMBER
-  ASSOCIATE_MEMBER
-  GUEST_MEMBER
+  USER
+}
+
+type RSVP implements Node {
+  id: ID!
+  member: User!
+  event: Event!
+  status: RSVPStatus!
+}
+
+"""A connection to a list of items."""
+type RSVPConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [RSVPEdge]!
+  aggregate: AggregateRSVP!
+}
+
+input RSVPCreateInput {
+  id: ID
+  status: RSVPStatus
+  member: UserCreateOneWithoutEventsRSVPdInput!
+  event: EventCreateOneWithoutRsvpsInput!
+}
+
+input RSVPCreateManyWithoutEventInput {
+  create: [RSVPCreateWithoutEventInput!]
+  connect: [RSVPWhereUniqueInput!]
+}
+
+input RSVPCreateManyWithoutMemberInput {
+  create: [RSVPCreateWithoutMemberInput!]
+  connect: [RSVPWhereUniqueInput!]
+}
+
+input RSVPCreateWithoutEventInput {
+  id: ID
+  status: RSVPStatus
+  member: UserCreateOneWithoutEventsRSVPdInput!
+}
+
+input RSVPCreateWithoutMemberInput {
+  id: ID
+  status: RSVPStatus
+  event: EventCreateOneWithoutRsvpsInput!
+}
+
+"""An edge in a connection."""
+type RSVPEdge {
+  """The item at the end of the edge."""
+  node: RSVP!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum RSVPOrderByInput {
+  id_ASC
+  id_DESC
+  status_ASC
+  status_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type RSVPPreviousValues {
+  id: ID!
+  status: RSVPStatus!
+}
+
+input RSVPScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [RSVPScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [RSVPScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [RSVPScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  status: RSVPStatus
+
+  """All values that are not equal to given value."""
+  status_not: RSVPStatus
+
+  """All values that are contained in given list."""
+  status_in: [RSVPStatus!]
+
+  """All values that are not contained in given list."""
+  status_not_in: [RSVPStatus!]
+}
+
+enum RSVPStatus {
+  NONE
+  CANT_GO
+  GOING
+  MAYBE
+}
+
+type RSVPSubscriptionPayload {
+  mutation: MutationType!
+  node: RSVP
+  updatedFields: [String!]
+  previousValues: RSVPPreviousValues
+}
+
+input RSVPSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [RSVPSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [RSVPSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [RSVPSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: RSVPWhereInput
+}
+
+input RSVPUpdateInput {
+  status: RSVPStatus
+  member: UserUpdateOneRequiredWithoutEventsRSVPdInput
+  event: EventUpdateOneRequiredWithoutRsvpsInput
+}
+
+input RSVPUpdateManyDataInput {
+  status: RSVPStatus
+}
+
+input RSVPUpdateManyMutationInput {
+  status: RSVPStatus
+}
+
+input RSVPUpdateManyWithoutEventInput {
+  create: [RSVPCreateWithoutEventInput!]
+  connect: [RSVPWhereUniqueInput!]
+  set: [RSVPWhereUniqueInput!]
+  disconnect: [RSVPWhereUniqueInput!]
+  delete: [RSVPWhereUniqueInput!]
+  update: [RSVPUpdateWithWhereUniqueWithoutEventInput!]
+  updateMany: [RSVPUpdateManyWithWhereNestedInput!]
+  deleteMany: [RSVPScalarWhereInput!]
+  upsert: [RSVPUpsertWithWhereUniqueWithoutEventInput!]
+}
+
+input RSVPUpdateManyWithoutMemberInput {
+  create: [RSVPCreateWithoutMemberInput!]
+  connect: [RSVPWhereUniqueInput!]
+  set: [RSVPWhereUniqueInput!]
+  disconnect: [RSVPWhereUniqueInput!]
+  delete: [RSVPWhereUniqueInput!]
+  update: [RSVPUpdateWithWhereUniqueWithoutMemberInput!]
+  updateMany: [RSVPUpdateManyWithWhereNestedInput!]
+  deleteMany: [RSVPScalarWhereInput!]
+  upsert: [RSVPUpsertWithWhereUniqueWithoutMemberInput!]
+}
+
+input RSVPUpdateManyWithWhereNestedInput {
+  where: RSVPScalarWhereInput!
+  data: RSVPUpdateManyDataInput!
+}
+
+input RSVPUpdateWithoutEventDataInput {
+  status: RSVPStatus
+  member: UserUpdateOneRequiredWithoutEventsRSVPdInput
+}
+
+input RSVPUpdateWithoutMemberDataInput {
+  status: RSVPStatus
+  event: EventUpdateOneRequiredWithoutRsvpsInput
+}
+
+input RSVPUpdateWithWhereUniqueWithoutEventInput {
+  where: RSVPWhereUniqueInput!
+  data: RSVPUpdateWithoutEventDataInput!
+}
+
+input RSVPUpdateWithWhereUniqueWithoutMemberInput {
+  where: RSVPWhereUniqueInput!
+  data: RSVPUpdateWithoutMemberDataInput!
+}
+
+input RSVPUpsertWithWhereUniqueWithoutEventInput {
+  where: RSVPWhereUniqueInput!
+  update: RSVPUpdateWithoutEventDataInput!
+  create: RSVPCreateWithoutEventInput!
+}
+
+input RSVPUpsertWithWhereUniqueWithoutMemberInput {
+  where: RSVPWhereUniqueInput!
+  update: RSVPUpdateWithoutMemberDataInput!
+  create: RSVPCreateWithoutMemberInput!
+}
+
+input RSVPWhereInput {
+  """Logical AND on all given filters."""
+  AND: [RSVPWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [RSVPWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [RSVPWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  status: RSVPStatus
+
+  """All values that are not equal to given value."""
+  status_not: RSVPStatus
+
+  """All values that are contained in given list."""
+  status_in: [RSVPStatus!]
+
+  """All values that are not contained in given list."""
+  status_not_in: [RSVPStatus!]
+  member: UserWhereInput
+  event: EventWhereInput
+}
+
+input RSVPWhereUniqueInput {
+  id: ID
+}
+
+type RunReport implements Node {
+  id: ID!
+  startTime: DateTime!
+  endTime: DateTime!
+  reportFiled: DateTime!
+  reporter: User!
+  title: String!
+  description: String
+  trail: Trail!
+  event: Event
+  weather: String!
+  difficulty: TrailDifficulty!
+  rating: Float!
+  condition: Condition
+  favorite: Boolean
+}
+
+"""A connection to a list of items."""
+type RunReportConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [RunReportEdge]!
+  aggregate: AggregateRunReport!
+}
+
+input RunReportCreateInput {
+  id: ID
+  startTime: DateTime!
+  endTime: DateTime!
+  reportFiled: DateTime!
+  title: String!
+  description: String
+  weather: String!
+  difficulty: TrailDifficulty!
+  rating: Float!
+  favorite: Boolean
+  reporter: UserCreateOneWithoutRunReportsLoggedInput!
+  trail: TrailCreateOneWithoutRunReportsInput!
+  event: EventCreateOneWithoutRunReportsInput
+  condition: ConditionCreateOneWithoutReportInput
+}
+
+input RunReportCreateManyWithoutEventInput {
+  create: [RunReportCreateWithoutEventInput!]
+  connect: [RunReportWhereUniqueInput!]
+}
+
+input RunReportCreateManyWithoutReporterInput {
+  create: [RunReportCreateWithoutReporterInput!]
+  connect: [RunReportWhereUniqueInput!]
+}
+
+input RunReportCreateManyWithoutTrailInput {
+  create: [RunReportCreateWithoutTrailInput!]
+  connect: [RunReportWhereUniqueInput!]
+}
+
+input RunReportCreateOneWithoutConditionInput {
+  create: RunReportCreateWithoutConditionInput
+  connect: RunReportWhereUniqueInput
+}
+
+input RunReportCreateWithoutConditionInput {
+  id: ID
+  startTime: DateTime!
+  endTime: DateTime!
+  reportFiled: DateTime!
+  title: String!
+  description: String
+  weather: String!
+  difficulty: TrailDifficulty!
+  rating: Float!
+  favorite: Boolean
+  reporter: UserCreateOneWithoutRunReportsLoggedInput!
+  trail: TrailCreateOneWithoutRunReportsInput!
+  event: EventCreateOneWithoutRunReportsInput
+}
+
+input RunReportCreateWithoutEventInput {
+  id: ID
+  startTime: DateTime!
+  endTime: DateTime!
+  reportFiled: DateTime!
+  title: String!
+  description: String
+  weather: String!
+  difficulty: TrailDifficulty!
+  rating: Float!
+  favorite: Boolean
+  reporter: UserCreateOneWithoutRunReportsLoggedInput!
+  trail: TrailCreateOneWithoutRunReportsInput!
+  condition: ConditionCreateOneWithoutReportInput
+}
+
+input RunReportCreateWithoutReporterInput {
+  id: ID
+  startTime: DateTime!
+  endTime: DateTime!
+  reportFiled: DateTime!
+  title: String!
+  description: String
+  weather: String!
+  difficulty: TrailDifficulty!
+  rating: Float!
+  favorite: Boolean
+  trail: TrailCreateOneWithoutRunReportsInput!
+  event: EventCreateOneWithoutRunReportsInput
+  condition: ConditionCreateOneWithoutReportInput
+}
+
+input RunReportCreateWithoutTrailInput {
+  id: ID
+  startTime: DateTime!
+  endTime: DateTime!
+  reportFiled: DateTime!
+  title: String!
+  description: String
+  weather: String!
+  difficulty: TrailDifficulty!
+  rating: Float!
+  favorite: Boolean
+  reporter: UserCreateOneWithoutRunReportsLoggedInput!
+  event: EventCreateOneWithoutRunReportsInput
+  condition: ConditionCreateOneWithoutReportInput
+}
+
+"""An edge in a connection."""
+type RunReportEdge {
+  """The item at the end of the edge."""
+  node: RunReport!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum RunReportOrderByInput {
+  id_ASC
+  id_DESC
+  startTime_ASC
+  startTime_DESC
+  endTime_ASC
+  endTime_DESC
+  reportFiled_ASC
+  reportFiled_DESC
+  title_ASC
+  title_DESC
+  description_ASC
+  description_DESC
+  weather_ASC
+  weather_DESC
+  difficulty_ASC
+  difficulty_DESC
+  rating_ASC
+  rating_DESC
+  favorite_ASC
+  favorite_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type RunReportPreviousValues {
+  id: ID!
+  startTime: DateTime!
+  endTime: DateTime!
+  reportFiled: DateTime!
+  title: String!
+  description: String
+  weather: String!
+  difficulty: TrailDifficulty!
+  rating: Float!
+  favorite: Boolean
+}
+
+input RunReportScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [RunReportScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [RunReportScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [RunReportScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  startTime: DateTime
+
+  """All values that are not equal to given value."""
+  startTime_not: DateTime
+
+  """All values that are contained in given list."""
+  startTime_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  startTime_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  startTime_lt: DateTime
+
+  """All values less than or equal the given value."""
+  startTime_lte: DateTime
+
+  """All values greater than the given value."""
+  startTime_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  startTime_gte: DateTime
+  endTime: DateTime
+
+  """All values that are not equal to given value."""
+  endTime_not: DateTime
+
+  """All values that are contained in given list."""
+  endTime_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  endTime_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  endTime_lt: DateTime
+
+  """All values less than or equal the given value."""
+  endTime_lte: DateTime
+
+  """All values greater than the given value."""
+  endTime_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  endTime_gte: DateTime
+  reportFiled: DateTime
+
+  """All values that are not equal to given value."""
+  reportFiled_not: DateTime
+
+  """All values that are contained in given list."""
+  reportFiled_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  reportFiled_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  reportFiled_lt: DateTime
+
+  """All values less than or equal the given value."""
+  reportFiled_lte: DateTime
+
+  """All values greater than the given value."""
+  reportFiled_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  reportFiled_gte: DateTime
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
+  weather: String
+
+  """All values that are not equal to given value."""
+  weather_not: String
+
+  """All values that are contained in given list."""
+  weather_in: [String!]
+
+  """All values that are not contained in given list."""
+  weather_not_in: [String!]
+
+  """All values less than the given value."""
+  weather_lt: String
+
+  """All values less than or equal the given value."""
+  weather_lte: String
+
+  """All values greater than the given value."""
+  weather_gt: String
+
+  """All values greater than or equal the given value."""
+  weather_gte: String
+
+  """All values containing the given string."""
+  weather_contains: String
+
+  """All values not containing the given string."""
+  weather_not_contains: String
+
+  """All values starting with the given string."""
+  weather_starts_with: String
+
+  """All values not starting with the given string."""
+  weather_not_starts_with: String
+
+  """All values ending with the given string."""
+  weather_ends_with: String
+
+  """All values not ending with the given string."""
+  weather_not_ends_with: String
+  difficulty: TrailDifficulty
+
+  """All values that are not equal to given value."""
+  difficulty_not: TrailDifficulty
+
+  """All values that are contained in given list."""
+  difficulty_in: [TrailDifficulty!]
+
+  """All values that are not contained in given list."""
+  difficulty_not_in: [TrailDifficulty!]
+  rating: Float
+
+  """All values that are not equal to given value."""
+  rating_not: Float
+
+  """All values that are contained in given list."""
+  rating_in: [Float!]
+
+  """All values that are not contained in given list."""
+  rating_not_in: [Float!]
+
+  """All values less than the given value."""
+  rating_lt: Float
+
+  """All values less than or equal the given value."""
+  rating_lte: Float
+
+  """All values greater than the given value."""
+  rating_gt: Float
+
+  """All values greater than or equal the given value."""
+  rating_gte: Float
+  favorite: Boolean
+
+  """All values that are not equal to given value."""
+  favorite_not: Boolean
+}
+
+type RunReportSubscriptionPayload {
+  mutation: MutationType!
+  node: RunReport
+  updatedFields: [String!]
+  previousValues: RunReportPreviousValues
+}
+
+input RunReportSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [RunReportSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [RunReportSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [RunReportSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: RunReportWhereInput
+}
+
+input RunReportUpdateInput {
+  startTime: DateTime
+  endTime: DateTime
+  reportFiled: DateTime
+  title: String
+  description: String
+  weather: String
+  difficulty: TrailDifficulty
+  rating: Float
+  favorite: Boolean
+  reporter: UserUpdateOneRequiredWithoutRunReportsLoggedInput
+  trail: TrailUpdateOneRequiredWithoutRunReportsInput
+  event: EventUpdateOneWithoutRunReportsInput
+  condition: ConditionUpdateOneWithoutReportInput
+}
+
+input RunReportUpdateManyDataInput {
+  startTime: DateTime
+  endTime: DateTime
+  reportFiled: DateTime
+  title: String
+  description: String
+  weather: String
+  difficulty: TrailDifficulty
+  rating: Float
+  favorite: Boolean
+}
+
+input RunReportUpdateManyMutationInput {
+  startTime: DateTime
+  endTime: DateTime
+  reportFiled: DateTime
+  title: String
+  description: String
+  weather: String
+  difficulty: TrailDifficulty
+  rating: Float
+  favorite: Boolean
+}
+
+input RunReportUpdateManyWithoutEventInput {
+  create: [RunReportCreateWithoutEventInput!]
+  connect: [RunReportWhereUniqueInput!]
+  set: [RunReportWhereUniqueInput!]
+  disconnect: [RunReportWhereUniqueInput!]
+  delete: [RunReportWhereUniqueInput!]
+  update: [RunReportUpdateWithWhereUniqueWithoutEventInput!]
+  updateMany: [RunReportUpdateManyWithWhereNestedInput!]
+  deleteMany: [RunReportScalarWhereInput!]
+  upsert: [RunReportUpsertWithWhereUniqueWithoutEventInput!]
+}
+
+input RunReportUpdateManyWithoutReporterInput {
+  create: [RunReportCreateWithoutReporterInput!]
+  connect: [RunReportWhereUniqueInput!]
+  set: [RunReportWhereUniqueInput!]
+  disconnect: [RunReportWhereUniqueInput!]
+  delete: [RunReportWhereUniqueInput!]
+  update: [RunReportUpdateWithWhereUniqueWithoutReporterInput!]
+  updateMany: [RunReportUpdateManyWithWhereNestedInput!]
+  deleteMany: [RunReportScalarWhereInput!]
+  upsert: [RunReportUpsertWithWhereUniqueWithoutReporterInput!]
+}
+
+input RunReportUpdateManyWithoutTrailInput {
+  create: [RunReportCreateWithoutTrailInput!]
+  connect: [RunReportWhereUniqueInput!]
+  set: [RunReportWhereUniqueInput!]
+  disconnect: [RunReportWhereUniqueInput!]
+  delete: [RunReportWhereUniqueInput!]
+  update: [RunReportUpdateWithWhereUniqueWithoutTrailInput!]
+  updateMany: [RunReportUpdateManyWithWhereNestedInput!]
+  deleteMany: [RunReportScalarWhereInput!]
+  upsert: [RunReportUpsertWithWhereUniqueWithoutTrailInput!]
+}
+
+input RunReportUpdateManyWithWhereNestedInput {
+  where: RunReportScalarWhereInput!
+  data: RunReportUpdateManyDataInput!
+}
+
+input RunReportUpdateOneRequiredWithoutConditionInput {
+  create: RunReportCreateWithoutConditionInput
+  connect: RunReportWhereUniqueInput
+  update: RunReportUpdateWithoutConditionDataInput
+  upsert: RunReportUpsertWithoutConditionInput
+}
+
+input RunReportUpdateWithoutConditionDataInput {
+  startTime: DateTime
+  endTime: DateTime
+  reportFiled: DateTime
+  title: String
+  description: String
+  weather: String
+  difficulty: TrailDifficulty
+  rating: Float
+  favorite: Boolean
+  reporter: UserUpdateOneRequiredWithoutRunReportsLoggedInput
+  trail: TrailUpdateOneRequiredWithoutRunReportsInput
+  event: EventUpdateOneWithoutRunReportsInput
+}
+
+input RunReportUpdateWithoutEventDataInput {
+  startTime: DateTime
+  endTime: DateTime
+  reportFiled: DateTime
+  title: String
+  description: String
+  weather: String
+  difficulty: TrailDifficulty
+  rating: Float
+  favorite: Boolean
+  reporter: UserUpdateOneRequiredWithoutRunReportsLoggedInput
+  trail: TrailUpdateOneRequiredWithoutRunReportsInput
+  condition: ConditionUpdateOneWithoutReportInput
+}
+
+input RunReportUpdateWithoutReporterDataInput {
+  startTime: DateTime
+  endTime: DateTime
+  reportFiled: DateTime
+  title: String
+  description: String
+  weather: String
+  difficulty: TrailDifficulty
+  rating: Float
+  favorite: Boolean
+  trail: TrailUpdateOneRequiredWithoutRunReportsInput
+  event: EventUpdateOneWithoutRunReportsInput
+  condition: ConditionUpdateOneWithoutReportInput
+}
+
+input RunReportUpdateWithoutTrailDataInput {
+  startTime: DateTime
+  endTime: DateTime
+  reportFiled: DateTime
+  title: String
+  description: String
+  weather: String
+  difficulty: TrailDifficulty
+  rating: Float
+  favorite: Boolean
+  reporter: UserUpdateOneRequiredWithoutRunReportsLoggedInput
+  event: EventUpdateOneWithoutRunReportsInput
+  condition: ConditionUpdateOneWithoutReportInput
+}
+
+input RunReportUpdateWithWhereUniqueWithoutEventInput {
+  where: RunReportWhereUniqueInput!
+  data: RunReportUpdateWithoutEventDataInput!
+}
+
+input RunReportUpdateWithWhereUniqueWithoutReporterInput {
+  where: RunReportWhereUniqueInput!
+  data: RunReportUpdateWithoutReporterDataInput!
+}
+
+input RunReportUpdateWithWhereUniqueWithoutTrailInput {
+  where: RunReportWhereUniqueInput!
+  data: RunReportUpdateWithoutTrailDataInput!
+}
+
+input RunReportUpsertWithoutConditionInput {
+  update: RunReportUpdateWithoutConditionDataInput!
+  create: RunReportCreateWithoutConditionInput!
+}
+
+input RunReportUpsertWithWhereUniqueWithoutEventInput {
+  where: RunReportWhereUniqueInput!
+  update: RunReportUpdateWithoutEventDataInput!
+  create: RunReportCreateWithoutEventInput!
+}
+
+input RunReportUpsertWithWhereUniqueWithoutReporterInput {
+  where: RunReportWhereUniqueInput!
+  update: RunReportUpdateWithoutReporterDataInput!
+  create: RunReportCreateWithoutReporterInput!
+}
+
+input RunReportUpsertWithWhereUniqueWithoutTrailInput {
+  where: RunReportWhereUniqueInput!
+  update: RunReportUpdateWithoutTrailDataInput!
+  create: RunReportCreateWithoutTrailInput!
+}
+
+input RunReportWhereInput {
+  """Logical AND on all given filters."""
+  AND: [RunReportWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [RunReportWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [RunReportWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  startTime: DateTime
+
+  """All values that are not equal to given value."""
+  startTime_not: DateTime
+
+  """All values that are contained in given list."""
+  startTime_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  startTime_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  startTime_lt: DateTime
+
+  """All values less than or equal the given value."""
+  startTime_lte: DateTime
+
+  """All values greater than the given value."""
+  startTime_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  startTime_gte: DateTime
+  endTime: DateTime
+
+  """All values that are not equal to given value."""
+  endTime_not: DateTime
+
+  """All values that are contained in given list."""
+  endTime_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  endTime_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  endTime_lt: DateTime
+
+  """All values less than or equal the given value."""
+  endTime_lte: DateTime
+
+  """All values greater than the given value."""
+  endTime_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  endTime_gte: DateTime
+  reportFiled: DateTime
+
+  """All values that are not equal to given value."""
+  reportFiled_not: DateTime
+
+  """All values that are contained in given list."""
+  reportFiled_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  reportFiled_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  reportFiled_lt: DateTime
+
+  """All values less than or equal the given value."""
+  reportFiled_lte: DateTime
+
+  """All values greater than the given value."""
+  reportFiled_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  reportFiled_gte: DateTime
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
+  weather: String
+
+  """All values that are not equal to given value."""
+  weather_not: String
+
+  """All values that are contained in given list."""
+  weather_in: [String!]
+
+  """All values that are not contained in given list."""
+  weather_not_in: [String!]
+
+  """All values less than the given value."""
+  weather_lt: String
+
+  """All values less than or equal the given value."""
+  weather_lte: String
+
+  """All values greater than the given value."""
+  weather_gt: String
+
+  """All values greater than or equal the given value."""
+  weather_gte: String
+
+  """All values containing the given string."""
+  weather_contains: String
+
+  """All values not containing the given string."""
+  weather_not_contains: String
+
+  """All values starting with the given string."""
+  weather_starts_with: String
+
+  """All values not starting with the given string."""
+  weather_not_starts_with: String
+
+  """All values ending with the given string."""
+  weather_ends_with: String
+
+  """All values not ending with the given string."""
+  weather_not_ends_with: String
+  difficulty: TrailDifficulty
+
+  """All values that are not equal to given value."""
+  difficulty_not: TrailDifficulty
+
+  """All values that are contained in given list."""
+  difficulty_in: [TrailDifficulty!]
+
+  """All values that are not contained in given list."""
+  difficulty_not_in: [TrailDifficulty!]
+  rating: Float
+
+  """All values that are not equal to given value."""
+  rating_not: Float
+
+  """All values that are contained in given list."""
+  rating_in: [Float!]
+
+  """All values that are not contained in given list."""
+  rating_not_in: [Float!]
+
+  """All values less than the given value."""
+  rating_lt: Float
+
+  """All values less than or equal the given value."""
+  rating_lte: Float
+
+  """All values greater than the given value."""
+  rating_gt: Float
+
+  """All values greater than or equal the given value."""
+  rating_gte: Float
+  favorite: Boolean
+
+  """All values that are not equal to given value."""
+  favorite_not: Boolean
+  reporter: UserWhereInput
+  trail: TrailWhereInput
+  event: EventWhereInput
+  condition: ConditionWhereInput
+}
+
+input RunReportWhereUniqueInput {
+  id: ID
 }
 
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  rSVP(where: RSVPSubscriptionWhereInput): RSVPSubscriptionPayload
+  trail(where: TrailSubscriptionWhereInput): TrailSubscriptionPayload
+  runReport(where: RunReportSubscriptionWhereInput): RunReportSubscriptionPayload
+  condition(where: ConditionSubscriptionWhereInput): ConditionSubscriptionPayload
+  bandaid(where: BandaidSubscriptionWhereInput): BandaidSubscriptionPayload
   election(where: ElectionSubscriptionWhereInput): ElectionSubscriptionPayload
   vote(where: VoteSubscriptionWhereInput): VoteSubscriptionPayload
+  logItem(where: LogItemSubscriptionWhereInput): LogItemSubscriptionPayload
+  membershipLogItem(where: MembershipLogItemSubscriptionWhereInput): MembershipLogItemSubscriptionPayload
+  event(where: EventSubscriptionWhereInput): EventSubscriptionPayload
   ballot(where: BallotSubscriptionWhereInput): BallotSubscriptionPayload
   vehicle(where: VehicleSubscriptionWhereInput): VehicleSubscriptionPayload
+}
+
+enum Title {
+  WEBMASTER
+  RUN_MASTER
+  RUN_LEADER
+  EMERITUS_MEMBER
+  CHARTER_MEMBER
+}
+
+type Trail implements Node {
+  id: ID!
+  slug: String!
+  name: String
+  description: String
+  trailheadCoords: String
+  address: String
+  avgDifficulty: TrailDifficulty
+  avgRatings: Float
+  currentConditions: String
+  conditionsLastReported: DateTime
+  favoriteCount: Int
+  pastEvents(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Event!]
+  visitors(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+  runReports(where: RunReportWhereInput, orderBy: RunReportOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [RunReport!]
+}
+
+enum TrailCondition {
+  CLEAR
+  MINOR_ISSUES
+  MAJOR_ISSUES
+  CLOSED
+}
+
+"""A connection to a list of items."""
+type TrailConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [TrailEdge]!
+  aggregate: AggregateTrail!
+}
+
+input TrailCreateInput {
+  id: ID
+  slug: String!
+  name: String
+  description: String
+  trailheadCoords: String
+  address: String
+  avgDifficulty: TrailDifficulty
+  avgRatings: Float
+  currentConditions: String
+  conditionsLastReported: DateTime
+  favoriteCount: Int
+  pastEvents: EventCreateManyWithoutTrailInput
+  visitors: UserCreateManyWithoutTrailsVisitedInput
+  runReports: RunReportCreateManyWithoutTrailInput
+}
+
+input TrailCreateManyWithoutVisitorsInput {
+  create: [TrailCreateWithoutVisitorsInput!]
+  connect: [TrailWhereUniqueInput!]
+}
+
+input TrailCreateOneWithoutPastEventsInput {
+  create: TrailCreateWithoutPastEventsInput
+  connect: TrailWhereUniqueInput
+}
+
+input TrailCreateOneWithoutRunReportsInput {
+  create: TrailCreateWithoutRunReportsInput
+  connect: TrailWhereUniqueInput
+}
+
+input TrailCreateWithoutPastEventsInput {
+  id: ID
+  slug: String!
+  name: String
+  description: String
+  trailheadCoords: String
+  address: String
+  avgDifficulty: TrailDifficulty
+  avgRatings: Float
+  currentConditions: String
+  conditionsLastReported: DateTime
+  favoriteCount: Int
+  visitors: UserCreateManyWithoutTrailsVisitedInput
+  runReports: RunReportCreateManyWithoutTrailInput
+}
+
+input TrailCreateWithoutRunReportsInput {
+  id: ID
+  slug: String!
+  name: String
+  description: String
+  trailheadCoords: String
+  address: String
+  avgDifficulty: TrailDifficulty
+  avgRatings: Float
+  currentConditions: String
+  conditionsLastReported: DateTime
+  favoriteCount: Int
+  pastEvents: EventCreateManyWithoutTrailInput
+  visitors: UserCreateManyWithoutTrailsVisitedInput
+}
+
+input TrailCreateWithoutVisitorsInput {
+  id: ID
+  slug: String!
+  name: String
+  description: String
+  trailheadCoords: String
+  address: String
+  avgDifficulty: TrailDifficulty
+  avgRatings: Float
+  currentConditions: String
+  conditionsLastReported: DateTime
+  favoriteCount: Int
+  pastEvents: EventCreateManyWithoutTrailInput
+  runReports: RunReportCreateManyWithoutTrailInput
+}
+
+enum TrailDifficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+"""An edge in a connection."""
+type TrailEdge {
+  """The item at the end of the edge."""
+  node: Trail!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum TrailOrderByInput {
+  id_ASC
+  id_DESC
+  slug_ASC
+  slug_DESC
+  name_ASC
+  name_DESC
+  description_ASC
+  description_DESC
+  trailheadCoords_ASC
+  trailheadCoords_DESC
+  address_ASC
+  address_DESC
+  avgDifficulty_ASC
+  avgDifficulty_DESC
+  avgRatings_ASC
+  avgRatings_DESC
+  currentConditions_ASC
+  currentConditions_DESC
+  conditionsLastReported_ASC
+  conditionsLastReported_DESC
+  favoriteCount_ASC
+  favoriteCount_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type TrailPreviousValues {
+  id: ID!
+  slug: String!
+  name: String
+  description: String
+  trailheadCoords: String
+  address: String
+  avgDifficulty: TrailDifficulty
+  avgRatings: Float
+  currentConditions: String
+  conditionsLastReported: DateTime
+  favoriteCount: Int
+}
+
+input TrailScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [TrailScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [TrailScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [TrailScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  slug: String
+
+  """All values that are not equal to given value."""
+  slug_not: String
+
+  """All values that are contained in given list."""
+  slug_in: [String!]
+
+  """All values that are not contained in given list."""
+  slug_not_in: [String!]
+
+  """All values less than the given value."""
+  slug_lt: String
+
+  """All values less than or equal the given value."""
+  slug_lte: String
+
+  """All values greater than the given value."""
+  slug_gt: String
+
+  """All values greater than or equal the given value."""
+  slug_gte: String
+
+  """All values containing the given string."""
+  slug_contains: String
+
+  """All values not containing the given string."""
+  slug_not_contains: String
+
+  """All values starting with the given string."""
+  slug_starts_with: String
+
+  """All values not starting with the given string."""
+  slug_not_starts_with: String
+
+  """All values ending with the given string."""
+  slug_ends_with: String
+
+  """All values not ending with the given string."""
+  slug_not_ends_with: String
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
+  trailheadCoords: String
+
+  """All values that are not equal to given value."""
+  trailheadCoords_not: String
+
+  """All values that are contained in given list."""
+  trailheadCoords_in: [String!]
+
+  """All values that are not contained in given list."""
+  trailheadCoords_not_in: [String!]
+
+  """All values less than the given value."""
+  trailheadCoords_lt: String
+
+  """All values less than or equal the given value."""
+  trailheadCoords_lte: String
+
+  """All values greater than the given value."""
+  trailheadCoords_gt: String
+
+  """All values greater than or equal the given value."""
+  trailheadCoords_gte: String
+
+  """All values containing the given string."""
+  trailheadCoords_contains: String
+
+  """All values not containing the given string."""
+  trailheadCoords_not_contains: String
+
+  """All values starting with the given string."""
+  trailheadCoords_starts_with: String
+
+  """All values not starting with the given string."""
+  trailheadCoords_not_starts_with: String
+
+  """All values ending with the given string."""
+  trailheadCoords_ends_with: String
+
+  """All values not ending with the given string."""
+  trailheadCoords_not_ends_with: String
+  address: String
+
+  """All values that are not equal to given value."""
+  address_not: String
+
+  """All values that are contained in given list."""
+  address_in: [String!]
+
+  """All values that are not contained in given list."""
+  address_not_in: [String!]
+
+  """All values less than the given value."""
+  address_lt: String
+
+  """All values less than or equal the given value."""
+  address_lte: String
+
+  """All values greater than the given value."""
+  address_gt: String
+
+  """All values greater than or equal the given value."""
+  address_gte: String
+
+  """All values containing the given string."""
+  address_contains: String
+
+  """All values not containing the given string."""
+  address_not_contains: String
+
+  """All values starting with the given string."""
+  address_starts_with: String
+
+  """All values not starting with the given string."""
+  address_not_starts_with: String
+
+  """All values ending with the given string."""
+  address_ends_with: String
+
+  """All values not ending with the given string."""
+  address_not_ends_with: String
+  avgDifficulty: TrailDifficulty
+
+  """All values that are not equal to given value."""
+  avgDifficulty_not: TrailDifficulty
+
+  """All values that are contained in given list."""
+  avgDifficulty_in: [TrailDifficulty!]
+
+  """All values that are not contained in given list."""
+  avgDifficulty_not_in: [TrailDifficulty!]
+  avgRatings: Float
+
+  """All values that are not equal to given value."""
+  avgRatings_not: Float
+
+  """All values that are contained in given list."""
+  avgRatings_in: [Float!]
+
+  """All values that are not contained in given list."""
+  avgRatings_not_in: [Float!]
+
+  """All values less than the given value."""
+  avgRatings_lt: Float
+
+  """All values less than or equal the given value."""
+  avgRatings_lte: Float
+
+  """All values greater than the given value."""
+  avgRatings_gt: Float
+
+  """All values greater than or equal the given value."""
+  avgRatings_gte: Float
+  currentConditions: String
+
+  """All values that are not equal to given value."""
+  currentConditions_not: String
+
+  """All values that are contained in given list."""
+  currentConditions_in: [String!]
+
+  """All values that are not contained in given list."""
+  currentConditions_not_in: [String!]
+
+  """All values less than the given value."""
+  currentConditions_lt: String
+
+  """All values less than or equal the given value."""
+  currentConditions_lte: String
+
+  """All values greater than the given value."""
+  currentConditions_gt: String
+
+  """All values greater than or equal the given value."""
+  currentConditions_gte: String
+
+  """All values containing the given string."""
+  currentConditions_contains: String
+
+  """All values not containing the given string."""
+  currentConditions_not_contains: String
+
+  """All values starting with the given string."""
+  currentConditions_starts_with: String
+
+  """All values not starting with the given string."""
+  currentConditions_not_starts_with: String
+
+  """All values ending with the given string."""
+  currentConditions_ends_with: String
+
+  """All values not ending with the given string."""
+  currentConditions_not_ends_with: String
+  conditionsLastReported: DateTime
+
+  """All values that are not equal to given value."""
+  conditionsLastReported_not: DateTime
+
+  """All values that are contained in given list."""
+  conditionsLastReported_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  conditionsLastReported_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  conditionsLastReported_lt: DateTime
+
+  """All values less than or equal the given value."""
+  conditionsLastReported_lte: DateTime
+
+  """All values greater than the given value."""
+  conditionsLastReported_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  conditionsLastReported_gte: DateTime
+  favoriteCount: Int
+
+  """All values that are not equal to given value."""
+  favoriteCount_not: Int
+
+  """All values that are contained in given list."""
+  favoriteCount_in: [Int!]
+
+  """All values that are not contained in given list."""
+  favoriteCount_not_in: [Int!]
+
+  """All values less than the given value."""
+  favoriteCount_lt: Int
+
+  """All values less than or equal the given value."""
+  favoriteCount_lte: Int
+
+  """All values greater than the given value."""
+  favoriteCount_gt: Int
+
+  """All values greater than or equal the given value."""
+  favoriteCount_gte: Int
+}
+
+type TrailSubscriptionPayload {
+  mutation: MutationType!
+  node: Trail
+  updatedFields: [String!]
+  previousValues: TrailPreviousValues
+}
+
+input TrailSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [TrailSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [TrailSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [TrailSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: TrailWhereInput
+}
+
+input TrailUpdateInput {
+  slug: String
+  name: String
+  description: String
+  trailheadCoords: String
+  address: String
+  avgDifficulty: TrailDifficulty
+  avgRatings: Float
+  currentConditions: String
+  conditionsLastReported: DateTime
+  favoriteCount: Int
+  pastEvents: EventUpdateManyWithoutTrailInput
+  visitors: UserUpdateManyWithoutTrailsVisitedInput
+  runReports: RunReportUpdateManyWithoutTrailInput
+}
+
+input TrailUpdateManyDataInput {
+  slug: String
+  name: String
+  description: String
+  trailheadCoords: String
+  address: String
+  avgDifficulty: TrailDifficulty
+  avgRatings: Float
+  currentConditions: String
+  conditionsLastReported: DateTime
+  favoriteCount: Int
+}
+
+input TrailUpdateManyMutationInput {
+  slug: String
+  name: String
+  description: String
+  trailheadCoords: String
+  address: String
+  avgDifficulty: TrailDifficulty
+  avgRatings: Float
+  currentConditions: String
+  conditionsLastReported: DateTime
+  favoriteCount: Int
+}
+
+input TrailUpdateManyWithoutVisitorsInput {
+  create: [TrailCreateWithoutVisitorsInput!]
+  connect: [TrailWhereUniqueInput!]
+  set: [TrailWhereUniqueInput!]
+  disconnect: [TrailWhereUniqueInput!]
+  delete: [TrailWhereUniqueInput!]
+  update: [TrailUpdateWithWhereUniqueWithoutVisitorsInput!]
+  updateMany: [TrailUpdateManyWithWhereNestedInput!]
+  deleteMany: [TrailScalarWhereInput!]
+  upsert: [TrailUpsertWithWhereUniqueWithoutVisitorsInput!]
+}
+
+input TrailUpdateManyWithWhereNestedInput {
+  where: TrailScalarWhereInput!
+  data: TrailUpdateManyDataInput!
+}
+
+input TrailUpdateOneRequiredWithoutRunReportsInput {
+  create: TrailCreateWithoutRunReportsInput
+  connect: TrailWhereUniqueInput
+  update: TrailUpdateWithoutRunReportsDataInput
+  upsert: TrailUpsertWithoutRunReportsInput
+}
+
+input TrailUpdateOneWithoutPastEventsInput {
+  create: TrailCreateWithoutPastEventsInput
+  connect: TrailWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: TrailUpdateWithoutPastEventsDataInput
+  upsert: TrailUpsertWithoutPastEventsInput
+}
+
+input TrailUpdateWithoutPastEventsDataInput {
+  slug: String
+  name: String
+  description: String
+  trailheadCoords: String
+  address: String
+  avgDifficulty: TrailDifficulty
+  avgRatings: Float
+  currentConditions: String
+  conditionsLastReported: DateTime
+  favoriteCount: Int
+  visitors: UserUpdateManyWithoutTrailsVisitedInput
+  runReports: RunReportUpdateManyWithoutTrailInput
+}
+
+input TrailUpdateWithoutRunReportsDataInput {
+  slug: String
+  name: String
+  description: String
+  trailheadCoords: String
+  address: String
+  avgDifficulty: TrailDifficulty
+  avgRatings: Float
+  currentConditions: String
+  conditionsLastReported: DateTime
+  favoriteCount: Int
+  pastEvents: EventUpdateManyWithoutTrailInput
+  visitors: UserUpdateManyWithoutTrailsVisitedInput
+}
+
+input TrailUpdateWithoutVisitorsDataInput {
+  slug: String
+  name: String
+  description: String
+  trailheadCoords: String
+  address: String
+  avgDifficulty: TrailDifficulty
+  avgRatings: Float
+  currentConditions: String
+  conditionsLastReported: DateTime
+  favoriteCount: Int
+  pastEvents: EventUpdateManyWithoutTrailInput
+  runReports: RunReportUpdateManyWithoutTrailInput
+}
+
+input TrailUpdateWithWhereUniqueWithoutVisitorsInput {
+  where: TrailWhereUniqueInput!
+  data: TrailUpdateWithoutVisitorsDataInput!
+}
+
+input TrailUpsertWithoutPastEventsInput {
+  update: TrailUpdateWithoutPastEventsDataInput!
+  create: TrailCreateWithoutPastEventsInput!
+}
+
+input TrailUpsertWithoutRunReportsInput {
+  update: TrailUpdateWithoutRunReportsDataInput!
+  create: TrailCreateWithoutRunReportsInput!
+}
+
+input TrailUpsertWithWhereUniqueWithoutVisitorsInput {
+  where: TrailWhereUniqueInput!
+  update: TrailUpdateWithoutVisitorsDataInput!
+  create: TrailCreateWithoutVisitorsInput!
+}
+
+input TrailWhereInput {
+  """Logical AND on all given filters."""
+  AND: [TrailWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [TrailWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [TrailWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  slug: String
+
+  """All values that are not equal to given value."""
+  slug_not: String
+
+  """All values that are contained in given list."""
+  slug_in: [String!]
+
+  """All values that are not contained in given list."""
+  slug_not_in: [String!]
+
+  """All values less than the given value."""
+  slug_lt: String
+
+  """All values less than or equal the given value."""
+  slug_lte: String
+
+  """All values greater than the given value."""
+  slug_gt: String
+
+  """All values greater than or equal the given value."""
+  slug_gte: String
+
+  """All values containing the given string."""
+  slug_contains: String
+
+  """All values not containing the given string."""
+  slug_not_contains: String
+
+  """All values starting with the given string."""
+  slug_starts_with: String
+
+  """All values not starting with the given string."""
+  slug_not_starts_with: String
+
+  """All values ending with the given string."""
+  slug_ends_with: String
+
+  """All values not ending with the given string."""
+  slug_not_ends_with: String
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
+  trailheadCoords: String
+
+  """All values that are not equal to given value."""
+  trailheadCoords_not: String
+
+  """All values that are contained in given list."""
+  trailheadCoords_in: [String!]
+
+  """All values that are not contained in given list."""
+  trailheadCoords_not_in: [String!]
+
+  """All values less than the given value."""
+  trailheadCoords_lt: String
+
+  """All values less than or equal the given value."""
+  trailheadCoords_lte: String
+
+  """All values greater than the given value."""
+  trailheadCoords_gt: String
+
+  """All values greater than or equal the given value."""
+  trailheadCoords_gte: String
+
+  """All values containing the given string."""
+  trailheadCoords_contains: String
+
+  """All values not containing the given string."""
+  trailheadCoords_not_contains: String
+
+  """All values starting with the given string."""
+  trailheadCoords_starts_with: String
+
+  """All values not starting with the given string."""
+  trailheadCoords_not_starts_with: String
+
+  """All values ending with the given string."""
+  trailheadCoords_ends_with: String
+
+  """All values not ending with the given string."""
+  trailheadCoords_not_ends_with: String
+  address: String
+
+  """All values that are not equal to given value."""
+  address_not: String
+
+  """All values that are contained in given list."""
+  address_in: [String!]
+
+  """All values that are not contained in given list."""
+  address_not_in: [String!]
+
+  """All values less than the given value."""
+  address_lt: String
+
+  """All values less than or equal the given value."""
+  address_lte: String
+
+  """All values greater than the given value."""
+  address_gt: String
+
+  """All values greater than or equal the given value."""
+  address_gte: String
+
+  """All values containing the given string."""
+  address_contains: String
+
+  """All values not containing the given string."""
+  address_not_contains: String
+
+  """All values starting with the given string."""
+  address_starts_with: String
+
+  """All values not starting with the given string."""
+  address_not_starts_with: String
+
+  """All values ending with the given string."""
+  address_ends_with: String
+
+  """All values not ending with the given string."""
+  address_not_ends_with: String
+  avgDifficulty: TrailDifficulty
+
+  """All values that are not equal to given value."""
+  avgDifficulty_not: TrailDifficulty
+
+  """All values that are contained in given list."""
+  avgDifficulty_in: [TrailDifficulty!]
+
+  """All values that are not contained in given list."""
+  avgDifficulty_not_in: [TrailDifficulty!]
+  avgRatings: Float
+
+  """All values that are not equal to given value."""
+  avgRatings_not: Float
+
+  """All values that are contained in given list."""
+  avgRatings_in: [Float!]
+
+  """All values that are not contained in given list."""
+  avgRatings_not_in: [Float!]
+
+  """All values less than the given value."""
+  avgRatings_lt: Float
+
+  """All values less than or equal the given value."""
+  avgRatings_lte: Float
+
+  """All values greater than the given value."""
+  avgRatings_gt: Float
+
+  """All values greater than or equal the given value."""
+  avgRatings_gte: Float
+  currentConditions: String
+
+  """All values that are not equal to given value."""
+  currentConditions_not: String
+
+  """All values that are contained in given list."""
+  currentConditions_in: [String!]
+
+  """All values that are not contained in given list."""
+  currentConditions_not_in: [String!]
+
+  """All values less than the given value."""
+  currentConditions_lt: String
+
+  """All values less than or equal the given value."""
+  currentConditions_lte: String
+
+  """All values greater than the given value."""
+  currentConditions_gt: String
+
+  """All values greater than or equal the given value."""
+  currentConditions_gte: String
+
+  """All values containing the given string."""
+  currentConditions_contains: String
+
+  """All values not containing the given string."""
+  currentConditions_not_contains: String
+
+  """All values starting with the given string."""
+  currentConditions_starts_with: String
+
+  """All values not starting with the given string."""
+  currentConditions_not_starts_with: String
+
+  """All values ending with the given string."""
+  currentConditions_ends_with: String
+
+  """All values not ending with the given string."""
+  currentConditions_not_ends_with: String
+  conditionsLastReported: DateTime
+
+  """All values that are not equal to given value."""
+  conditionsLastReported_not: DateTime
+
+  """All values that are contained in given list."""
+  conditionsLastReported_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  conditionsLastReported_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  conditionsLastReported_lt: DateTime
+
+  """All values less than or equal the given value."""
+  conditionsLastReported_lte: DateTime
+
+  """All values greater than the given value."""
+  conditionsLastReported_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  conditionsLastReported_gte: DateTime
+  favoriteCount: Int
+
+  """All values that are not equal to given value."""
+  favoriteCount_not: Int
+
+  """All values that are contained in given list."""
+  favoriteCount_in: [Int!]
+
+  """All values that are not contained in given list."""
+  favoriteCount_not_in: [Int!]
+
+  """All values less than the given value."""
+  favoriteCount_lt: Int
+
+  """All values less than or equal the given value."""
+  favoriteCount_lte: Int
+
+  """All values greater than the given value."""
+  favoriteCount_gt: Int
+
+  """All values greater than or equal the given value."""
+  favoriteCount_gte: Int
+  pastEvents_every: EventWhereInput
+  pastEvents_some: EventWhereInput
+  pastEvents_none: EventWhereInput
+  visitors_every: UserWhereInput
+  visitors_some: UserWhereInput
+  visitors_none: UserWhereInput
+  runReports_every: RunReportWhereInput
+  runReports_some: RunReportWhereInput
+  runReports_none: RunReportWhereInput
+}
+
+input TrailWhereUniqueInput {
+  id: ID
 }
 
 type User implements Node {
@@ -907,13 +6199,26 @@ type User implements Node {
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
+  isCharterMember: Boolean
   vehicle: Vehicle
+  titles: [Title!]!
   role: Role!
-  permissions: [Permission!]!
   accountStatus: AccountStatus!
+  accountType: AccountType!
+  office: Office
   candidateFor(where: BallotWhereInput, orderBy: BallotOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Ballot!]
   votesReceived(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
   votedFor(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
+  comfortLevel: String
+  log(where: LogItemWhereInput, orderBy: LogItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [LogItem!]
+  membershipLog(where: MembershipLogItemWhereInput, orderBy: MembershipLogItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [MembershipLogItem!]
+  membershipLogContributions(where: MembershipLogItemWhereInput, orderBy: MembershipLogItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [MembershipLogItem!]
+  eventsCreated(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Event!]
+  eventsRSVPd(where: RSVPWhereInput, orderBy: RSVPOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [RSVP!]
+  eventsHosted(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Event!]
+  trailsVisited(where: TrailWhereInput, orderBy: TrailOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Trail!]
+  bandaids(where: BandaidWhereInput, orderBy: BandaidOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Bandaid!]
+  runReportsLogged(where: RunReportWhereInput, orderBy: RunReportOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [RunReport!]
 }
 
 """A connection to a list of items."""
@@ -927,6 +6232,7 @@ type UserConnection {
 }
 
 input UserCreateInput {
+  id: ID
   acctCreated: DateTime!
   joined: DateTime
   firstName: String!
@@ -937,18 +6243,76 @@ input UserCreateInput {
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
+  isCharterMember: Boolean
   role: Role
   accountStatus: AccountStatus
-  permissions: UserCreatepermissionsInput
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
   votedFor: VoteCreateManyWithoutVoterInput
+  log: LogItemCreateManyWithoutUserInput
+  membershipLog: MembershipLogItemCreateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemCreateManyWithoutInitiatorInput
+  eventsCreated: EventCreateManyWithoutCreatorInput
+  eventsRSVPd: RSVPCreateManyWithoutMemberInput
+  eventsHosted: EventCreateManyWithoutHostInput
+  trailsVisited: TrailCreateManyWithoutVisitorsInput
+  bandaids: BandaidCreateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportCreateManyWithoutReporterInput
 }
 
 input UserCreateManyWithoutCandidateForInput {
   create: [UserCreateWithoutCandidateForInput!]
   connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateManyWithoutTrailsVisitedInput {
+  create: [UserCreateWithoutTrailsVisitedInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateOneWithoutBandaidsInput {
+  create: UserCreateWithoutBandaidsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutEventsCreatedInput {
+  create: UserCreateWithoutEventsCreatedInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutEventsHostedInput {
+  create: UserCreateWithoutEventsHostedInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutEventsRSVPdInput {
+  create: UserCreateWithoutEventsRSVPdInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutLogInput {
+  create: UserCreateWithoutLogInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutMembershipLogContributionsInput {
+  create: UserCreateWithoutMembershipLogContributionsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutMembershipLogInput {
+  create: UserCreateWithoutMembershipLogInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutRunReportsLoggedInput {
+  create: UserCreateWithoutRunReportsLoggedInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutVotedForInput {
@@ -961,11 +6325,45 @@ input UserCreateOneWithoutVotesReceivedInput {
   connect: UserWhereUniqueInput
 }
 
-input UserCreatepermissionsInput {
-  set: [Permission!]
+input UserCreatetitlesInput {
+  set: [Title!]
+}
+
+input UserCreateWithoutBandaidsInput {
+  id: ID
+  acctCreated: DateTime!
+  joined: DateTime
+  firstName: String!
+  lastName: String!
+  username: String!
+  email: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserCreatetitlesInput
+  vehicle: VehicleCreateOneInput
+  candidateFor: BallotCreateManyWithoutCandidatesInput
+  votesReceived: VoteCreateManyWithoutCandidateInput
+  votedFor: VoteCreateManyWithoutVoterInput
+  log: LogItemCreateManyWithoutUserInput
+  membershipLog: MembershipLogItemCreateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemCreateManyWithoutInitiatorInput
+  eventsCreated: EventCreateManyWithoutCreatorInput
+  eventsRSVPd: RSVPCreateManyWithoutMemberInput
+  eventsHosted: EventCreateManyWithoutHostInput
+  trailsVisited: TrailCreateManyWithoutVisitorsInput
+  runReportsLogged: RunReportCreateManyWithoutReporterInput
 }
 
 input UserCreateWithoutCandidateForInput {
+  id: ID
   acctCreated: DateTime!
   joined: DateTime
   firstName: String!
@@ -976,15 +6374,293 @@ input UserCreateWithoutCandidateForInput {
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
+  isCharterMember: Boolean
   role: Role
   accountStatus: AccountStatus
-  permissions: UserCreatepermissionsInput
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   votesReceived: VoteCreateManyWithoutCandidateInput
   votedFor: VoteCreateManyWithoutVoterInput
+  log: LogItemCreateManyWithoutUserInput
+  membershipLog: MembershipLogItemCreateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemCreateManyWithoutInitiatorInput
+  eventsCreated: EventCreateManyWithoutCreatorInput
+  eventsRSVPd: RSVPCreateManyWithoutMemberInput
+  eventsHosted: EventCreateManyWithoutHostInput
+  trailsVisited: TrailCreateManyWithoutVisitorsInput
+  bandaids: BandaidCreateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportCreateManyWithoutReporterInput
+}
+
+input UserCreateWithoutEventsCreatedInput {
+  id: ID
+  acctCreated: DateTime!
+  joined: DateTime
+  firstName: String!
+  lastName: String!
+  username: String!
+  email: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserCreatetitlesInput
+  vehicle: VehicleCreateOneInput
+  candidateFor: BallotCreateManyWithoutCandidatesInput
+  votesReceived: VoteCreateManyWithoutCandidateInput
+  votedFor: VoteCreateManyWithoutVoterInput
+  log: LogItemCreateManyWithoutUserInput
+  membershipLog: MembershipLogItemCreateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemCreateManyWithoutInitiatorInput
+  eventsRSVPd: RSVPCreateManyWithoutMemberInput
+  eventsHosted: EventCreateManyWithoutHostInput
+  trailsVisited: TrailCreateManyWithoutVisitorsInput
+  bandaids: BandaidCreateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportCreateManyWithoutReporterInput
+}
+
+input UserCreateWithoutEventsHostedInput {
+  id: ID
+  acctCreated: DateTime!
+  joined: DateTime
+  firstName: String!
+  lastName: String!
+  username: String!
+  email: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserCreatetitlesInput
+  vehicle: VehicleCreateOneInput
+  candidateFor: BallotCreateManyWithoutCandidatesInput
+  votesReceived: VoteCreateManyWithoutCandidateInput
+  votedFor: VoteCreateManyWithoutVoterInput
+  log: LogItemCreateManyWithoutUserInput
+  membershipLog: MembershipLogItemCreateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemCreateManyWithoutInitiatorInput
+  eventsCreated: EventCreateManyWithoutCreatorInput
+  eventsRSVPd: RSVPCreateManyWithoutMemberInput
+  trailsVisited: TrailCreateManyWithoutVisitorsInput
+  bandaids: BandaidCreateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportCreateManyWithoutReporterInput
+}
+
+input UserCreateWithoutEventsRSVPdInput {
+  id: ID
+  acctCreated: DateTime!
+  joined: DateTime
+  firstName: String!
+  lastName: String!
+  username: String!
+  email: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserCreatetitlesInput
+  vehicle: VehicleCreateOneInput
+  candidateFor: BallotCreateManyWithoutCandidatesInput
+  votesReceived: VoteCreateManyWithoutCandidateInput
+  votedFor: VoteCreateManyWithoutVoterInput
+  log: LogItemCreateManyWithoutUserInput
+  membershipLog: MembershipLogItemCreateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemCreateManyWithoutInitiatorInput
+  eventsCreated: EventCreateManyWithoutCreatorInput
+  eventsHosted: EventCreateManyWithoutHostInput
+  trailsVisited: TrailCreateManyWithoutVisitorsInput
+  bandaids: BandaidCreateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportCreateManyWithoutReporterInput
+}
+
+input UserCreateWithoutLogInput {
+  id: ID
+  acctCreated: DateTime!
+  joined: DateTime
+  firstName: String!
+  lastName: String!
+  username: String!
+  email: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserCreatetitlesInput
+  vehicle: VehicleCreateOneInput
+  candidateFor: BallotCreateManyWithoutCandidatesInput
+  votesReceived: VoteCreateManyWithoutCandidateInput
+  votedFor: VoteCreateManyWithoutVoterInput
+  membershipLog: MembershipLogItemCreateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemCreateManyWithoutInitiatorInput
+  eventsCreated: EventCreateManyWithoutCreatorInput
+  eventsRSVPd: RSVPCreateManyWithoutMemberInput
+  eventsHosted: EventCreateManyWithoutHostInput
+  trailsVisited: TrailCreateManyWithoutVisitorsInput
+  bandaids: BandaidCreateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportCreateManyWithoutReporterInput
+}
+
+input UserCreateWithoutMembershipLogContributionsInput {
+  id: ID
+  acctCreated: DateTime!
+  joined: DateTime
+  firstName: String!
+  lastName: String!
+  username: String!
+  email: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserCreatetitlesInput
+  vehicle: VehicleCreateOneInput
+  candidateFor: BallotCreateManyWithoutCandidatesInput
+  votesReceived: VoteCreateManyWithoutCandidateInput
+  votedFor: VoteCreateManyWithoutVoterInput
+  log: LogItemCreateManyWithoutUserInput
+  membershipLog: MembershipLogItemCreateManyWithoutUserInput
+  eventsCreated: EventCreateManyWithoutCreatorInput
+  eventsRSVPd: RSVPCreateManyWithoutMemberInput
+  eventsHosted: EventCreateManyWithoutHostInput
+  trailsVisited: TrailCreateManyWithoutVisitorsInput
+  bandaids: BandaidCreateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportCreateManyWithoutReporterInput
+}
+
+input UserCreateWithoutMembershipLogInput {
+  id: ID
+  acctCreated: DateTime!
+  joined: DateTime
+  firstName: String!
+  lastName: String!
+  username: String!
+  email: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserCreatetitlesInput
+  vehicle: VehicleCreateOneInput
+  candidateFor: BallotCreateManyWithoutCandidatesInput
+  votesReceived: VoteCreateManyWithoutCandidateInput
+  votedFor: VoteCreateManyWithoutVoterInput
+  log: LogItemCreateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemCreateManyWithoutInitiatorInput
+  eventsCreated: EventCreateManyWithoutCreatorInput
+  eventsRSVPd: RSVPCreateManyWithoutMemberInput
+  eventsHosted: EventCreateManyWithoutHostInput
+  trailsVisited: TrailCreateManyWithoutVisitorsInput
+  bandaids: BandaidCreateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportCreateManyWithoutReporterInput
+}
+
+input UserCreateWithoutRunReportsLoggedInput {
+  id: ID
+  acctCreated: DateTime!
+  joined: DateTime
+  firstName: String!
+  lastName: String!
+  username: String!
+  email: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserCreatetitlesInput
+  vehicle: VehicleCreateOneInput
+  candidateFor: BallotCreateManyWithoutCandidatesInput
+  votesReceived: VoteCreateManyWithoutCandidateInput
+  votedFor: VoteCreateManyWithoutVoterInput
+  log: LogItemCreateManyWithoutUserInput
+  membershipLog: MembershipLogItemCreateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemCreateManyWithoutInitiatorInput
+  eventsCreated: EventCreateManyWithoutCreatorInput
+  eventsRSVPd: RSVPCreateManyWithoutMemberInput
+  eventsHosted: EventCreateManyWithoutHostInput
+  trailsVisited: TrailCreateManyWithoutVisitorsInput
+  bandaids: BandaidCreateManyWithoutMemberInvolvedInput
+}
+
+input UserCreateWithoutTrailsVisitedInput {
+  id: ID
+  acctCreated: DateTime!
+  joined: DateTime
+  firstName: String!
+  lastName: String!
+  username: String!
+  email: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserCreatetitlesInput
+  vehicle: VehicleCreateOneInput
+  candidateFor: BallotCreateManyWithoutCandidatesInput
+  votesReceived: VoteCreateManyWithoutCandidateInput
+  votedFor: VoteCreateManyWithoutVoterInput
+  log: LogItemCreateManyWithoutUserInput
+  membershipLog: MembershipLogItemCreateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemCreateManyWithoutInitiatorInput
+  eventsCreated: EventCreateManyWithoutCreatorInput
+  eventsRSVPd: RSVPCreateManyWithoutMemberInput
+  eventsHosted: EventCreateManyWithoutHostInput
+  bandaids: BandaidCreateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportCreateManyWithoutReporterInput
 }
 
 input UserCreateWithoutVotedForInput {
+  id: ID
   acctCreated: DateTime!
   joined: DateTime
   firstName: String!
@@ -995,15 +6671,29 @@ input UserCreateWithoutVotedForInput {
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
+  isCharterMember: Boolean
   role: Role
   accountStatus: AccountStatus
-  permissions: UserCreatepermissionsInput
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
+  log: LogItemCreateManyWithoutUserInput
+  membershipLog: MembershipLogItemCreateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemCreateManyWithoutInitiatorInput
+  eventsCreated: EventCreateManyWithoutCreatorInput
+  eventsRSVPd: RSVPCreateManyWithoutMemberInput
+  eventsHosted: EventCreateManyWithoutHostInput
+  trailsVisited: TrailCreateManyWithoutVisitorsInput
+  bandaids: BandaidCreateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportCreateManyWithoutReporterInput
 }
 
 input UserCreateWithoutVotesReceivedInput {
+  id: ID
   acctCreated: DateTime!
   joined: DateTime
   firstName: String!
@@ -1014,12 +6704,25 @@ input UserCreateWithoutVotesReceivedInput {
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
+  isCharterMember: Boolean
   role: Role
   accountStatus: AccountStatus
-  permissions: UserCreatepermissionsInput
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votedFor: VoteCreateManyWithoutVoterInput
+  log: LogItemCreateManyWithoutUserInput
+  membershipLog: MembershipLogItemCreateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemCreateManyWithoutInitiatorInput
+  eventsCreated: EventCreateManyWithoutCreatorInput
+  eventsRSVPd: RSVPCreateManyWithoutMemberInput
+  eventsHosted: EventCreateManyWithoutHostInput
+  trailsVisited: TrailCreateManyWithoutVisitorsInput
+  bandaids: BandaidCreateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportCreateManyWithoutReporterInput
 }
 
 """An edge in a connection."""
@@ -1054,10 +6757,18 @@ enum UserOrderByInput {
   resetTokenExpiry_DESC
   avatarSmall_ASC
   avatarSmall_DESC
+  isCharterMember_ASC
+  isCharterMember_DESC
   role_ASC
   role_DESC
   accountStatus_ASC
   accountStatus_DESC
+  accountType_ASC
+  accountType_DESC
+  office_ASC
+  office_DESC
+  comfortLevel_ASC
+  comfortLevel_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -1076,9 +6787,13 @@ type UserPreviousValues {
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
+  isCharterMember: Boolean
+  titles: [Title!]!
   role: Role!
-  permissions: [Permission!]!
   accountStatus: AccountStatus!
+  accountType: AccountType!
+  office: Office
+  comfortLevel: String
 }
 
 input UserScalarWhereInput {
@@ -1476,6 +7191,10 @@ input UserScalarWhereInput {
 
   """All values not ending with the given string."""
   avatarSmall_not_ends_with: String
+  isCharterMember: Boolean
+
+  """All values that are not equal to given value."""
+  isCharterMember_not: Boolean
   role: Role
 
   """All values that are not equal to given value."""
@@ -1496,6 +7215,66 @@ input UserScalarWhereInput {
 
   """All values that are not contained in given list."""
   accountStatus_not_in: [AccountStatus!]
+  accountType: AccountType
+
+  """All values that are not equal to given value."""
+  accountType_not: AccountType
+
+  """All values that are contained in given list."""
+  accountType_in: [AccountType!]
+
+  """All values that are not contained in given list."""
+  accountType_not_in: [AccountType!]
+  office: Office
+
+  """All values that are not equal to given value."""
+  office_not: Office
+
+  """All values that are contained in given list."""
+  office_in: [Office!]
+
+  """All values that are not contained in given list."""
+  office_not_in: [Office!]
+  comfortLevel: String
+
+  """All values that are not equal to given value."""
+  comfortLevel_not: String
+
+  """All values that are contained in given list."""
+  comfortLevel_in: [String!]
+
+  """All values that are not contained in given list."""
+  comfortLevel_not_in: [String!]
+
+  """All values less than the given value."""
+  comfortLevel_lt: String
+
+  """All values less than or equal the given value."""
+  comfortLevel_lte: String
+
+  """All values greater than the given value."""
+  comfortLevel_gt: String
+
+  """All values greater than or equal the given value."""
+  comfortLevel_gte: String
+
+  """All values containing the given string."""
+  comfortLevel_contains: String
+
+  """All values not containing the given string."""
+  comfortLevel_not_contains: String
+
+  """All values starting with the given string."""
+  comfortLevel_starts_with: String
+
+  """All values not starting with the given string."""
+  comfortLevel_not_starts_with: String
+
+  """All values ending with the given string."""
+  comfortLevel_ends_with: String
+
+  """All values not ending with the given string."""
+  comfortLevel_not_ends_with: String
 }
 
 type UserSubscriptionPayload {
@@ -1548,13 +7327,26 @@ input UserUpdateInput {
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
+  isCharterMember: Boolean
   role: Role
   accountStatus: AccountStatus
-  permissions: UserUpdatepermissionsInput
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
   votedFor: VoteUpdateManyWithoutVoterInput
+  log: LogItemUpdateManyWithoutUserInput
+  membershipLog: MembershipLogItemUpdateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemUpdateManyWithoutInitiatorInput
+  eventsCreated: EventUpdateManyWithoutCreatorInput
+  eventsRSVPd: RSVPUpdateManyWithoutMemberInput
+  eventsHosted: EventUpdateManyWithoutHostInput
+  trailsVisited: TrailUpdateManyWithoutVisitorsInput
+  bandaids: BandaidUpdateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportUpdateManyWithoutReporterInput
 }
 
 input UserUpdateManyDataInput {
@@ -1568,9 +7360,13 @@ input UserUpdateManyDataInput {
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
+  isCharterMember: Boolean
   role: Role
   accountStatus: AccountStatus
-  permissions: UserUpdatepermissionsInput
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserUpdatetitlesInput
 }
 
 input UserUpdateManyMutationInput {
@@ -1584,9 +7380,13 @@ input UserUpdateManyMutationInput {
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
+  isCharterMember: Boolean
   role: Role
   accountStatus: AccountStatus
-  permissions: UserUpdatepermissionsInput
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserUpdatetitlesInput
 }
 
 input UserUpdateManyWithoutCandidateForInput {
@@ -1601,9 +7401,63 @@ input UserUpdateManyWithoutCandidateForInput {
   upsert: [UserUpsertWithWhereUniqueWithoutCandidateForInput!]
 }
 
+input UserUpdateManyWithoutTrailsVisitedInput {
+  create: [UserCreateWithoutTrailsVisitedInput!]
+  connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  delete: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutTrailsVisitedInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+  deleteMany: [UserScalarWhereInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutTrailsVisitedInput!]
+}
+
 input UserUpdateManyWithWhereNestedInput {
   where: UserScalarWhereInput!
   data: UserUpdateManyDataInput!
+}
+
+input UserUpdateOneRequiredWithoutEventsCreatedInput {
+  create: UserCreateWithoutEventsCreatedInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutEventsCreatedDataInput
+  upsert: UserUpsertWithoutEventsCreatedInput
+}
+
+input UserUpdateOneRequiredWithoutEventsRSVPdInput {
+  create: UserCreateWithoutEventsRSVPdInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutEventsRSVPdDataInput
+  upsert: UserUpsertWithoutEventsRSVPdInput
+}
+
+input UserUpdateOneRequiredWithoutLogInput {
+  create: UserCreateWithoutLogInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutLogDataInput
+  upsert: UserUpsertWithoutLogInput
+}
+
+input UserUpdateOneRequiredWithoutMembershipLogContributionsInput {
+  create: UserCreateWithoutMembershipLogContributionsInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutMembershipLogContributionsDataInput
+  upsert: UserUpsertWithoutMembershipLogContributionsInput
+}
+
+input UserUpdateOneRequiredWithoutMembershipLogInput {
+  create: UserCreateWithoutMembershipLogInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutMembershipLogDataInput
+  upsert: UserUpsertWithoutMembershipLogInput
+}
+
+input UserUpdateOneRequiredWithoutRunReportsLoggedInput {
+  create: UserCreateWithoutRunReportsLoggedInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutRunReportsLoggedDataInput
+  upsert: UserUpsertWithoutRunReportsLoggedInput
 }
 
 input UserUpdateOneRequiredWithoutVotedForInput {
@@ -1611,6 +7465,24 @@ input UserUpdateOneRequiredWithoutVotedForInput {
   connect: UserWhereUniqueInput
   update: UserUpdateWithoutVotedForDataInput
   upsert: UserUpsertWithoutVotedForInput
+}
+
+input UserUpdateOneWithoutBandaidsInput {
+  create: UserCreateWithoutBandaidsInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: UserUpdateWithoutBandaidsDataInput
+  upsert: UserUpsertWithoutBandaidsInput
+}
+
+input UserUpdateOneWithoutEventsHostedInput {
+  create: UserCreateWithoutEventsHostedInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: UserUpdateWithoutEventsHostedDataInput
+  upsert: UserUpsertWithoutEventsHostedInput
 }
 
 input UserUpdateOneWithoutVotesReceivedInput {
@@ -1622,8 +7494,40 @@ input UserUpdateOneWithoutVotesReceivedInput {
   upsert: UserUpsertWithoutVotesReceivedInput
 }
 
-input UserUpdatepermissionsInput {
-  set: [Permission!]
+input UserUpdatetitlesInput {
+  set: [Title!]
+}
+
+input UserUpdateWithoutBandaidsDataInput {
+  acctCreated: DateTime
+  joined: DateTime
+  firstName: String
+  lastName: String
+  username: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserUpdatetitlesInput
+  vehicle: VehicleUpdateOneInput
+  candidateFor: BallotUpdateManyWithoutCandidatesInput
+  votesReceived: VoteUpdateManyWithoutCandidateInput
+  votedFor: VoteUpdateManyWithoutVoterInput
+  log: LogItemUpdateManyWithoutUserInput
+  membershipLog: MembershipLogItemUpdateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemUpdateManyWithoutInitiatorInput
+  eventsCreated: EventUpdateManyWithoutCreatorInput
+  eventsRSVPd: RSVPUpdateManyWithoutMemberInput
+  eventsHosted: EventUpdateManyWithoutHostInput
+  trailsVisited: TrailUpdateManyWithoutVisitorsInput
+  runReportsLogged: RunReportUpdateManyWithoutReporterInput
 }
 
 input UserUpdateWithoutCandidateForDataInput {
@@ -1637,12 +7541,281 @@ input UserUpdateWithoutCandidateForDataInput {
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
+  isCharterMember: Boolean
   role: Role
   accountStatus: AccountStatus
-  permissions: UserUpdatepermissionsInput
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
   votedFor: VoteUpdateManyWithoutVoterInput
+  log: LogItemUpdateManyWithoutUserInput
+  membershipLog: MembershipLogItemUpdateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemUpdateManyWithoutInitiatorInput
+  eventsCreated: EventUpdateManyWithoutCreatorInput
+  eventsRSVPd: RSVPUpdateManyWithoutMemberInput
+  eventsHosted: EventUpdateManyWithoutHostInput
+  trailsVisited: TrailUpdateManyWithoutVisitorsInput
+  bandaids: BandaidUpdateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportUpdateManyWithoutReporterInput
+}
+
+input UserUpdateWithoutEventsCreatedDataInput {
+  acctCreated: DateTime
+  joined: DateTime
+  firstName: String
+  lastName: String
+  username: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserUpdatetitlesInput
+  vehicle: VehicleUpdateOneInput
+  candidateFor: BallotUpdateManyWithoutCandidatesInput
+  votesReceived: VoteUpdateManyWithoutCandidateInput
+  votedFor: VoteUpdateManyWithoutVoterInput
+  log: LogItemUpdateManyWithoutUserInput
+  membershipLog: MembershipLogItemUpdateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemUpdateManyWithoutInitiatorInput
+  eventsRSVPd: RSVPUpdateManyWithoutMemberInput
+  eventsHosted: EventUpdateManyWithoutHostInput
+  trailsVisited: TrailUpdateManyWithoutVisitorsInput
+  bandaids: BandaidUpdateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportUpdateManyWithoutReporterInput
+}
+
+input UserUpdateWithoutEventsHostedDataInput {
+  acctCreated: DateTime
+  joined: DateTime
+  firstName: String
+  lastName: String
+  username: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserUpdatetitlesInput
+  vehicle: VehicleUpdateOneInput
+  candidateFor: BallotUpdateManyWithoutCandidatesInput
+  votesReceived: VoteUpdateManyWithoutCandidateInput
+  votedFor: VoteUpdateManyWithoutVoterInput
+  log: LogItemUpdateManyWithoutUserInput
+  membershipLog: MembershipLogItemUpdateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemUpdateManyWithoutInitiatorInput
+  eventsCreated: EventUpdateManyWithoutCreatorInput
+  eventsRSVPd: RSVPUpdateManyWithoutMemberInput
+  trailsVisited: TrailUpdateManyWithoutVisitorsInput
+  bandaids: BandaidUpdateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportUpdateManyWithoutReporterInput
+}
+
+input UserUpdateWithoutEventsRSVPdDataInput {
+  acctCreated: DateTime
+  joined: DateTime
+  firstName: String
+  lastName: String
+  username: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserUpdatetitlesInput
+  vehicle: VehicleUpdateOneInput
+  candidateFor: BallotUpdateManyWithoutCandidatesInput
+  votesReceived: VoteUpdateManyWithoutCandidateInput
+  votedFor: VoteUpdateManyWithoutVoterInput
+  log: LogItemUpdateManyWithoutUserInput
+  membershipLog: MembershipLogItemUpdateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemUpdateManyWithoutInitiatorInput
+  eventsCreated: EventUpdateManyWithoutCreatorInput
+  eventsHosted: EventUpdateManyWithoutHostInput
+  trailsVisited: TrailUpdateManyWithoutVisitorsInput
+  bandaids: BandaidUpdateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportUpdateManyWithoutReporterInput
+}
+
+input UserUpdateWithoutLogDataInput {
+  acctCreated: DateTime
+  joined: DateTime
+  firstName: String
+  lastName: String
+  username: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserUpdatetitlesInput
+  vehicle: VehicleUpdateOneInput
+  candidateFor: BallotUpdateManyWithoutCandidatesInput
+  votesReceived: VoteUpdateManyWithoutCandidateInput
+  votedFor: VoteUpdateManyWithoutVoterInput
+  membershipLog: MembershipLogItemUpdateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemUpdateManyWithoutInitiatorInput
+  eventsCreated: EventUpdateManyWithoutCreatorInput
+  eventsRSVPd: RSVPUpdateManyWithoutMemberInput
+  eventsHosted: EventUpdateManyWithoutHostInput
+  trailsVisited: TrailUpdateManyWithoutVisitorsInput
+  bandaids: BandaidUpdateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportUpdateManyWithoutReporterInput
+}
+
+input UserUpdateWithoutMembershipLogContributionsDataInput {
+  acctCreated: DateTime
+  joined: DateTime
+  firstName: String
+  lastName: String
+  username: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserUpdatetitlesInput
+  vehicle: VehicleUpdateOneInput
+  candidateFor: BallotUpdateManyWithoutCandidatesInput
+  votesReceived: VoteUpdateManyWithoutCandidateInput
+  votedFor: VoteUpdateManyWithoutVoterInput
+  log: LogItemUpdateManyWithoutUserInput
+  membershipLog: MembershipLogItemUpdateManyWithoutUserInput
+  eventsCreated: EventUpdateManyWithoutCreatorInput
+  eventsRSVPd: RSVPUpdateManyWithoutMemberInput
+  eventsHosted: EventUpdateManyWithoutHostInput
+  trailsVisited: TrailUpdateManyWithoutVisitorsInput
+  bandaids: BandaidUpdateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportUpdateManyWithoutReporterInput
+}
+
+input UserUpdateWithoutMembershipLogDataInput {
+  acctCreated: DateTime
+  joined: DateTime
+  firstName: String
+  lastName: String
+  username: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserUpdatetitlesInput
+  vehicle: VehicleUpdateOneInput
+  candidateFor: BallotUpdateManyWithoutCandidatesInput
+  votesReceived: VoteUpdateManyWithoutCandidateInput
+  votedFor: VoteUpdateManyWithoutVoterInput
+  log: LogItemUpdateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemUpdateManyWithoutInitiatorInput
+  eventsCreated: EventUpdateManyWithoutCreatorInput
+  eventsRSVPd: RSVPUpdateManyWithoutMemberInput
+  eventsHosted: EventUpdateManyWithoutHostInput
+  trailsVisited: TrailUpdateManyWithoutVisitorsInput
+  bandaids: BandaidUpdateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportUpdateManyWithoutReporterInput
+}
+
+input UserUpdateWithoutRunReportsLoggedDataInput {
+  acctCreated: DateTime
+  joined: DateTime
+  firstName: String
+  lastName: String
+  username: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserUpdatetitlesInput
+  vehicle: VehicleUpdateOneInput
+  candidateFor: BallotUpdateManyWithoutCandidatesInput
+  votesReceived: VoteUpdateManyWithoutCandidateInput
+  votedFor: VoteUpdateManyWithoutVoterInput
+  log: LogItemUpdateManyWithoutUserInput
+  membershipLog: MembershipLogItemUpdateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemUpdateManyWithoutInitiatorInput
+  eventsCreated: EventUpdateManyWithoutCreatorInput
+  eventsRSVPd: RSVPUpdateManyWithoutMemberInput
+  eventsHosted: EventUpdateManyWithoutHostInput
+  trailsVisited: TrailUpdateManyWithoutVisitorsInput
+  bandaids: BandaidUpdateManyWithoutMemberInvolvedInput
+}
+
+input UserUpdateWithoutTrailsVisitedDataInput {
+  acctCreated: DateTime
+  joined: DateTime
+  firstName: String
+  lastName: String
+  username: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserUpdatetitlesInput
+  vehicle: VehicleUpdateOneInput
+  candidateFor: BallotUpdateManyWithoutCandidatesInput
+  votesReceived: VoteUpdateManyWithoutCandidateInput
+  votedFor: VoteUpdateManyWithoutVoterInput
+  log: LogItemUpdateManyWithoutUserInput
+  membershipLog: MembershipLogItemUpdateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemUpdateManyWithoutInitiatorInput
+  eventsCreated: EventUpdateManyWithoutCreatorInput
+  eventsRSVPd: RSVPUpdateManyWithoutMemberInput
+  eventsHosted: EventUpdateManyWithoutHostInput
+  bandaids: BandaidUpdateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportUpdateManyWithoutReporterInput
 }
 
 input UserUpdateWithoutVotedForDataInput {
@@ -1656,12 +7829,25 @@ input UserUpdateWithoutVotedForDataInput {
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
+  isCharterMember: Boolean
   role: Role
   accountStatus: AccountStatus
-  permissions: UserUpdatepermissionsInput
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
+  log: LogItemUpdateManyWithoutUserInput
+  membershipLog: MembershipLogItemUpdateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemUpdateManyWithoutInitiatorInput
+  eventsCreated: EventUpdateManyWithoutCreatorInput
+  eventsRSVPd: RSVPUpdateManyWithoutMemberInput
+  eventsHosted: EventUpdateManyWithoutHostInput
+  trailsVisited: TrailUpdateManyWithoutVisitorsInput
+  bandaids: BandaidUpdateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportUpdateManyWithoutReporterInput
 }
 
 input UserUpdateWithoutVotesReceivedDataInput {
@@ -1675,17 +7861,75 @@ input UserUpdateWithoutVotesReceivedDataInput {
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
+  isCharterMember: Boolean
   role: Role
   accountStatus: AccountStatus
-  permissions: UserUpdatepermissionsInput
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votedFor: VoteUpdateManyWithoutVoterInput
+  log: LogItemUpdateManyWithoutUserInput
+  membershipLog: MembershipLogItemUpdateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemUpdateManyWithoutInitiatorInput
+  eventsCreated: EventUpdateManyWithoutCreatorInput
+  eventsRSVPd: RSVPUpdateManyWithoutMemberInput
+  eventsHosted: EventUpdateManyWithoutHostInput
+  trailsVisited: TrailUpdateManyWithoutVisitorsInput
+  bandaids: BandaidUpdateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportUpdateManyWithoutReporterInput
 }
 
 input UserUpdateWithWhereUniqueWithoutCandidateForInput {
   where: UserWhereUniqueInput!
   data: UserUpdateWithoutCandidateForDataInput!
+}
+
+input UserUpdateWithWhereUniqueWithoutTrailsVisitedInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateWithoutTrailsVisitedDataInput!
+}
+
+input UserUpsertWithoutBandaidsInput {
+  update: UserUpdateWithoutBandaidsDataInput!
+  create: UserCreateWithoutBandaidsInput!
+}
+
+input UserUpsertWithoutEventsCreatedInput {
+  update: UserUpdateWithoutEventsCreatedDataInput!
+  create: UserCreateWithoutEventsCreatedInput!
+}
+
+input UserUpsertWithoutEventsHostedInput {
+  update: UserUpdateWithoutEventsHostedDataInput!
+  create: UserCreateWithoutEventsHostedInput!
+}
+
+input UserUpsertWithoutEventsRSVPdInput {
+  update: UserUpdateWithoutEventsRSVPdDataInput!
+  create: UserCreateWithoutEventsRSVPdInput!
+}
+
+input UserUpsertWithoutLogInput {
+  update: UserUpdateWithoutLogDataInput!
+  create: UserCreateWithoutLogInput!
+}
+
+input UserUpsertWithoutMembershipLogContributionsInput {
+  update: UserUpdateWithoutMembershipLogContributionsDataInput!
+  create: UserCreateWithoutMembershipLogContributionsInput!
+}
+
+input UserUpsertWithoutMembershipLogInput {
+  update: UserUpdateWithoutMembershipLogDataInput!
+  create: UserCreateWithoutMembershipLogInput!
+}
+
+input UserUpsertWithoutRunReportsLoggedInput {
+  update: UserUpdateWithoutRunReportsLoggedDataInput!
+  create: UserCreateWithoutRunReportsLoggedInput!
 }
 
 input UserUpsertWithoutVotedForInput {
@@ -1702,6 +7946,12 @@ input UserUpsertWithWhereUniqueWithoutCandidateForInput {
   where: UserWhereUniqueInput!
   update: UserUpdateWithoutCandidateForDataInput!
   create: UserCreateWithoutCandidateForInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutTrailsVisitedInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutTrailsVisitedDataInput!
+  create: UserCreateWithoutTrailsVisitedInput!
 }
 
 input UserWhereInput {
@@ -2099,6 +8349,10 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   avatarSmall_not_ends_with: String
+  isCharterMember: Boolean
+
+  """All values that are not equal to given value."""
+  isCharterMember_not: Boolean
   role: Role
 
   """All values that are not equal to given value."""
@@ -2119,6 +8373,66 @@ input UserWhereInput {
 
   """All values that are not contained in given list."""
   accountStatus_not_in: [AccountStatus!]
+  accountType: AccountType
+
+  """All values that are not equal to given value."""
+  accountType_not: AccountType
+
+  """All values that are contained in given list."""
+  accountType_in: [AccountType!]
+
+  """All values that are not contained in given list."""
+  accountType_not_in: [AccountType!]
+  office: Office
+
+  """All values that are not equal to given value."""
+  office_not: Office
+
+  """All values that are contained in given list."""
+  office_in: [Office!]
+
+  """All values that are not contained in given list."""
+  office_not_in: [Office!]
+  comfortLevel: String
+
+  """All values that are not equal to given value."""
+  comfortLevel_not: String
+
+  """All values that are contained in given list."""
+  comfortLevel_in: [String!]
+
+  """All values that are not contained in given list."""
+  comfortLevel_not_in: [String!]
+
+  """All values less than the given value."""
+  comfortLevel_lt: String
+
+  """All values less than or equal the given value."""
+  comfortLevel_lte: String
+
+  """All values greater than the given value."""
+  comfortLevel_gt: String
+
+  """All values greater than or equal the given value."""
+  comfortLevel_gte: String
+
+  """All values containing the given string."""
+  comfortLevel_contains: String
+
+  """All values not containing the given string."""
+  comfortLevel_not_contains: String
+
+  """All values starting with the given string."""
+  comfortLevel_starts_with: String
+
+  """All values not starting with the given string."""
+  comfortLevel_not_starts_with: String
+
+  """All values ending with the given string."""
+  comfortLevel_ends_with: String
+
+  """All values not ending with the given string."""
+  comfortLevel_not_ends_with: String
   vehicle: VehicleWhereInput
   candidateFor_every: BallotWhereInput
   candidateFor_some: BallotWhereInput
@@ -2129,12 +8443,40 @@ input UserWhereInput {
   votedFor_every: VoteWhereInput
   votedFor_some: VoteWhereInput
   votedFor_none: VoteWhereInput
+  log_every: LogItemWhereInput
+  log_some: LogItemWhereInput
+  log_none: LogItemWhereInput
+  membershipLog_every: MembershipLogItemWhereInput
+  membershipLog_some: MembershipLogItemWhereInput
+  membershipLog_none: MembershipLogItemWhereInput
+  membershipLogContributions_every: MembershipLogItemWhereInput
+  membershipLogContributions_some: MembershipLogItemWhereInput
+  membershipLogContributions_none: MembershipLogItemWhereInput
+  eventsCreated_every: EventWhereInput
+  eventsCreated_some: EventWhereInput
+  eventsCreated_none: EventWhereInput
+  eventsRSVPd_every: RSVPWhereInput
+  eventsRSVPd_some: RSVPWhereInput
+  eventsRSVPd_none: RSVPWhereInput
+  eventsHosted_every: EventWhereInput
+  eventsHosted_some: EventWhereInput
+  eventsHosted_none: EventWhereInput
+  trailsVisited_every: TrailWhereInput
+  trailsVisited_some: TrailWhereInput
+  trailsVisited_none: TrailWhereInput
+  bandaids_every: BandaidWhereInput
+  bandaids_some: BandaidWhereInput
+  bandaids_none: BandaidWhereInput
+  runReportsLogged_every: RunReportWhereInput
+  runReportsLogged_some: RunReportWhereInput
+  runReportsLogged_none: RunReportWhereInput
 }
 
 input UserWhereUniqueInput {
   id: ID
   username: String
   email: String
+  office: Office
 }
 
 type Vehicle implements Node {
@@ -2145,6 +8487,7 @@ type Vehicle implements Node {
   name: String
   trim: String
   image: String
+  mods: [String!]!
 }
 
 """A connection to a list of items."""
@@ -2158,12 +8501,18 @@ type VehicleConnection {
 }
 
 input VehicleCreateInput {
+  id: ID
   year: Int!
   make: String!
   model: String!
   name: String
   trim: String
   image: String
+  mods: VehicleCreatemodsInput
+}
+
+input VehicleCreatemodsInput {
+  set: [String!]
 }
 
 input VehicleCreateOneInput {
@@ -2209,6 +8558,7 @@ type VehiclePreviousValues {
   name: String
   trim: String
   image: String
+  mods: [String!]!
 }
 
 type VehicleSubscriptionPayload {
@@ -2257,6 +8607,7 @@ input VehicleUpdateDataInput {
   name: String
   trim: String
   image: String
+  mods: VehicleUpdatemodsInput
 }
 
 input VehicleUpdateInput {
@@ -2266,6 +8617,7 @@ input VehicleUpdateInput {
   name: String
   trim: String
   image: String
+  mods: VehicleUpdatemodsInput
 }
 
 input VehicleUpdateManyMutationInput {
@@ -2275,6 +8627,11 @@ input VehicleUpdateManyMutationInput {
   name: String
   trim: String
   image: String
+  mods: VehicleUpdatemodsInput
+}
+
+input VehicleUpdatemodsInput {
+  set: [String!]
 }
 
 input VehicleUpdateOneInput {
@@ -2587,6 +8944,7 @@ type VoteConnection {
 }
 
 input VoteCreateInput {
+  id: ID
   dateTime: DateTime
   ballot: BallotCreateOneWithoutVotesInput!
   candidate: UserCreateOneWithoutVotesReceivedInput
@@ -2609,18 +8967,21 @@ input VoteCreateManyWithoutVoterInput {
 }
 
 input VoteCreateWithoutBallotInput {
+  id: ID
   dateTime: DateTime
   candidate: UserCreateOneWithoutVotesReceivedInput
   voter: UserCreateOneWithoutVotedForInput!
 }
 
 input VoteCreateWithoutCandidateInput {
+  id: ID
   dateTime: DateTime
   ballot: BallotCreateOneWithoutVotesInput!
   voter: UserCreateOneWithoutVotedForInput!
 }
 
 input VoteCreateWithoutVoterInput {
+  id: ID
   dateTime: DateTime
   ballot: BallotCreateOneWithoutVotesInput!
   candidate: UserCreateOneWithoutVotesReceivedInput

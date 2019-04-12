@@ -36,7 +36,7 @@ const Mutations = {
           email,
           password,
           avatarSmall: '/static/img/default-user.jpg',
-          acctCreated: new Date().toISOString()
+          acctCreated: new Date().toISOString(),
         },
       },
       info,
@@ -104,7 +104,9 @@ const Mutations = {
       subject: 'Your password reset',
       html: makeANiceEmail(`
         Your password reset token is here!
-        <a href="${process.env.FRONTEND_URL}/reset?token=${resetToken}">Click here to reset your password</a>
+        <a href="${
+          process.env.FRONTEND_URL
+        }/reset?token=${resetToken}">Click here to reset your password</a>
       `),
     });
 
@@ -157,9 +159,12 @@ const Mutations = {
     }
 
     // Query the current user
-    const currentUser = await ctx.db.query.user({
-      where: { id: ctx.request.userId }
-    }, info);
+    const currentUser = await ctx.db.query.user(
+      {
+        where: { id: ctx.request.userId },
+      },
+      info,
+    );
 
     // Have proper roles to do this?
     hasRole(currentUser, ['ADMIN']);
@@ -168,16 +173,139 @@ const Mutations = {
     hasAccountStatus(ctx.request.user, ['ACTIVE']);
 
     // Update role
-    return ctx.db.mutation.updateUser({
+    return ctx.db.mutation.updateUser(
+      {
+        data: {
+          role: {
+            set: args.role,
+          },
+        },
+        where: {
+          id: args.userId,
+        },
+      },
+      info,
+    );
+  },
+  async createEvent(parent, args, ctx, info) {
+    // Logged in?
+    // if (!ctx.request.userId) {
+    //   throw new Error('User must be logged in');
+    // }
+
+    // Have proper roles to do this?
+    // hasRole(ctx.request.user, ['ADMIN', 'OFFICER', 'RUN_MASTER']);
+
+    // Requesting user has proper account status?
+    // hasAccountStatus(ctx.request.user, ['ACTIVE']);
+
+    const { event } = args;
+
+    return ctx.db.mutation.createEvent({
       data: {
-        role: {
-          set: args.role,
-        }
+        title: 'Test Event',
+        description: 'Lorem ippsum sit dolor emet',
+        startTime: '2019-05-01T01:00:00.000Z',
+        endTime: '2019-05-01T03:00:00.000Z',
+        // address: '',
+        creator: {
+          connect: {
+            id: 'cjom00lwgdo3x0a64nm3nxu09',
+            // username: 'meow',
+          },
+        },
+        leader: {
+          connect: {
+            id: 'cjom00v2fdo570a644g7msg6n',
+            // username: 'neow',
+          },
+        },
+        rallyPoint: '123 Main Street',
+        rallyTime: '2019-05-01T00:45:00.000Z',
+        attendees: {
+          connect: [
+            { id: 'cjom00v2fdo570a644g7msg6n' },
+            { id: 'cjom00lwgdo3x0a64nm3nxu09' }, // at least creator and leader (if not the same)
+          ],
+        },
+        // trail: {
+        //   connect: {
+        //     id: event.trailId,
+        //   },
+        // },
       },
-      where: {
-        id: args.userId,
+    });
+  },
+  async setRSVP(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error('User must be logged in');
+    }
+
+    const { rsvp } = args;
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+
+    // Requesting user has proper role?
+    if (ctx.request.userId !== rsvp.userId) {
+      hasRole(ctx.request.user, ['ADMIN', 'OFFICER']);
+    }
+
+    // Query the current user
+    const currentUser = await ctx.db.query.user(
+      { where: { id: rsvp.userId } },
+      '{ id, eventsRSVPd { id, status, event { id } } }',
+    );
+
+    if (!currentUser) {
+      throw new Error('User does not have permission');
+    }
+
+    // Has this user already RSVPd?
+    const userRSVP = currentUser.eventsRSVPd.find(
+      eventRSVP => eventRSVP.event.id === rsvp.eventId,
+    );
+
+    // If this RSVP is not different, return gracefully
+    if (userRSVP && (userRSVP.status === rsvp.status)) {
+      return { message: 'Already RSVPd, no change recorded' };
+    }
+
+    // If this RSVP is different, update RSVP
+    if (userRSVP && userRSVP.status !== rsvp.status) {
+      await ctx.db.mutation.updateRSVP(
+        {
+          where: { id: userRSVP.id },
+          data: { status: rsvp.status },
+        },
+        info,
+      );
+
+      return { message: 'Thank you for updating your RSVP' };
+    }
+
+    // If RSVP is missing, record RSVP
+    await ctx.db.mutation.createRSVP(
+      {
+        data: {
+          status: rsvp.status,
+          member: {
+            connect: {
+              id: rsvp.userId,
+            },
+          },
+          event: {
+            connect: {
+              id: rsvp.eventId,
+            },
+          },
+        },
       },
-    }, info);
+      info,
+    );
+
+    return { message: 'Thank you for RSVPing' };
   },
   async submitElection(parent, args, ctx, info) {
     // Logged in?
@@ -202,14 +330,17 @@ const Mutations = {
     });
 
     // Update election
-    return ctx.db.mutation.createElection({
-      data: {
-        electionName: election.electionName,
-        startTime: election.startTime,
-        endTime: election.endTime, // 1 week default
-        races: { create: races },
+    return ctx.db.mutation.createElection(
+      {
+        data: {
+          electionName: election.electionName,
+          startTime: election.startTime,
+          endTime: election.endTime, // 1 week default
+          races: { create: races },
+        },
       },
-    }, info);
+      info,
+    );
   },
   async submitVote(parent, args, ctx, info) {
     // Logged in?
@@ -225,14 +356,17 @@ const Mutations = {
 
     // Have they voted for this ballot before?
     const { vote } = args;
-    const votes = await ctx.db.query.votes({
-      where: {
-        AND: [
-          { ballot: { id: vote.ballot } },
-          { voter: { id: ctx.request.userId } },
-        ],
+    const votes = await ctx.db.query.votes(
+      {
+        where: {
+          AND: [
+            { ballot: { id: vote.ballot } },
+            { voter: { id: ctx.request.userId } },
+          ],
+        },
       },
-    }, info);
+      info,
+    );
 
     if (votes.length > 0) {
       throw new Error('User has voted already');

@@ -10,16 +10,26 @@ type Mutation {
   requestReset(email: String!): SuccessMessage
   resetPassword(resetToken: String!, password: String!, confirmPassword: String!): User!
   updateRole(role: Role, userId: ID!): User
+  createEvent(event: EventCreateInput!): SuccessMessage
+  setRSVP(rsvp: RSVPInput): SuccessMessage
   submitElection(election: ElectionInput!): Election
   submitVote(vote: VoteInput): SuccessMessage
 }
 
 type Query {
   myself: User
-  users(roles: [Role], accountStatus: AccountStatus, accountType: AccountType): [User]!
+  users(
+    roles: [Role], 
+    accountStatus: [AccountStatus], 
+    accountType: [AccountType], 
+    orderBy: [String],
+  ): [User]!
   user(username: String): User!
-  getOfficers: [User!]!
-  getMembers(accountTypes: [AccountType]): [User!]!
+  getOfficer(office: Office!): User!
+  getMembers(accountTypes: [AccountType]): [User]!
+  getUpcomingEvents: [Event]!
+  getPastEvents: [Event]!
+  getEvent(eventId: ID!): Event!
   electionCandidates(accountType: AccountType!, accountStatus: AccountStatus!): [User]!
   getActiveElections: [Election]!
   getActiveElectionsWithResults: [Election]!
@@ -29,33 +39,118 @@ type Query {
 }
 
 type User {
-  id: ID!
+  id: ID
   joined: DateTime
-  username: String!
-  firstName: String!
-  lastName: String!
-  email: String!
+  username: String
+  firstName: String
+  lastName: String
+  email: String
   avatarSmall: String
-  titles: [String]
+  titles: [Title]
   role: Role!
-  accountStatus: AccountStatus!
-  accountType: AccountType!
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
   phone: String
   vehicle: Vehicle
+  comfortLevel: String
+  log: [LogItem]
+  membershipLog: [MembershipLogItem]
+  eventsRSVPd: [RSVP]
+  eventsLead: [Event]
+  trailsVisited: [Trail]
+  bandaids: [Bandaid]
+  runReportsLogged: [RunReport]
 }
 
-type Result {
-  candidate: User
-  count: Int!
+type LogItem {
+  id: ID!
+  time: DateTime
+  message: String!
+  user: User!
+  event: Event
 }
 
-type Ballot {
+type MembershipLogItem {
+  id: ID!
+  startTime: DateTime!
+  endTime: DateTime
+  message: String!
+  user: User!
+  initiator: User!
+}
+
+type Event {
   id: ID!
   title: String!
-  desc: String
-  candidates: [User!]!
-  votes: [Vote]
-  results: [Result]
+  creator: User!
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  host: User
+  rsvps: [RSVP]
+  address: String
+  rallyAddress: String
+  rallyTime: String
+  trail: Trail
+  bandaids: [Bandaid]
+  runReports: [RunReport]
+}
+
+type RSVP {
+  member: User!
+  event: Event!
+  status: RSVPStatus!
+}
+
+type Trail {
+  id: ID!
+  slug: String!
+  name: String
+  description: String
+  trailheadCoords: String
+  # coords: Coords
+  address: String
+  avgDifficulty: TrailDifficulty
+  avgRatings: Float
+  currentConditions: String
+  conditionsLastReported: DateTime
+  favoriteCount: Int
+  pastEvents: [Event]
+  visitors: [User]
+}
+
+type RunReport {
+  id: ID!
+  startTime: DateTime
+  endTime: DateTime
+  reportFiled: DateTime
+  reporter: User
+  title: String
+  description: String
+  trail: Trail
+  event: Event
+  weather: String
+  difficulty: TrailDifficulty
+  rating: Float
+  conditions: Condition
+  conditionsNotes: String
+  favorite: Boolean
+}
+
+type Bandaid {
+  id: ID!
+  occurred: DateTime
+  event: Event
+  memberInvolved: User
+  title: String
+  description: String
+}
+
+input RSVPInput {
+  userId: ID
+  eventId: ID
+  status: RSVPStatus
 }
 
 input ElectionInput {
@@ -81,4 +176,18 @@ input VoteInput {
   ballot: ID!
   dateTime: DateTime!
   candidate: ID
+}
+
+type Result {
+  candidate: User
+  count: Int!
+}
+
+type Ballot {
+  id: ID!
+  title: String!
+  desc: String
+  candidates: [User!]!
+  votes: [Vote]
+  results: [Result]
 }
