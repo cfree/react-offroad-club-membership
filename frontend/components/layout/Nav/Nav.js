@@ -42,6 +42,11 @@ const Nav = () => (
                   <a>Roster</a>
                 </Link>
               </li>
+              <li>
+                <Link href="/events">
+                  <a>Events</a>
+                </Link>
+              </li>
               {isAtLeastBoardMember(myself.role) && (
                 <li>
                   <Link href="/admin">
@@ -50,8 +55,13 @@ const Nav = () => (
                 </li>
               )}
               <li>
-                <Link href="/settings">
-                  <a>Settings</a>
+                <Link href="/profile">
+                  <a>Your Profile</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/settings/account">
+                  <a>Account Settings</a>
                 </Link>
               </li>
               <li>
@@ -59,12 +69,12 @@ const Nav = () => (
               </li>
             </>
           ) : (
-              <li>
-                <Link href="/login">
-                  <a>Log In</a>
-                </Link>
-              </li>
-            );
+            <li>
+              <Link href="/login">
+                <a>Log In</a>
+              </Link>
+            </li>
+          );
         }}
       </User>
     </StyledList>

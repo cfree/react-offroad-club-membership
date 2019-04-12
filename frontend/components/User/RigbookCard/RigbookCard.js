@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 
 import { getMemberType } from '../../../lib/utils';
+import { offices } from '../../../lib/constants';
 import {
   StyledRigbookCard,
   StyledVehicleImg,
@@ -12,24 +13,7 @@ import {
   StyledContent,
 } from './rigbookCard.styles';
 
-const defaultUser = {
-  firstName: 'Craig',
-  lastName: 'Freeman',
-  username: 'cfree',
-  role: 'FULL_MEMBER',
-  joined: '2018-12-01T00:00:00.000Z',
-  vehicle: {
-    year: 2005,
-    make: 'Jeep',
-    model: 'Wrangler',
-    trim: 'Unlimited',
-    image: '',
-  },
-  titles: ['Webmaster'],
-  memberType: 'Full Member',
-};
-
-const RigbookCard = ({ user = defaultUser }) => {
+const RigbookCard = ({ user }) => {
   return <StyledRigbookCard>
     <div className="user-photos">
       <StyledVehicleImg src="/static/img/default-vehicle.jpg" alt={`${user.firstName}'s Vehicle`} />
@@ -39,14 +23,15 @@ const RigbookCard = ({ user = defaultUser }) => {
       <h2>
         {user.firstName} {user.lastName}
       </h2>
+      {user.office && <StyledTitles>{offices[user.office]}</StyledTitles>}
+      {user.titles && <StyledTitles>{user.titles.join(', ')}</StyledTitles>}
       {user.vehicle && <>
         <h3>
           {user.vehicle.year} {user.vehicle.make} {user.vehicle.model}
         </h3>
-        <h4>{user.vehicle.trim}</h4>
+        {user.vehicle.trim && <h4>{user.vehicle.trim}</h4>}
       </>}
-      {/* <StyledTitles>{user.titles.join(', ')}</StyledTitles> */}
-      <h5>{getMemberType(user.role)} since {format(user.joined, 'YYYY')}</h5>
+      <h5>{getMemberType(user.accountType)} &bull; Joined {format(user.joined, 'YYYY')}</h5>
     </StyledContent>
     <StyledProfileActionsList>
       <li>
@@ -60,7 +45,16 @@ const RigbookCard = ({ user = defaultUser }) => {
           <a>View Profile</a>
         </Link>
       </li>
-      <li>Message</li>
+      <li>
+        <Link
+          href={{
+            pathname: 'message',
+            query: { to: user.username },
+          }}
+        >
+          <a>Message</a>
+        </Link>
+      </li>
     </StyledProfileActionsList>
   </StyledRigbookCard>;
 }

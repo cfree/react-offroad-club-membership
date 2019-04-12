@@ -30,7 +30,7 @@ const ELECTION_CANDIDATES_QUERY = gql`
       }
     }
     electionCandidates(
-      roles: [FULL_MEMBER, ADMIN, BOARD_MEMBER, RUN_LEADER]
+      accountType: FULL
       accountStatus: ACTIVE
     ) {
       id

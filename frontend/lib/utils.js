@@ -1,72 +1,72 @@
-import { roles, statuses } from './constants';
+import { accountTypes as types } from './constants';
 
-export const getMemberType = role => {
-  switch (role) {
-    case roles.FULL_MEMBER:
-    case roles.RUN_LEADER:
-    case roles.EXECUTIVE_COMMITTEE:
-    case roles.ADMIN:
-      return 'Full Member';
-    default:
-      return role.replace('_', ' ');
-  }
+export const getMemberType = type => {
+  return `${types[type] || 'Guest'} Member`;
 };
 
-export const isAdmin = role => role === roles.ADMIN;
+// Roles
+export const isAdmin = role => role === 'ADMIN';
 
-export const isBoardMember = role => role === roles.EXECUTIVE_COMMITTEE;
+export const isBoardMember = role => role === 'OFFICER';
 
 export const isAtLeastBoardMember = role => {
-  return [roles.EXECUTIVE_COMMITTEE, roles.ADMIN].includes(role);
+  return ['OFFICER', 'ADMIN'].includes(role);
 };
 
-export const isRunLeader = role => role === roles.RUN_LEADER;
+export const isRunMaster = role => role === 'RUN_MASTER';
+
+export const isRunLeader = role => role === 'RUN_LEADER';
+
+export const isAtLeastRunMaster = role => {
+  return ['RUN_MASTER', 'OFFICER', 'ADMIN'].includes(role);
+};
 
 export const isAtLeastRunLeader = role => {
-  return [roles.RUN_LEADER, roles.EXECUTIVE_COMMITTEE, roles.ADMIN].includes(role);
+  return ['RUN_LEADER', 'RUN_MASTER', 'OFFICER', 'ADMIN'].includes(role);
 };
 
-export const isFullMember = role => role === roles.FULL_MEMBER;
+// Types
+export const isFullMember = type => type === 'FULL';
 
-export const isAtLeastFullMember = role => {
-  return [roles.FULL_MEMBER, roles.RUN_LEADER, roles.EXECUTIVE_COMMITTEE, roles.ADMIN].includes(role);
-};
+export const isAssociateMember = type => type === 'ASSOCIATE';
 
-export const isEmeritusMember = role => role === roles.EMERITUS_MEMBER;
-
-export const isAtLeastEmeritusMember = role => {
-  return [roles.EMERITUS_MEMBER, roles.FULL_MEMBER, roles.RUN_LEADER, roles.EXECUTIVE_COMMITTEE, roles.ADMIN].includes(role);
-};
-
-export const isAssociateMember = role => role === roles.ASSOCIATE_MEMBER;
-
-export const isAtLeastAssociateMember = role => {
-  return [roles.ASSOCIATE_MEMBER, roles.EMERITUS_MEMBER, roles.FULL_MEMBER, roles.RUN_LEADER, roles.EXECUTIVE_COMMITTEE, roles.ADMIN].includes(role);
+export const isAtLeastAssociateMember = type => {
+  return ['ASSOCIATE', 'FULL'].includes(type);
 }
 
-export const isGuestMember = role => role === roles.GUEST_MEMBER;
+export const isEmeritusMember = type => type === 'EMERITUS';
 
-export const isAtLeastGuestMember = role => {
-  return [roles.GUEST_MEMBER, roles.FULL_MEMBER, roles.RUN_LEADER, roles.EXECUTIVE_COMMITTEE, roles.ADMIN].includes(role);
+export const isAtLeastEmeritusMember = type => {
+  return ['EMERITUS', 'ASSOCIATE', 'FULL'].includes(type);
 };
 
-export const isActive = status => status === statuses.ACTIVE;
+export const isGuestMember = type => type === 'GUEST';
+
+export const isAtLeastGuestMember = type => {
+  return ['GUEST', 'EMERITUS', 'ASSOCIATE', 'FULL'].includes(type);
+};
+
+// Statuses
+export const isActive = status => status === 'ACTIVE';
 export const isNotActive = status => !isActive(status);
 
-export const isPastDue = status => status === statuses.PAST_DUE;
+export const isPastDue = status => status === 'PAST_DUE';
 export const isNotPastDue = status => !isPastDue(status);
 
-export const isDelinquent = status => status === statuses.DELINQUENT;
+export const isDelinquent = status => status === 'DELINQUENT';
 export const isNotDelinquent = status => !isDelinquent(status);
 
-export const wasRemoved = status => status === statuses.REMOVED;
+export const wasRemoved = status => status === 'REMOVED';
 export const wasNotRemoved = status => !wasRemoved(status);
 
-export const hasResigned = status => status === statuses.RESIGNED;
+export const hasResigned = status => status === 'RESIGNED';
 export const hasNotResigned = status => !hasResigned(status);
 
-export const isInactive = status => status === statuses.INACTIVE;
+export const isInactive = status => status === 'INACTIVE';
 export const isNotInactive = status => !isInactive(status);
 
-export const isLocked = status => status === statuses.LOCKED;
+export const isLimited = status => status === 'LIMITED';
+export const isNotLimited = status => !isLimited(status);
+
+export const isLocked = status => status === 'LOCKED';
 export const isNotLocked = status => !isLocked(status);

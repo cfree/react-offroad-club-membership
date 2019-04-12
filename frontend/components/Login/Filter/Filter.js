@@ -5,6 +5,7 @@ const Filter = ({
   children,
   roleCheck = role => role,
   statusCheck = status => status,
+  typeCheck = type => type,
 }) => {
   return (
     <Query query={CURRENT_USER_QUERY}>
@@ -16,7 +17,8 @@ const Filter = ({
         // Improper role and status
         if (
           roleCheck(data.myself.role) &&
-          statusCheck(data.myself.accountStatus)
+          statusCheck(data.myself.accountStatus) &&
+          typeCheck(data.myself.accountType)
         ) {
           return children;
         }

@@ -7,6 +7,7 @@ class Gate extends Component {
   static defaultProps = {
     roleCheck: role => role,
     statusCheck: status => status,
+    typeCheck: type => type,
     redirect: '/',
   };
 
@@ -28,10 +29,10 @@ class Gate extends Component {
             );
           }
 
-          const { role, accountStatus } = data.myself;
+          const { role, accountStatus, accountType } = data.myself;
 
           // Improper role
-          if (!this.props.roleCheck(role)) {
+          if (this.props.roleCheck && !this.props.roleCheck(role)) {
             return (
               <p>
                 Your account is not authorized to view this content. Contact the
@@ -41,11 +42,19 @@ class Gate extends Component {
           }
 
           // Improper status
-          if (!this.props.statusCheck(accountStatus)) {
+          if (this.props.statusCheck && !this.props.statusCheck(accountStatus)) {
             return <p>
-                Your account does not have the proper status to view
-                this content. Contact the webmaster for help.
-              </p>;
+              Your account does not have the proper status to view
+              this content. Contact the webmaster for help.
+            </p>;
+          }
+
+          // Improper type
+          if (this.props.typeCheck && !this.props.typeCheck(accountType)) {
+            return <p>
+              You do not have the proper account type to view
+              this content. Contact the webmaster for help.
+            </p>;
           }
 
           return this.props.children;

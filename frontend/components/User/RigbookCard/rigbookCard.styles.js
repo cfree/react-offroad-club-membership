@@ -38,7 +38,11 @@ export const StyledTitles = styled.div`
 `;
 
 export const StyledContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   padding: 10px;
+  height: 100%;
 
   h2 {
     margin: 0 0 10px;
@@ -59,7 +63,7 @@ export const StyledContent = styled.div`
   }
 
   h5 {
-    margin: 0 0 0;
+    margin: auto 0 0;
     text-transform: uppercase;
     font-size: 12px;
   }

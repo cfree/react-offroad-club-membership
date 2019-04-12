@@ -8,7 +8,7 @@ import AddOffice from '../AddOffice';
 const ELECTION_CANDIDATES_QUERY = gql`
   query ELECTION_CANDIDATES_QUERY {
     electionCandidates(
-      roles: [FULL_MEMBER, ADMIN, BOARD_MEMBER, RUN_LEADER]
+      accountType: FULL
       accountStatus: ACTIVE
     ) {
       id

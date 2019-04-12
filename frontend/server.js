@@ -17,6 +17,24 @@ app.prepare()
       app.render(req, res, actualPage, queryParams);
     });
 
+    server.get('/events/:type', (req, res) => {
+      const actualPage = '/events';
+      const queryParams = { type: req.params.type };
+      app.render(req, res, actualPage, queryParams);
+    });
+
+    server.get('/event/:id', (req, res) => {
+      const actualPage = '/event';
+      const queryParams = { id: req.params.id };
+      app.render(req, res, actualPage, queryParams);
+    });
+
+    server.get('/settings/:setting', (req, res) => {
+      const actualPage = '/settings';
+      const queryParams = { settings: req.params.setting };
+      app.render(req, res, actualPage, queryParams);
+    });
+
     server.get('*', (req, res) => handle(req, res));
 
     server.listen(port, err => {

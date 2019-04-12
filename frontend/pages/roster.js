@@ -1,7 +1,7 @@
 import { Component } from 'react';
 
 import Rigbook from '../components/user/Rigbook';
-import MembershipList from '../components/user/MembershipList';
+import Roster from '../components/user/Roster';
 import Gate from '../components/login/Gate';
 import { isAtLeastAssociateMember, isActive } from '../lib/utils';
 
@@ -22,21 +22,21 @@ class RosterPage extends Component {
     this.setState({ showList: false });
   };
 
-  showList = () => {
+  showRoster = () => {
     this.setState({ showList: true });
   };
 
   render() {
     return (
       <Gate
-        roleCheck={isAtLeastAssociateMember}
+        typeCheck={isAtLeastAssociateMember}
         statusCheck={isActive}
         redirect="/roster"
       >
         <h2>Membership Roster</h2>
         <button onClick={this.showRigbook}>Rigbook</button> /{' '}
-        <button onClick={this.showList}>List</button>
-        {this.state.showList ? <MembershipList /> : <Rigbook />}
+        <button onClick={this.showRoster}>List</button>
+        {this.state.showList ? <Roster /> : <Rigbook />}
       </Gate>
     );
   }

@@ -1,11 +1,12 @@
 import Gate from '../components/login/Gate';
+import Profile from '../components/user/Profile';
 
-const ProfilePage = props => {
+const ProfilePage = ({ query }) => {
   return (
     <Gate>
-      Profile for {props.query.user}
+      {query.user ? <Profile username={query.user} /> : <Profile />}
     </Gate>
-  )
+  );
 }
 
 export default ProfilePage;
