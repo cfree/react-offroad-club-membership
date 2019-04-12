@@ -226,7 +226,10 @@ export default class EventDetails extends Component {
                       </p>
                     </>
                   ) : (
-                      <p><strong>Address</strong>: {event.address || 'n/a'}</p>
+                    <p>
+                      <strong>Address</strong>:{' '}
+                      {event.address || 'n/a'}
+                    </p>
                   )}
 
                   <p>
@@ -263,15 +266,24 @@ export default class EventDetails extends Component {
                           <img
                             width="250"
                             height="100"
-                            src={`https://maps.googleapis.com/maps/api/staticmap?zoom=8&size=500x200&maptype=roadmap&markers=size:mid%7Ccolor:red%7C${encodedAddress}&key=AIzaSyDwKWxOQTDbqunf8Apw0ye_3RAFo3rf25c`}
+                            src={`https://maps.googleapis.com/maps/api/staticmap?zoom=8&size=500x200&maptype=roadmap&markers=size:mid%7Ccolor:red%7C${encodedAddress}&key=${
+                              process.env.GOOGLE_MAPS_API_KEY
+                            }`}
                             alt={`${event.title} map`}
                             onError={this.onMapImgError}
                           />
                         </a>
-                      </Link><br/>
-                      <small>(<Link
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${encodedRallyAddress}`}
-                      ><a>Directions</a></Link>)</small>
+                      </Link>
+                      <br />
+                      <small>
+                        (
+                        <Link
+                          href={`https://www.google.com/maps/dir/?api=1&destination=${encodedRallyAddress}`}
+                        >
+                          <a>Directions</a>
+                        </Link>
+                        )
+                      </small>
                     </p>
                   )}
                 </aside>
