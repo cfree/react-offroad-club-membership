@@ -38,6 +38,7 @@ export const StyledEventHeader = styled.header`
 
 export const StyledDetails = styled.div`
   padding: 40px;
+  position: relative;
   display: grid;
   grid-column-gap: 40px;
   grid-template-columns: 2fr 250px;
@@ -54,6 +55,11 @@ export const StyledDetails = styled.div`
     /* background: ${({ theme }) => theme.colors.grey};
     border: 1px solid ${({ theme }) => theme.colors.grey_lighter};
     border-radius: ${({ theme }) => theme.shape.borderRadius}; */
+  }
+
+  .event__aside-wrapper {
+    position: sticky;
+    top: 20px;
   }
 
   .event__section {

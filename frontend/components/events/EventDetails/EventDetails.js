@@ -78,7 +78,7 @@ export default class EventDetails extends Component {
 
           const { event, myself } = data;
 
-          const isPastEvent = Date.now() < getTime(event.startTime);
+          const isPastEvent = Date.now() > getTime(event.startTime);
 
           const attendees = event.rsvps.filter(
             rsvp => rsvp.status === 'GOING',
@@ -117,17 +117,19 @@ export default class EventDetails extends Component {
                 <div className="event__info">
                   <div className="event__date">
                     {isPastEvent
-                      ? format(event.startTime, 'dddd, MMMM D, YYYY')
-                      : 'Past Event'}
+                      ? 'Past Event'
+                      : format(event.startTime, 'dddd, MMMM D, YYYY')}
                   </div>
                   <h2 className="event__title">{event.title}</h2>
-                  <div className="event__leader">
-                    <img
-                      src="/static/img/default-user.jpg"
-                      height="30"
-                    />
-                    Hosted by {event.host.firstName}
-                  </div>
+                  {event.host.firstName && (
+                    <div className="event__leader">
+                      <img
+                        src="/static/img/default-user.jpg"
+                        height="30"
+                      />
+                      Hosted by {event.host.firstName}
+                    </div>
+                  )}
                 </div>
                 <div className="event__rsvp">
                   <Rsvp
@@ -153,6 +155,95 @@ export default class EventDetails extends Component {
                   >
                     {event.description}
                   </section>
+                  {event.trail ? (
+                    <section>
+                      <h3>Trail Information</h3>
+                      <p>
+                        <strong>{event.trail.name}</strong>
+                        {/* <button id={event.trail.id}>
+                      {event.trail.name}
+                      </button> */}
+                      </p>
+                      {(event.trailDifficulty ||
+                        event.trailNotes) && (
+                        <>
+                          <h4>Run Leader Notes</h4>
+                          <p>
+                            {event.trailDifficulty && (
+                              <>
+                                <strong>Difficulty</strong>:{' '}
+                                {
+                                  trailDifficulties[
+                                    event.trailDifficulty
+                                  ]
+                                }
+                                <br />
+                              </>
+                            )}
+                            {event.trailNotes && (
+                              <>
+                                <strong>Comments</strong>:{' '}
+                                {event.trailNotes}
+                              </>
+                            )}
+                          </p>
+                        </>
+                      )}
+                      {(event.trail.avgDifficulty ||
+                        event.trail.avgRatings ||
+                        event.trail.favoriteCount ||
+                        event.trail.conditionsLastReported) && (
+                        <>
+                          <h4>Member Notes</h4>
+                          <p>
+                            {event.trail.avgDifficulty && (
+                              <>
+                                <strong>Difficulty</strong>:{' '}
+                                {
+                                  trailDifficulties[
+                                    event.trail.avgDifficulty
+                                  ]
+                                }
+                                <br />
+                              </>
+                            )}
+                            {!Number.isNaN(
+                              event.trail.avgRatings,
+                            ) && (
+                              <>
+                                <strong>Quality Rating</strong>:{' '}
+                                {event.trail.avgRatings > 0 ? (
+                                  <>{event.trail.avgRatings}/5</>
+                                ) : (
+                                  <>None</>
+                                )}
+                                <br />
+                              </>
+                            )}
+                            <strong>Favorites</strong>:{' '}
+                            {event.trail.favoriteCount}
+                            <br />
+                            <strong>Conditions</strong>:{' '}
+                            {trailConditions[
+                              event.trail.currentConditions
+                            ] || 'Unknown'}
+                            <br />
+                            <small>
+                              Last reported:{' '}
+                              {distanceInWordsToNow(
+                                event.trail.conditionsLastReported,
+                              ) || 'Never'}
+                            </small>
+                          </p>
+                        </>
+                      )}
+                    </section>
+                  ) : (
+                    <p>
+                      <strong>Address</strong>:{' '}
+                      {event.address || 'n/a'}
+                    </p>
+                  )}
                   <section className="event__section">
                     <h3>Attendees</h3>
                     <div className="card">
@@ -194,98 +285,63 @@ export default class EventDetails extends Component {
                   </p>
                 </div>
                 <aside className="event__aside">
-                  {event.trail ? (
-                    <>
+                  <div className="event__aside-wrapper">
+                    <p>
+                      <strong>Start</strong>:{' '}
+                      {format(event.startTime, 'M/D/YY h:mm A')}
+                      <br />
+                      <strong>End</strong>:{' '}
+                      {format(event.endTime, 'M/D/YY h:mm A')}
+                    </p>
+
+                    {(event.rallyTime || event.rallyAddress) && (
                       <p>
-                        <strong>{event.trail.name}</strong>
-                        {/* <button id={event.trail.id}>
-                      {event.trail.name}
-                    </button> */}
+                        {event.rallyTime && (
+                          <>
+                            <strong>Rally Time</strong>:{' '}
+                            {format(event.rallyTime, 'h:mm A')}
+                            <br />
+                          </>
+                        )}
+                        {event.rallyAddress && (
+                          <>
+                            <strong>Rally Point</strong>:{' '}
+                            {event.rallyAddress}
+                          </>
+                        )}
                       </p>
+                    )}
+                    {(event.rallyAddress || event.address) && (
                       <p>
-                        <strong>Difficulty</strong>:{' '}
-                        {trailDifficulties[event.trail.avgDifficulty]}
-                        <br />
-                        <strong>Rating</strong>:{' '}
-                        {event.trail.avgRatings}/5
-                        <br />
-                        <strong>Favorites</strong>:{' '}
-                        {event.trail.favoriteCount}
-                        <br />
-                        <strong>Conditions</strong>:{' '}
-                        {trailConditions[
-                          event.trail.currentConditions
-                        ] || 'Unknown'}
+                        <Link
+                          href={`https://www.google.com/maps/search/?api=1&query=${encodedRallyAddress}`}
+                        >
+                          <a>
+                            <img
+                              width="250"
+                              height="100"
+                              src={`https://maps.googleapis.com/maps/api/staticmap?zoom=8&size=500x200&maptype=roadmap&markers=size:mid%7Ccolor:red%7C${encodedAddress}&key=${
+                                publicRuntimeConfig.env
+                                  .GOOGLE_MAPS_API_KEY
+                              }`}
+                              alt={`${event.title} map`}
+                              onError={this.onMapImgError}
+                            />
+                          </a>
+                        </Link>
                         <br />
                         <small>
-                          Last reported:{' '}
-                          {distanceInWordsToNow(
-                            event.trail.conditionsLastReported,
-                          ) || 'Never'}
+                          (
+                          <Link
+                            href={`https://www.google.com/maps/dir/?api=1&destination=${encodedRallyAddress}`}
+                          >
+                            <a>Directions</a>
+                          </Link>
+                          )
                         </small>
                       </p>
-                    </>
-                  ) : (
-                    <p>
-                      <strong>Address</strong>:{' '}
-                      {event.address || 'n/a'}
-                    </p>
-                  )}
-
-                  <p>
-                    <strong>Start</strong>:{' '}
-                    {format(event.startTime, 'M/D/YY h:mm A')}
-                    <br />
-                    <strong>End</strong>:{' '}
-                    {format(event.endTime, 'M/D/YY h:mm A')}
-                  </p>
-
-                  {(event.rallyTime || event.rallyAddress) && (
-                    <p>
-                      {event.rallyTime && (
-                        <>
-                          <strong>Rally Time</strong>:{' '}
-                          {format(event.rallyTime, 'h:mm A')}
-                          <br />
-                        </>
-                      )}
-                      {event.rallyAddress && (
-                        <>
-                          <strong>Rally Point</strong>:{' '}
-                          {event.rallyAddress}
-                        </>
-                      )}
-                    </p>
-                  )}
-                  {(event.rallyAddress || event.address) && (
-                    <p>
-                      <Link
-                        href={`https://www.google.com/maps/search/?api=1&query=${encodedRallyAddress}`}
-                      >
-                        <a>
-                          <img
-                            width="250"
-                            height="100"
-                            src={`https://maps.googleapis.com/maps/api/staticmap?zoom=8&size=500x200&maptype=roadmap&markers=size:mid%7Ccolor:red%7C${encodedAddress}&key=${
-                              publicRuntimeConfig.env.GOOGLE_MAPS_API_KEY
-                            }`}
-                            alt={`${event.title} map`}
-                            onError={this.onMapImgError}
-                          />
-                        </a>
-                      </Link>
-                      <br />
-                      <small>
-                        (
-                        <Link
-                          href={`https://www.google.com/maps/dir/?api=1&destination=${encodedRallyAddress}`}
-                        >
-                          <a>Directions</a>
-                        </Link>
-                        )
-                      </small>
-                    </p>
-                  )}
+                    )}
+                  </div>
                 </aside>
               </StyledDetails>
             </>

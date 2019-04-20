@@ -40,6 +40,7 @@ export const titles = {
 }
 
 export const trailDifficulties = {
+  UNKNOWN: 'Unknown',
   BEGINNER: 'Beginner',
   INTERMEDIATE: 'Intermediate',
   ADVANCED: 'Advanced',

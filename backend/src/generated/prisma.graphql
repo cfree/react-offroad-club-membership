@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/four-players-co/four-players-co/dev
-# timestamp: Thu Apr 11 2019 19:12:06 GMT-0600 (MDT)
+# timestamp: Wed Apr 17 2019 19:20:06 GMT-0600 (MDT)
 
 enum AccountStatus {
   ACTIVE
@@ -73,6 +73,8 @@ type AggregateVote {
 
 type Ballot implements Node {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   title: String!
   desc: String
   candidates(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
@@ -138,18 +140,20 @@ type BallotEdge {
 enum BallotOrderByInput {
   id_ASC
   id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
   title_ASC
   title_DESC
   desc_ASC
   desc_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
 }
 
 type BallotPreviousValues {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   title: String!
   desc: String
 }
@@ -203,6 +207,50 @@ input BallotScalarWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   title: String
 
   """All values that are not equal to given value."""
@@ -472,6 +520,50 @@ input BallotWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   title: String
 
   """All values that are not equal to given value."""
@@ -566,7 +658,8 @@ input BallotWhereUniqueInput {
 
 type Bandaid implements Node {
   id: ID!
-  occurred: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime!
   event: Event
   memberInvolved: User
   title: String
@@ -585,7 +678,6 @@ type BandaidConnection {
 
 input BandaidCreateInput {
   id: ID
-  occurred: DateTime
   title: String
   description: String
   event: EventCreateOneWithoutBandaidsInput
@@ -604,7 +696,6 @@ input BandaidCreateManyWithoutMemberInvolvedInput {
 
 input BandaidCreateWithoutEventInput {
   id: ID
-  occurred: DateTime
   title: String
   description: String
   memberInvolved: UserCreateOneWithoutBandaidsInput
@@ -612,7 +703,6 @@ input BandaidCreateWithoutEventInput {
 
 input BandaidCreateWithoutMemberInvolvedInput {
   id: ID
-  occurred: DateTime
   title: String
   description: String
   event: EventCreateOneWithoutBandaidsInput
@@ -630,21 +720,20 @@ type BandaidEdge {
 enum BandaidOrderByInput {
   id_ASC
   id_DESC
-  occurred_ASC
-  occurred_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
   title_ASC
   title_DESC
   description_ASC
   description_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
 }
 
 type BandaidPreviousValues {
   id: ID!
-  occurred: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime!
   title: String
   description: String
 }
@@ -698,28 +787,50 @@ input BandaidScalarWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  occurred: DateTime
+  createdAt: DateTime
 
   """All values that are not equal to given value."""
-  occurred_not: DateTime
+  createdAt_not: DateTime
 
   """All values that are contained in given list."""
-  occurred_in: [DateTime!]
+  createdAt_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  occurred_not_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
 
   """All values less than the given value."""
-  occurred_lt: DateTime
+  createdAt_lt: DateTime
 
   """All values less than or equal the given value."""
-  occurred_lte: DateTime
+  createdAt_lte: DateTime
 
   """All values greater than the given value."""
-  occurred_gt: DateTime
+  createdAt_gt: DateTime
 
   """All values greater than or equal the given value."""
-  occurred_gte: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   title: String
 
   """All values that are not equal to given value."""
@@ -842,7 +953,6 @@ input BandaidSubscriptionWhereInput {
 }
 
 input BandaidUpdateInput {
-  occurred: DateTime
   title: String
   description: String
   event: EventUpdateOneWithoutBandaidsInput
@@ -850,13 +960,11 @@ input BandaidUpdateInput {
 }
 
 input BandaidUpdateManyDataInput {
-  occurred: DateTime
   title: String
   description: String
 }
 
 input BandaidUpdateManyMutationInput {
-  occurred: DateTime
   title: String
   description: String
 }
@@ -891,14 +999,12 @@ input BandaidUpdateManyWithWhereNestedInput {
 }
 
 input BandaidUpdateWithoutEventDataInput {
-  occurred: DateTime
   title: String
   description: String
   memberInvolved: UserUpdateOneWithoutBandaidsInput
 }
 
 input BandaidUpdateWithoutMemberInvolvedDataInput {
-  occurred: DateTime
   title: String
   description: String
   event: EventUpdateOneWithoutBandaidsInput
@@ -975,28 +1081,50 @@ input BandaidWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  occurred: DateTime
+  createdAt: DateTime
 
   """All values that are not equal to given value."""
-  occurred_not: DateTime
+  createdAt_not: DateTime
 
   """All values that are contained in given list."""
-  occurred_in: [DateTime!]
+  createdAt_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  occurred_not_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
 
   """All values less than the given value."""
-  occurred_lt: DateTime
+  createdAt_lt: DateTime
 
   """All values less than or equal the given value."""
-  occurred_lte: DateTime
+  createdAt_lte: DateTime
 
   """All values greater than the given value."""
-  occurred_gt: DateTime
+  createdAt_gt: DateTime
 
   """All values greater than or equal the given value."""
-  occurred_gte: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   title: String
 
   """All values that are not equal to given value."""
@@ -1092,8 +1220,9 @@ type BatchPayload {
 
 type Condition implements Node {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   report: RunReport!
-  dateReported: DateTime!
   status: TrailCondition!
   notes: String
 }
@@ -1110,7 +1239,6 @@ type ConditionConnection {
 
 input ConditionCreateInput {
   id: ID
-  dateReported: DateTime!
   status: TrailCondition!
   notes: String
   report: RunReportCreateOneWithoutConditionInput!
@@ -1123,7 +1251,6 @@ input ConditionCreateOneWithoutReportInput {
 
 input ConditionCreateWithoutReportInput {
   id: ID
-  dateReported: DateTime!
   status: TrailCondition!
   notes: String
 }
@@ -1140,21 +1267,20 @@ type ConditionEdge {
 enum ConditionOrderByInput {
   id_ASC
   id_DESC
-  dateReported_ASC
-  dateReported_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
   status_ASC
   status_DESC
   notes_ASC
   notes_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
 }
 
 type ConditionPreviousValues {
   id: ID!
-  dateReported: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   status: TrailCondition!
   notes: String
 }
@@ -1199,14 +1325,12 @@ input ConditionSubscriptionWhereInput {
 }
 
 input ConditionUpdateInput {
-  dateReported: DateTime
   status: TrailCondition
   notes: String
   report: RunReportUpdateOneRequiredWithoutConditionInput
 }
 
 input ConditionUpdateManyMutationInput {
-  dateReported: DateTime
   status: TrailCondition
   notes: String
 }
@@ -1221,7 +1345,6 @@ input ConditionUpdateOneWithoutReportInput {
 }
 
 input ConditionUpdateWithoutReportDataInput {
-  dateReported: DateTime
   status: TrailCondition
   notes: String
 }
@@ -1280,28 +1403,50 @@ input ConditionWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  dateReported: DateTime
+  createdAt: DateTime
 
   """All values that are not equal to given value."""
-  dateReported_not: DateTime
+  createdAt_not: DateTime
 
   """All values that are contained in given list."""
-  dateReported_in: [DateTime!]
+  createdAt_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  dateReported_not_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
 
   """All values less than the given value."""
-  dateReported_lt: DateTime
+  createdAt_lt: DateTime
 
   """All values less than or equal the given value."""
-  dateReported_lte: DateTime
+  createdAt_lte: DateTime
 
   """All values greater than the given value."""
-  dateReported_gt: DateTime
+  createdAt_gt: DateTime
 
   """All values greater than or equal the given value."""
-  dateReported_gte: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   status: TrailCondition
 
   """All values that are not equal to given value."""
@@ -1363,6 +1508,8 @@ scalar DateTime
 
 type Election implements Node {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   electionName: String!
   startTime: DateTime
   endTime: DateTime
@@ -1399,20 +1546,22 @@ type ElectionEdge {
 enum ElectionOrderByInput {
   id_ASC
   id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
   electionName_ASC
   electionName_DESC
   startTime_ASC
   startTime_DESC
   endTime_ASC
   endTime_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
 }
 
 type ElectionPreviousValues {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   electionName: String!
   startTime: DateTime
   endTime: DateTime
@@ -1519,6 +1668,50 @@ input ElectionWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   electionName: String
 
   """All values that are not equal to given value."""
@@ -1614,6 +1807,8 @@ input ElectionWhereUniqueInput {
 
 type Event implements Node {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   title: String!
   creator: User!
   description: String
@@ -1622,6 +1817,8 @@ type Event implements Node {
   host: User
   rsvps(where: RSVPWhereInput, orderBy: RSVPOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [RSVP!]
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   trail: Trail
@@ -1647,6 +1844,8 @@ input EventCreateInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -1700,6 +1899,8 @@ input EventCreateWithoutBandaidsInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -1717,6 +1918,8 @@ input EventCreateWithoutCreatorInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -1734,6 +1937,8 @@ input EventCreateWithoutHostInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -1751,6 +1956,8 @@ input EventCreateWithoutRsvpsInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -1768,6 +1975,8 @@ input EventCreateWithoutRunReportsInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -1785,6 +1994,8 @@ input EventCreateWithoutTrailInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -1807,6 +2018,10 @@ type EventEdge {
 enum EventOrderByInput {
   id_ASC
   id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
   title_ASC
   title_DESC
   description_ASC
@@ -1817,25 +2032,29 @@ enum EventOrderByInput {
   endTime_DESC
   address_ASC
   address_DESC
+  trailDifficulty_ASC
+  trailDifficulty_DESC
+  trailNotes_ASC
+  trailNotes_DESC
   rallyAddress_ASC
   rallyAddress_DESC
   rallyTime_ASC
   rallyTime_DESC
   membersOnly_ASC
   membersOnly_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
 }
 
 type EventPreviousValues {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   title: String!
   description: String
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -1890,6 +2109,50 @@ input EventScalarWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   title: String
 
   """All values that are not equal to given value."""
@@ -2054,6 +2317,56 @@ input EventScalarWhereInput {
 
   """All values not ending with the given string."""
   address_not_ends_with: String
+  trailDifficulty: TrailDifficulty
+
+  """All values that are not equal to given value."""
+  trailDifficulty_not: TrailDifficulty
+
+  """All values that are contained in given list."""
+  trailDifficulty_in: [TrailDifficulty!]
+
+  """All values that are not contained in given list."""
+  trailDifficulty_not_in: [TrailDifficulty!]
+  trailNotes: String
+
+  """All values that are not equal to given value."""
+  trailNotes_not: String
+
+  """All values that are contained in given list."""
+  trailNotes_in: [String!]
+
+  """All values that are not contained in given list."""
+  trailNotes_not_in: [String!]
+
+  """All values less than the given value."""
+  trailNotes_lt: String
+
+  """All values less than or equal the given value."""
+  trailNotes_lte: String
+
+  """All values greater than the given value."""
+  trailNotes_gt: String
+
+  """All values greater than or equal the given value."""
+  trailNotes_gte: String
+
+  """All values containing the given string."""
+  trailNotes_contains: String
+
+  """All values not containing the given string."""
+  trailNotes_not_contains: String
+
+  """All values starting with the given string."""
+  trailNotes_starts_with: String
+
+  """All values not starting with the given string."""
+  trailNotes_not_starts_with: String
+
+  """All values ending with the given string."""
+  trailNotes_ends_with: String
+
+  """All values not ending with the given string."""
+  trailNotes_not_ends_with: String
   rallyAddress: String
 
   """All values that are not equal to given value."""
@@ -2167,6 +2480,8 @@ input EventUpdateDataInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -2184,6 +2499,8 @@ input EventUpdateInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -2201,6 +2518,8 @@ input EventUpdateManyDataInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -2212,6 +2531,8 @@ input EventUpdateManyMutationInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -2298,6 +2619,8 @@ input EventUpdateWithoutBandaidsDataInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -2314,6 +2637,8 @@ input EventUpdateWithoutCreatorDataInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -2330,6 +2655,8 @@ input EventUpdateWithoutHostDataInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -2346,6 +2673,8 @@ input EventUpdateWithoutRsvpsDataInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -2362,6 +2691,8 @@ input EventUpdateWithoutRunReportsDataInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -2378,6 +2709,8 @@ input EventUpdateWithoutTrailDataInput {
   startTime: DateTime
   endTime: DateTime
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
   membersOnly: Boolean
@@ -2490,6 +2823,50 @@ input EventWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   title: String
 
   """All values that are not equal to given value."""
@@ -2654,6 +3031,56 @@ input EventWhereInput {
 
   """All values not ending with the given string."""
   address_not_ends_with: String
+  trailDifficulty: TrailDifficulty
+
+  """All values that are not equal to given value."""
+  trailDifficulty_not: TrailDifficulty
+
+  """All values that are contained in given list."""
+  trailDifficulty_in: [TrailDifficulty!]
+
+  """All values that are not contained in given list."""
+  trailDifficulty_not_in: [TrailDifficulty!]
+  trailNotes: String
+
+  """All values that are not equal to given value."""
+  trailNotes_not: String
+
+  """All values that are contained in given list."""
+  trailNotes_in: [String!]
+
+  """All values that are not contained in given list."""
+  trailNotes_not_in: [String!]
+
+  """All values less than the given value."""
+  trailNotes_lt: String
+
+  """All values less than or equal the given value."""
+  trailNotes_lte: String
+
+  """All values greater than the given value."""
+  trailNotes_gt: String
+
+  """All values greater than or equal the given value."""
+  trailNotes_gte: String
+
+  """All values containing the given string."""
+  trailNotes_contains: String
+
+  """All values not containing the given string."""
+  trailNotes_not_contains: String
+
+  """All values starting with the given string."""
+  trailNotes_starts_with: String
+
+  """All values not starting with the given string."""
+  trailNotes_not_starts_with: String
+
+  """All values ending with the given string."""
+  trailNotes_ends_with: String
+
+  """All values not ending with the given string."""
+  trailNotes_not_ends_with: String
   rallyAddress: String
 
   """All values that are not equal to given value."""
@@ -2740,7 +3167,8 @@ input EventWhereUniqueInput {
 
 type LogItem implements Node {
   id: ID!
-  time: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
   message: String!
   user: User!
   event: Event
@@ -2758,7 +3186,6 @@ type LogItemConnection {
 
 input LogItemCreateInput {
   id: ID
-  time: DateTime
   message: String!
   user: UserCreateOneWithoutLogInput!
   event: EventCreateOneInput
@@ -2771,7 +3198,6 @@ input LogItemCreateManyWithoutUserInput {
 
 input LogItemCreateWithoutUserInput {
   id: ID
-  time: DateTime
   message: String!
   event: EventCreateOneInput
 }
@@ -2788,19 +3214,18 @@ type LogItemEdge {
 enum LogItemOrderByInput {
   id_ASC
   id_DESC
-  time_ASC
-  time_DESC
-  message_ASC
-  message_DESC
-  updatedAt_ASC
-  updatedAt_DESC
   createdAt_ASC
   createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  message_ASC
+  message_DESC
 }
 
 type LogItemPreviousValues {
   id: ID!
-  time: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
   message: String!
 }
 
@@ -2853,28 +3278,50 @@ input LogItemScalarWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  time: DateTime
+  createdAt: DateTime
 
   """All values that are not equal to given value."""
-  time_not: DateTime
+  createdAt_not: DateTime
 
   """All values that are contained in given list."""
-  time_in: [DateTime!]
+  createdAt_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  time_not_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
 
   """All values less than the given value."""
-  time_lt: DateTime
+  createdAt_lt: DateTime
 
   """All values less than or equal the given value."""
-  time_lte: DateTime
+  createdAt_lte: DateTime
 
   """All values greater than the given value."""
-  time_gt: DateTime
+  createdAt_gt: DateTime
 
   """All values greater than or equal the given value."""
-  time_gte: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   message: String
 
   """All values that are not equal to given value."""
@@ -2957,19 +3404,16 @@ input LogItemSubscriptionWhereInput {
 }
 
 input LogItemUpdateInput {
-  time: DateTime
   message: String
   user: UserUpdateOneRequiredWithoutLogInput
   event: EventUpdateOneInput
 }
 
 input LogItemUpdateManyDataInput {
-  time: DateTime
   message: String
 }
 
 input LogItemUpdateManyMutationInput {
-  time: DateTime
   message: String
 }
 
@@ -2991,7 +3435,6 @@ input LogItemUpdateManyWithWhereNestedInput {
 }
 
 input LogItemUpdateWithoutUserDataInput {
-  time: DateTime
   message: String
   event: EventUpdateOneInput
 }
@@ -3056,28 +3499,50 @@ input LogItemWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  time: DateTime
+  createdAt: DateTime
 
   """All values that are not equal to given value."""
-  time_not: DateTime
+  createdAt_not: DateTime
 
   """All values that are contained in given list."""
-  time_in: [DateTime!]
+  createdAt_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  time_not_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
 
   """All values less than the given value."""
-  time_lt: DateTime
+  createdAt_lt: DateTime
 
   """All values less than or equal the given value."""
-  time_lte: DateTime
+  createdAt_lte: DateTime
 
   """All values greater than the given value."""
-  time_gt: DateTime
+  createdAt_gt: DateTime
 
   """All values greater than or equal the given value."""
-  time_gte: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   message: String
 
   """All values that are not equal to given value."""
@@ -3134,6 +3599,8 @@ scalar Long
 
 type MembershipLogItem implements Node {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   startTime: DateTime!
   endTime: DateTime
   message: String!
@@ -3198,20 +3665,22 @@ type MembershipLogItemEdge {
 enum MembershipLogItemOrderByInput {
   id_ASC
   id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
   startTime_ASC
   startTime_DESC
   endTime_ASC
   endTime_DESC
   message_ASC
   message_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
 }
 
 type MembershipLogItemPreviousValues {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   startTime: DateTime!
   endTime: DateTime
   message: String!
@@ -3266,6 +3735,50 @@ input MembershipLogItemScalarWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   startTime: DateTime
 
   """All values that are not equal to given value."""
@@ -3525,6 +4038,50 @@ input MembershipLogItemWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   startTime: DateTime
 
   """All values that are not equal to given value."""
@@ -3629,8 +4186,8 @@ type Mutation {
   createLogItem(data: LogItemCreateInput!): LogItem!
   createMembershipLogItem(data: MembershipLogItemCreateInput!): MembershipLogItem!
   createEvent(data: EventCreateInput!): Event!
-  createBallot(data: BallotCreateInput!): Ballot!
   createVehicle(data: VehicleCreateInput!): Vehicle!
+  createBallot(data: BallotCreateInput!): Ballot!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateRSVP(data: RSVPUpdateInput!, where: RSVPWhereUniqueInput!): RSVP
   updateTrail(data: TrailUpdateInput!, where: TrailWhereUniqueInput!): Trail
@@ -3642,8 +4199,8 @@ type Mutation {
   updateLogItem(data: LogItemUpdateInput!, where: LogItemWhereUniqueInput!): LogItem
   updateMembershipLogItem(data: MembershipLogItemUpdateInput!, where: MembershipLogItemWhereUniqueInput!): MembershipLogItem
   updateEvent(data: EventUpdateInput!, where: EventWhereUniqueInput!): Event
-  updateBallot(data: BallotUpdateInput!, where: BallotWhereUniqueInput!): Ballot
   updateVehicle(data: VehicleUpdateInput!, where: VehicleWhereUniqueInput!): Vehicle
+  updateBallot(data: BallotUpdateInput!, where: BallotWhereUniqueInput!): Ballot
   deleteUser(where: UserWhereUniqueInput!): User
   deleteRSVP(where: RSVPWhereUniqueInput!): RSVP
   deleteTrail(where: TrailWhereUniqueInput!): Trail
@@ -3655,8 +4212,8 @@ type Mutation {
   deleteLogItem(where: LogItemWhereUniqueInput!): LogItem
   deleteMembershipLogItem(where: MembershipLogItemWhereUniqueInput!): MembershipLogItem
   deleteEvent(where: EventWhereUniqueInput!): Event
-  deleteBallot(where: BallotWhereUniqueInput!): Ballot
   deleteVehicle(where: VehicleWhereUniqueInput!): Vehicle
+  deleteBallot(where: BallotWhereUniqueInput!): Ballot
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertRSVP(where: RSVPWhereUniqueInput!, create: RSVPCreateInput!, update: RSVPUpdateInput!): RSVP!
   upsertTrail(where: TrailWhereUniqueInput!, create: TrailCreateInput!, update: TrailUpdateInput!): Trail!
@@ -3668,8 +4225,8 @@ type Mutation {
   upsertLogItem(where: LogItemWhereUniqueInput!, create: LogItemCreateInput!, update: LogItemUpdateInput!): LogItem!
   upsertMembershipLogItem(where: MembershipLogItemWhereUniqueInput!, create: MembershipLogItemCreateInput!, update: MembershipLogItemUpdateInput!): MembershipLogItem!
   upsertEvent(where: EventWhereUniqueInput!, create: EventCreateInput!, update: EventUpdateInput!): Event!
-  upsertBallot(where: BallotWhereUniqueInput!, create: BallotCreateInput!, update: BallotUpdateInput!): Ballot!
   upsertVehicle(where: VehicleWhereUniqueInput!, create: VehicleCreateInput!, update: VehicleUpdateInput!): Vehicle!
+  upsertBallot(where: BallotWhereUniqueInput!, create: BallotCreateInput!, update: BallotUpdateInput!): Ballot!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyRSVPs(data: RSVPUpdateManyMutationInput!, where: RSVPWhereInput): BatchPayload!
   updateManyTrails(data: TrailUpdateManyMutationInput!, where: TrailWhereInput): BatchPayload!
@@ -3677,12 +4234,11 @@ type Mutation {
   updateManyConditions(data: ConditionUpdateManyMutationInput!, where: ConditionWhereInput): BatchPayload!
   updateManyBandaids(data: BandaidUpdateManyMutationInput!, where: BandaidWhereInput): BatchPayload!
   updateManyElections(data: ElectionUpdateManyMutationInput!, where: ElectionWhereInput): BatchPayload!
-  updateManyVotes(data: VoteUpdateManyMutationInput!, where: VoteWhereInput): BatchPayload!
   updateManyLogItems(data: LogItemUpdateManyMutationInput!, where: LogItemWhereInput): BatchPayload!
   updateManyMembershipLogItems(data: MembershipLogItemUpdateManyMutationInput!, where: MembershipLogItemWhereInput): BatchPayload!
   updateManyEvents(data: EventUpdateManyMutationInput!, where: EventWhereInput): BatchPayload!
-  updateManyBallots(data: BallotUpdateManyMutationInput!, where: BallotWhereInput): BatchPayload!
   updateManyVehicles(data: VehicleUpdateManyMutationInput!, where: VehicleWhereInput): BatchPayload!
+  updateManyBallots(data: BallotUpdateManyMutationInput!, where: BallotWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyRSVPs(where: RSVPWhereInput): BatchPayload!
   deleteManyTrails(where: TrailWhereInput): BatchPayload!
@@ -3694,8 +4250,8 @@ type Mutation {
   deleteManyLogItems(where: LogItemWhereInput): BatchPayload!
   deleteManyMembershipLogItems(where: MembershipLogItemWhereInput): BatchPayload!
   deleteManyEvents(where: EventWhereInput): BatchPayload!
-  deleteManyBallots(where: BallotWhereInput): BatchPayload!
   deleteManyVehicles(where: VehicleWhereInput): BatchPayload!
+  deleteManyBallots(where: BallotWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -3744,8 +4300,8 @@ type Query {
   logItems(where: LogItemWhereInput, orderBy: LogItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [LogItem]!
   membershipLogItems(where: MembershipLogItemWhereInput, orderBy: MembershipLogItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [MembershipLogItem]!
   events(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Event]!
-  ballots(where: BallotWhereInput, orderBy: BallotOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Ballot]!
   vehicles(where: VehicleWhereInput, orderBy: VehicleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vehicle]!
+  ballots(where: BallotWhereInput, orderBy: BallotOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Ballot]!
   user(where: UserWhereUniqueInput!): User
   rSVP(where: RSVPWhereUniqueInput!): RSVP
   trail(where: TrailWhereUniqueInput!): Trail
@@ -3757,8 +4313,8 @@ type Query {
   logItem(where: LogItemWhereUniqueInput!): LogItem
   membershipLogItem(where: MembershipLogItemWhereUniqueInput!): MembershipLogItem
   event(where: EventWhereUniqueInput!): Event
-  ballot(where: BallotWhereUniqueInput!): Ballot
   vehicle(where: VehicleWhereUniqueInput!): Vehicle
+  ballot(where: BallotWhereUniqueInput!): Ballot
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   rSVPsConnection(where: RSVPWhereInput, orderBy: RSVPOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RSVPConnection!
   trailsConnection(where: TrailWhereInput, orderBy: TrailOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TrailConnection!
@@ -3770,8 +4326,8 @@ type Query {
   logItemsConnection(where: LogItemWhereInput, orderBy: LogItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LogItemConnection!
   membershipLogItemsConnection(where: MembershipLogItemWhereInput, orderBy: MembershipLogItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MembershipLogItemConnection!
   eventsConnection(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EventConnection!
-  ballotsConnection(where: BallotWhereInput, orderBy: BallotOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BallotConnection!
   vehiclesConnection(where: VehicleWhereInput, orderBy: VehicleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): VehicleConnection!
+  ballotsConnection(where: BallotWhereInput, orderBy: BallotOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BallotConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -3790,6 +4346,8 @@ enum Role {
 
 type RSVP implements Node {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   member: User!
   event: Event!
   status: RSVPStatus!
@@ -3846,16 +4404,18 @@ type RSVPEdge {
 enum RSVPOrderByInput {
   id_ASC
   id_DESC
-  status_ASC
-  status_DESC
-  updatedAt_ASC
-  updatedAt_DESC
   createdAt_ASC
   createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  status_ASC
+  status_DESC
 }
 
 type RSVPPreviousValues {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   status: RSVPStatus!
 }
 
@@ -3908,6 +4468,50 @@ input RSVPScalarWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   status: RSVPStatus
 
   """All values that are not equal to given value."""
@@ -4090,6 +4694,50 @@ input RSVPWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   status: RSVPStatus
 
   """All values that are not equal to given value."""
@@ -4110,6 +4758,8 @@ input RSVPWhereUniqueInput {
 
 type RunReport implements Node {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   startTime: DateTime!
   endTime: DateTime!
   reportFiled: DateTime!
@@ -4248,6 +4898,10 @@ type RunReportEdge {
 enum RunReportOrderByInput {
   id_ASC
   id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
   startTime_ASC
   startTime_DESC
   endTime_ASC
@@ -4266,14 +4920,12 @@ enum RunReportOrderByInput {
   rating_DESC
   favorite_ASC
   favorite_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
 }
 
 type RunReportPreviousValues {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   startTime: DateTime!
   endTime: DateTime!
   reportFiled: DateTime!
@@ -4334,6 +4986,50 @@ input RunReportScalarWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   startTime: DateTime
 
   """All values that are not equal to given value."""
@@ -4832,6 +5528,50 @@ input RunReportWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   startTime: DateTime
 
   """All values that are not equal to given value."""
@@ -5076,8 +5816,8 @@ type Subscription {
   logItem(where: LogItemSubscriptionWhereInput): LogItemSubscriptionPayload
   membershipLogItem(where: MembershipLogItemSubscriptionWhereInput): MembershipLogItemSubscriptionPayload
   event(where: EventSubscriptionWhereInput): EventSubscriptionPayload
-  ballot(where: BallotSubscriptionWhereInput): BallotSubscriptionPayload
   vehicle(where: VehicleSubscriptionWhereInput): VehicleSubscriptionPayload
+  ballot(where: BallotSubscriptionWhereInput): BallotSubscriptionPayload
 }
 
 enum Title {
@@ -5090,6 +5830,8 @@ enum Title {
 
 type Trail implements Node {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   slug: String!
   name: String
   description: String
@@ -5203,6 +5945,7 @@ input TrailCreateWithoutVisitorsInput {
 }
 
 enum TrailDifficulty {
+  UNKNOWN
   BEGINNER
   INTERMEDIATE
   ADVANCED
@@ -5220,6 +5963,10 @@ type TrailEdge {
 enum TrailOrderByInput {
   id_ASC
   id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
   slug_ASC
   slug_DESC
   name_ASC
@@ -5240,14 +5987,12 @@ enum TrailOrderByInput {
   conditionsLastReported_DESC
   favoriteCount_ASC
   favoriteCount_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
 }
 
 type TrailPreviousValues {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   slug: String!
   name: String
   description: String
@@ -5309,6 +6054,50 @@ input TrailScalarWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   slug: String
 
   """All values that are not equal to given value."""
@@ -5856,6 +6645,50 @@ input TrailWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   slug: String
 
   """All values that are not equal to given value."""
@@ -6189,7 +7022,8 @@ input TrailWhereUniqueInput {
 
 type User implements Node {
   id: ID!
-  acctCreated: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   joined: DateTime
   firstName: String!
   lastName: String!
@@ -6233,7 +7067,6 @@ type UserConnection {
 
 input UserCreateInput {
   id: ID
-  acctCreated: DateTime!
   joined: DateTime
   firstName: String!
   lastName: String!
@@ -6331,7 +7164,6 @@ input UserCreatetitlesInput {
 
 input UserCreateWithoutBandaidsInput {
   id: ID
-  acctCreated: DateTime!
   joined: DateTime
   firstName: String!
   lastName: String!
@@ -6364,7 +7196,6 @@ input UserCreateWithoutBandaidsInput {
 
 input UserCreateWithoutCandidateForInput {
   id: ID
-  acctCreated: DateTime!
   joined: DateTime
   firstName: String!
   lastName: String!
@@ -6397,7 +7228,6 @@ input UserCreateWithoutCandidateForInput {
 
 input UserCreateWithoutEventsCreatedInput {
   id: ID
-  acctCreated: DateTime!
   joined: DateTime
   firstName: String!
   lastName: String!
@@ -6430,7 +7260,6 @@ input UserCreateWithoutEventsCreatedInput {
 
 input UserCreateWithoutEventsHostedInput {
   id: ID
-  acctCreated: DateTime!
   joined: DateTime
   firstName: String!
   lastName: String!
@@ -6463,7 +7292,6 @@ input UserCreateWithoutEventsHostedInput {
 
 input UserCreateWithoutEventsRSVPdInput {
   id: ID
-  acctCreated: DateTime!
   joined: DateTime
   firstName: String!
   lastName: String!
@@ -6496,7 +7324,6 @@ input UserCreateWithoutEventsRSVPdInput {
 
 input UserCreateWithoutLogInput {
   id: ID
-  acctCreated: DateTime!
   joined: DateTime
   firstName: String!
   lastName: String!
@@ -6529,7 +7356,6 @@ input UserCreateWithoutLogInput {
 
 input UserCreateWithoutMembershipLogContributionsInput {
   id: ID
-  acctCreated: DateTime!
   joined: DateTime
   firstName: String!
   lastName: String!
@@ -6562,7 +7388,6 @@ input UserCreateWithoutMembershipLogContributionsInput {
 
 input UserCreateWithoutMembershipLogInput {
   id: ID
-  acctCreated: DateTime!
   joined: DateTime
   firstName: String!
   lastName: String!
@@ -6595,7 +7420,6 @@ input UserCreateWithoutMembershipLogInput {
 
 input UserCreateWithoutRunReportsLoggedInput {
   id: ID
-  acctCreated: DateTime!
   joined: DateTime
   firstName: String!
   lastName: String!
@@ -6628,7 +7452,6 @@ input UserCreateWithoutRunReportsLoggedInput {
 
 input UserCreateWithoutTrailsVisitedInput {
   id: ID
-  acctCreated: DateTime!
   joined: DateTime
   firstName: String!
   lastName: String!
@@ -6661,7 +7484,6 @@ input UserCreateWithoutTrailsVisitedInput {
 
 input UserCreateWithoutVotedForInput {
   id: ID
-  acctCreated: DateTime!
   joined: DateTime
   firstName: String!
   lastName: String!
@@ -6694,7 +7516,6 @@ input UserCreateWithoutVotedForInput {
 
 input UserCreateWithoutVotesReceivedInput {
   id: ID
-  acctCreated: DateTime!
   joined: DateTime
   firstName: String!
   lastName: String!
@@ -6737,8 +7558,10 @@ type UserEdge {
 enum UserOrderByInput {
   id_ASC
   id_DESC
-  acctCreated_ASC
-  acctCreated_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
   joined_ASC
   joined_DESC
   firstName_ASC
@@ -6769,15 +7592,12 @@ enum UserOrderByInput {
   office_DESC
   comfortLevel_ASC
   comfortLevel_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
 }
 
 type UserPreviousValues {
   id: ID!
-  acctCreated: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   joined: DateTime
   firstName: String!
   lastName: String!
@@ -6845,28 +7665,50 @@ input UserScalarWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  acctCreated: DateTime
+  createdAt: DateTime
 
   """All values that are not equal to given value."""
-  acctCreated_not: DateTime
+  createdAt_not: DateTime
 
   """All values that are contained in given list."""
-  acctCreated_in: [DateTime!]
+  createdAt_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  acctCreated_not_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
 
   """All values less than the given value."""
-  acctCreated_lt: DateTime
+  createdAt_lt: DateTime
 
   """All values less than or equal the given value."""
-  acctCreated_lte: DateTime
+  createdAt_lte: DateTime
 
   """All values greater than the given value."""
-  acctCreated_gt: DateTime
+  createdAt_gt: DateTime
 
   """All values greater than or equal the given value."""
-  acctCreated_gte: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   joined: DateTime
 
   """All values that are not equal to given value."""
@@ -7317,7 +8159,6 @@ input UserSubscriptionWhereInput {
 }
 
 input UserUpdateInput {
-  acctCreated: DateTime
   joined: DateTime
   firstName: String
   lastName: String
@@ -7350,7 +8191,6 @@ input UserUpdateInput {
 }
 
 input UserUpdateManyDataInput {
-  acctCreated: DateTime
   joined: DateTime
   firstName: String
   lastName: String
@@ -7370,7 +8210,6 @@ input UserUpdateManyDataInput {
 }
 
 input UserUpdateManyMutationInput {
-  acctCreated: DateTime
   joined: DateTime
   firstName: String
   lastName: String
@@ -7499,7 +8338,6 @@ input UserUpdatetitlesInput {
 }
 
 input UserUpdateWithoutBandaidsDataInput {
-  acctCreated: DateTime
   joined: DateTime
   firstName: String
   lastName: String
@@ -7531,7 +8369,6 @@ input UserUpdateWithoutBandaidsDataInput {
 }
 
 input UserUpdateWithoutCandidateForDataInput {
-  acctCreated: DateTime
   joined: DateTime
   firstName: String
   lastName: String
@@ -7563,7 +8400,6 @@ input UserUpdateWithoutCandidateForDataInput {
 }
 
 input UserUpdateWithoutEventsCreatedDataInput {
-  acctCreated: DateTime
   joined: DateTime
   firstName: String
   lastName: String
@@ -7595,7 +8431,6 @@ input UserUpdateWithoutEventsCreatedDataInput {
 }
 
 input UserUpdateWithoutEventsHostedDataInput {
-  acctCreated: DateTime
   joined: DateTime
   firstName: String
   lastName: String
@@ -7627,7 +8462,6 @@ input UserUpdateWithoutEventsHostedDataInput {
 }
 
 input UserUpdateWithoutEventsRSVPdDataInput {
-  acctCreated: DateTime
   joined: DateTime
   firstName: String
   lastName: String
@@ -7659,7 +8493,6 @@ input UserUpdateWithoutEventsRSVPdDataInput {
 }
 
 input UserUpdateWithoutLogDataInput {
-  acctCreated: DateTime
   joined: DateTime
   firstName: String
   lastName: String
@@ -7691,7 +8524,6 @@ input UserUpdateWithoutLogDataInput {
 }
 
 input UserUpdateWithoutMembershipLogContributionsDataInput {
-  acctCreated: DateTime
   joined: DateTime
   firstName: String
   lastName: String
@@ -7723,7 +8555,6 @@ input UserUpdateWithoutMembershipLogContributionsDataInput {
 }
 
 input UserUpdateWithoutMembershipLogDataInput {
-  acctCreated: DateTime
   joined: DateTime
   firstName: String
   lastName: String
@@ -7755,7 +8586,6 @@ input UserUpdateWithoutMembershipLogDataInput {
 }
 
 input UserUpdateWithoutRunReportsLoggedDataInput {
-  acctCreated: DateTime
   joined: DateTime
   firstName: String
   lastName: String
@@ -7787,7 +8617,6 @@ input UserUpdateWithoutRunReportsLoggedDataInput {
 }
 
 input UserUpdateWithoutTrailsVisitedDataInput {
-  acctCreated: DateTime
   joined: DateTime
   firstName: String
   lastName: String
@@ -7819,7 +8648,6 @@ input UserUpdateWithoutTrailsVisitedDataInput {
 }
 
 input UserUpdateWithoutVotedForDataInput {
-  acctCreated: DateTime
   joined: DateTime
   firstName: String
   lastName: String
@@ -7851,7 +8679,6 @@ input UserUpdateWithoutVotedForDataInput {
 }
 
 input UserUpdateWithoutVotesReceivedDataInput {
-  acctCreated: DateTime
   joined: DateTime
   firstName: String
   lastName: String
@@ -8003,28 +8830,50 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  acctCreated: DateTime
+  createdAt: DateTime
 
   """All values that are not equal to given value."""
-  acctCreated_not: DateTime
+  createdAt_not: DateTime
 
   """All values that are contained in given list."""
-  acctCreated_in: [DateTime!]
+  createdAt_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  acctCreated_not_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
 
   """All values less than the given value."""
-  acctCreated_lt: DateTime
+  createdAt_lt: DateTime
 
   """All values less than or equal the given value."""
-  acctCreated_lte: DateTime
+  createdAt_lte: DateTime
 
   """All values greater than the given value."""
-  acctCreated_gt: DateTime
+  createdAt_gt: DateTime
 
   """All values greater than or equal the given value."""
-  acctCreated_gte: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   joined: DateTime
 
   """All values that are not equal to given value."""
@@ -8481,6 +9330,8 @@ input UserWhereUniqueInput {
 
 type Vehicle implements Node {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   year: Int!
   make: String!
   model: String!
@@ -8532,6 +9383,10 @@ type VehicleEdge {
 enum VehicleOrderByInput {
   id_ASC
   id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
   year_ASC
   year_DESC
   make_ASC
@@ -8544,14 +9399,12 @@ enum VehicleOrderByInput {
   trim_DESC
   image_ASC
   image_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
 }
 
 type VehiclePreviousValues {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   year: Int!
   make: String!
   model: String!
@@ -8697,6 +9550,50 @@ input VehicleWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   year: Int
 
   """All values that are not equal to given value."""
@@ -8927,8 +9824,9 @@ input VehicleWhereUniqueInput {
 
 type Vote implements Node {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   ballot: Ballot!
-  dateTime: DateTime
   candidate: User
   voter: User!
 }
@@ -8945,7 +9843,6 @@ type VoteConnection {
 
 input VoteCreateInput {
   id: ID
-  dateTime: DateTime
   ballot: BallotCreateOneWithoutVotesInput!
   candidate: UserCreateOneWithoutVotesReceivedInput
   voter: UserCreateOneWithoutVotedForInput!
@@ -8968,21 +9865,18 @@ input VoteCreateManyWithoutVoterInput {
 
 input VoteCreateWithoutBallotInput {
   id: ID
-  dateTime: DateTime
   candidate: UserCreateOneWithoutVotesReceivedInput
   voter: UserCreateOneWithoutVotedForInput!
 }
 
 input VoteCreateWithoutCandidateInput {
   id: ID
-  dateTime: DateTime
   ballot: BallotCreateOneWithoutVotesInput!
   voter: UserCreateOneWithoutVotedForInput!
 }
 
 input VoteCreateWithoutVoterInput {
   id: ID
-  dateTime: DateTime
   ballot: BallotCreateOneWithoutVotesInput!
   candidate: UserCreateOneWithoutVotesReceivedInput
 }
@@ -8999,17 +9893,16 @@ type VoteEdge {
 enum VoteOrderByInput {
   id_ASC
   id_DESC
-  dateTime_ASC
-  dateTime_DESC
-  updatedAt_ASC
-  updatedAt_DESC
   createdAt_ASC
   createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
 }
 
 type VotePreviousValues {
   id: ID!
-  dateTime: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 input VoteScalarWhereInput {
@@ -9061,28 +9954,50 @@ input VoteScalarWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  dateTime: DateTime
+  createdAt: DateTime
 
   """All values that are not equal to given value."""
-  dateTime_not: DateTime
+  createdAt_not: DateTime
 
   """All values that are contained in given list."""
-  dateTime_in: [DateTime!]
+  createdAt_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  dateTime_not_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
 
   """All values less than the given value."""
-  dateTime_lt: DateTime
+  createdAt_lt: DateTime
 
   """All values less than or equal the given value."""
-  dateTime_lte: DateTime
+  createdAt_lte: DateTime
 
   """All values greater than the given value."""
-  dateTime_gt: DateTime
+  createdAt_gt: DateTime
 
   """All values greater than or equal the given value."""
-  dateTime_gte: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
 }
 
 type VoteSubscriptionPayload {
@@ -9125,18 +10040,9 @@ input VoteSubscriptionWhereInput {
 }
 
 input VoteUpdateInput {
-  dateTime: DateTime
   ballot: BallotUpdateOneRequiredWithoutVotesInput
   candidate: UserUpdateOneWithoutVotesReceivedInput
   voter: UserUpdateOneRequiredWithoutVotedForInput
-}
-
-input VoteUpdateManyDataInput {
-  dateTime: DateTime
-}
-
-input VoteUpdateManyMutationInput {
-  dateTime: DateTime
 }
 
 input VoteUpdateManyWithoutBallotInput {
@@ -9146,7 +10052,6 @@ input VoteUpdateManyWithoutBallotInput {
   disconnect: [VoteWhereUniqueInput!]
   delete: [VoteWhereUniqueInput!]
   update: [VoteUpdateWithWhereUniqueWithoutBallotInput!]
-  updateMany: [VoteUpdateManyWithWhereNestedInput!]
   deleteMany: [VoteScalarWhereInput!]
   upsert: [VoteUpsertWithWhereUniqueWithoutBallotInput!]
 }
@@ -9158,7 +10063,6 @@ input VoteUpdateManyWithoutCandidateInput {
   disconnect: [VoteWhereUniqueInput!]
   delete: [VoteWhereUniqueInput!]
   update: [VoteUpdateWithWhereUniqueWithoutCandidateInput!]
-  updateMany: [VoteUpdateManyWithWhereNestedInput!]
   deleteMany: [VoteScalarWhereInput!]
   upsert: [VoteUpsertWithWhereUniqueWithoutCandidateInput!]
 }
@@ -9170,30 +10074,21 @@ input VoteUpdateManyWithoutVoterInput {
   disconnect: [VoteWhereUniqueInput!]
   delete: [VoteWhereUniqueInput!]
   update: [VoteUpdateWithWhereUniqueWithoutVoterInput!]
-  updateMany: [VoteUpdateManyWithWhereNestedInput!]
   deleteMany: [VoteScalarWhereInput!]
   upsert: [VoteUpsertWithWhereUniqueWithoutVoterInput!]
 }
 
-input VoteUpdateManyWithWhereNestedInput {
-  where: VoteScalarWhereInput!
-  data: VoteUpdateManyDataInput!
-}
-
 input VoteUpdateWithoutBallotDataInput {
-  dateTime: DateTime
   candidate: UserUpdateOneWithoutVotesReceivedInput
   voter: UserUpdateOneRequiredWithoutVotedForInput
 }
 
 input VoteUpdateWithoutCandidateDataInput {
-  dateTime: DateTime
   ballot: BallotUpdateOneRequiredWithoutVotesInput
   voter: UserUpdateOneRequiredWithoutVotedForInput
 }
 
 input VoteUpdateWithoutVoterDataInput {
-  dateTime: DateTime
   ballot: BallotUpdateOneRequiredWithoutVotesInput
   candidate: UserUpdateOneWithoutVotesReceivedInput
 }
@@ -9280,28 +10175,50 @@ input VoteWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  dateTime: DateTime
+  createdAt: DateTime
 
   """All values that are not equal to given value."""
-  dateTime_not: DateTime
+  createdAt_not: DateTime
 
   """All values that are contained in given list."""
-  dateTime_in: [DateTime!]
+  createdAt_in: [DateTime!]
 
   """All values that are not contained in given list."""
-  dateTime_not_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
 
   """All values less than the given value."""
-  dateTime_lt: DateTime
+  createdAt_lt: DateTime
 
   """All values less than or equal the given value."""
-  dateTime_lte: DateTime
+  createdAt_lte: DateTime
 
   """All values greater than the given value."""
-  dateTime_gt: DateTime
+  createdAt_gt: DateTime
 
   """All values greater than or equal the given value."""
-  dateTime_gte: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   ballot: BallotWhereInput
   candidate: UserWhereInput
   voter: UserWhereInput

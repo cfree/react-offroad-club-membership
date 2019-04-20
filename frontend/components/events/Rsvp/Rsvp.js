@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import styled from 'styled-components';
@@ -26,12 +27,33 @@ const StyledRsvp = styled.div`
     font-size: 1.2rem;
     color: ${({ theme }) => theme.colors.black_light};
   }
+
+  .past-rsvp__status {
+    font-size: 1.6rem;
+    font-weight: 700;
+    width: 250px;
+  }
+
+  .past-rsvp__count {
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-left: 20px;
+  }
 `;
 
 export default class Rsvp extends Component {
   state = {
     status: this.props.userStatus,
     attendeeCount: this.props.attendeeCount,
+    isPastEvent: this.props.pastEvent,
+  }
+
+  static propTypes = {
+    userStatus: PropTypes.string,
+    attendeeCount: PropTypes.number,
+    userId: PropTypes.string,
+    eventId: PropTypes.string,
+    pastEvent: PropTypes.bool,
   }
 
   handleClick = (status, callback) => {
@@ -68,6 +90,28 @@ export default class Rsvp extends Component {
     }, callback);
   }
 
+  getPastEventText = () => {
+    switch (this.state.status) {
+      case 'GOING':
+        return `You went`;
+      case 'MAYBE':
+      case 'CANT_GO':
+      default:
+        return `You didn't go`;
+    }
+  }
+
+  getPastCountText = () => {
+    switch (this.state.attendeeCount) {
+      case 0:
+        return `Nobody went`;
+      case 1:
+        return `1 person went`;
+      default:
+        return `${this.state.attendeeCount} people went`;
+    }
+  }
+
   getRsvpText = () => {
     switch (this.state.status) {
       case 'GOING':
@@ -96,29 +140,36 @@ export default class Rsvp extends Component {
         {(setRsvp, { loading, error }) => {
           return (
             <StyledRsvp>
-              <div className="rsvp__attendees">
-                {this.getRsvpText()}
-                <span className="rsvp__count">{this.state.attendeeCount} going</span>
-              </div>
-              <button
-                disabled={loading || this.state.status === 'GOING'}
-                onClick={() => this.handleClick('GOING', setRsvp)}
-              >
-                Yes
-              </button>
-              <button
-                disabled={loading || this.state.status === 'MAYBE'}
-                onClick={() => this.handleClick('MAYBE', setRsvp)}
-              >
-                Maybe
-              </button>
-              <button
-                disabled={loading || this.state.status === 'CANT_GO'}
-                onClick={() => this.handleClick('CANT_GO', setRsvp)}
-              >
-                No
-              </button>
-              <Loading loading={loading} />
+              {this.state.isPastEvent ? (
+                <div className="past-rsvp__status">
+                  {this.getPastEventText()}{' '}
+                  <span className="past-rsvp__count">{this.getPastCountText()}</span>
+                </div>
+              ) : (<>
+                <div className="rsvp__attendees">
+                    {this.getRsvpText()}
+                    <span className="rsvp__count">{this.state.attendeeCount} going</span>
+                  </div>
+                <button
+                  disabled={loading || this.state.status === 'GOING'}
+                  onClick={() => this.handleClick('GOING', setRsvp)}
+                >
+                  Yes
+                  </button>
+                <button
+                  disabled={loading || this.state.status === 'MAYBE'}
+                  onClick={() => this.handleClick('MAYBE', setRsvp)}
+                >
+                  Maybe
+                  </button>
+                <button
+                  disabled={loading || this.state.status === 'CANT_GO'}
+                  onClick={() => this.handleClick('CANT_GO', setRsvp)}
+                >
+                  No
+                  </button>
+                <Loading loading={loading} />
+              </>)}
             </StyledRsvp>
           );
         }}

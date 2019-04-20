@@ -14,6 +14,7 @@ const Trail = {
 
     // Convert to array
     const scale = {
+      UNKNOWN: 0,
       BEGINNER: 1,
       INTERMEDIATE: 2,
       ADVANCED: 3,
@@ -25,11 +26,16 @@ const Trail = {
       0,
     );
 
-    const avg = Math.round(counts / reports.length);
-    const entries = Object.entries(scale);
-    const avgDifficulty = entries.find(entry => avg === entry[1]);
+    if (counts) {
+      const avg = Math.round(counts / reports.length);
+      const entries = Object.entries(scale);
+      console.log('entries', entries);
+      const avgDifficulty = entries.find(entry => avg === entry[1]);
 
-    return avgDifficulty[0];
+      return avgDifficulty[0];
+    }
+    
+    return 'UNKNOWN';
   },
   async avgRatings(parent, args, ctx, info) {
     // Get all ratings from run reports and checkins for this trail, determine average
@@ -46,8 +52,12 @@ const Trail = {
       0,
     );
 
-    const avgRatings = (counts / reports.length).toPrecision(3);
-    return avgRatings;
+    if (counts) {
+      const avgRatings = (counts / reports.length).toPrecision(3);
+      return avgRatings;
+    }
+
+    return 0;
   },
   async currentConditions({ id }, args, ctx, info) {
     // Find last condition reported within the last 30 days

@@ -90,6 +90,8 @@ type Event {
   host: User
   rsvps: [RSVP]
   address: String
+  trailDifficulty: TrailDifficulty
+  trailNotes: String
   rallyAddress: String
   rallyTime: String
   trail: Trail
