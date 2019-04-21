@@ -28,22 +28,56 @@ const Query = {
     hasAccountStatus(ctx.request.user, ['ACTIVE']);
 
     // If they do, query all the users
-    const query = { orderBy: 'firstName_ASC' };
+    const query = {
+      orderBy: 'firstName_ASC',
+      where: {},
+    };
 
-    if (args.roles) {
+    console.log('args', args);
+
+    if (args.role && args.role.length) {
       query.where = {
-        roles_in: args.roles,
-        accountStatus_in: args.accountStatus,
+        role_in: args.role,
       };
-    } else {
+    }
+    if (args.accountStatus && args.accountStatus.length) {
       query.where = {
-        accountType_in: args.accountType,
+        ...query.where,
         accountStatus_in: args.accountStatus,
       };
     }
+    if (args.accountType && args.accountType.length) {
+      query.where = {
+        ...query.where,
+        accountType_in: args.accountType,
+      };
+    }
+    if (args.office && args.office.length) {
+      query.where = {
+        ...query.where,
+        office_in: args.office,
+      };
+    }
+    if (args.title && args.title.length) {
+      query.where = {
+        ...query.where,
+        title_in: args.title,
+      };
+      // query.where = {
+      //   AND: [
+      //     { accountType_in: args.accountType, },
+      //     { accountStatus_in: args.accountStatus, },
+      //     { role_in: args.role, },
+      //     { office_in: args.office, },
+      //     { title_in: args.title, },
+      //   ],
+      // };
+    }
+
+    console.log('query', query);
 
     // Sorting?
-    // if (args.orderBy && args.orderBy.length > 1) {
+    // if (args.orderBy && args.orderBy.length > 0) {
     //   query.orderBy = args.orderBy[0];
     // }
 

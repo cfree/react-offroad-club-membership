@@ -176,9 +176,7 @@ const Mutations = {
     return ctx.db.mutation.updateUser(
       {
         data: {
-          role: {
-            set: args.role,
-          },
+          role: args.role,
         },
         where: {
           id: args.userId,

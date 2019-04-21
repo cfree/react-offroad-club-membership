@@ -19,9 +19,11 @@ type Mutation {
 type Query {
   myself: User
   users(
-    roles: [Role], 
+    role: [Role], 
     accountStatus: [AccountStatus], 
     accountType: [AccountType], 
+    title: [Title],
+    office: [Office],
     orderBy: [String],
   ): [User]!
   user(username: String): User!
@@ -45,13 +47,13 @@ type User {
   firstName: String
   lastName: String
   email: String
+  phone: Float
   avatarSmall: String
-  titles: [Title]
+  title: Title
   role: Role!
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
-  phone: String
   vehicle: Vehicle
   comfortLevel: String
   log: [LogItem]

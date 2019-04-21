@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/four-players-co/four-players-co/dev
-# timestamp: Wed Apr 17 2019 19:20:06 GMT-0600 (MDT)
+# timestamp: Sat Apr 20 2019 22:37:38 GMT-0600 (MDT)
 
 enum AccountStatus {
   ACTIVE
@@ -5822,9 +5822,6 @@ type Subscription {
 
 enum Title {
   WEBMASTER
-  RUN_MASTER
-  RUN_LEADER
-  EMERITUS_MEMBER
   CHARTER_MEMBER
 }
 
@@ -7029,13 +7026,14 @@ type User implements Node {
   lastName: String!
   username: String!
   email: String!
+  phone: Float!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
   vehicle: Vehicle
-  titles: [Title!]!
+  title: Title
   role: Role!
   accountStatus: AccountStatus!
   accountType: AccountType!
@@ -7072,17 +7070,18 @@ input UserCreateInput {
   lastName: String!
   username: String!
   email: String!
+  phone: Float!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7158,10 +7157,6 @@ input UserCreateOneWithoutVotesReceivedInput {
   connect: UserWhereUniqueInput
 }
 
-input UserCreatetitlesInput {
-  set: [Title!]
-}
-
 input UserCreateWithoutBandaidsInput {
   id: ID
   joined: DateTime
@@ -7169,17 +7164,18 @@ input UserCreateWithoutBandaidsInput {
   lastName: String!
   username: String!
   email: String!
+  phone: Float!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7201,17 +7197,18 @@ input UserCreateWithoutCandidateForInput {
   lastName: String!
   username: String!
   email: String!
+  phone: Float!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   votesReceived: VoteCreateManyWithoutCandidateInput
   votedFor: VoteCreateManyWithoutVoterInput
@@ -7233,17 +7230,18 @@ input UserCreateWithoutEventsCreatedInput {
   lastName: String!
   username: String!
   email: String!
+  phone: Float!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7265,17 +7263,18 @@ input UserCreateWithoutEventsHostedInput {
   lastName: String!
   username: String!
   email: String!
+  phone: Float!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7297,17 +7296,18 @@ input UserCreateWithoutEventsRSVPdInput {
   lastName: String!
   username: String!
   email: String!
+  phone: Float!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7329,17 +7329,18 @@ input UserCreateWithoutLogInput {
   lastName: String!
   username: String!
   email: String!
+  phone: Float!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7361,17 +7362,18 @@ input UserCreateWithoutMembershipLogContributionsInput {
   lastName: String!
   username: String!
   email: String!
+  phone: Float!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7393,17 +7395,18 @@ input UserCreateWithoutMembershipLogInput {
   lastName: String!
   username: String!
   email: String!
+  phone: Float!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7425,17 +7428,18 @@ input UserCreateWithoutRunReportsLoggedInput {
   lastName: String!
   username: String!
   email: String!
+  phone: Float!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7457,17 +7461,18 @@ input UserCreateWithoutTrailsVisitedInput {
   lastName: String!
   username: String!
   email: String!
+  phone: Float!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7489,17 +7494,18 @@ input UserCreateWithoutVotedForInput {
   lastName: String!
   username: String!
   email: String!
+  phone: Float!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7521,17 +7527,18 @@ input UserCreateWithoutVotesReceivedInput {
   lastName: String!
   username: String!
   email: String!
+  phone: Float!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserCreatetitlesInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votedFor: VoteCreateManyWithoutVoterInput
@@ -7572,6 +7579,8 @@ enum UserOrderByInput {
   username_DESC
   email_ASC
   email_DESC
+  phone_ASC
+  phone_DESC
   password_ASC
   password_DESC
   resetToken_ASC
@@ -7582,6 +7591,8 @@ enum UserOrderByInput {
   avatarSmall_DESC
   isCharterMember_ASC
   isCharterMember_DESC
+  title_ASC
+  title_DESC
   role_ASC
   role_DESC
   accountStatus_ASC
@@ -7603,12 +7614,13 @@ type UserPreviousValues {
   lastName: String!
   username: String!
   email: String!
+  phone: Float!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
-  titles: [Title!]!
+  title: Title
   role: Role!
   accountStatus: AccountStatus!
   accountType: AccountType!
@@ -7891,6 +7903,28 @@ input UserScalarWhereInput {
 
   """All values not ending with the given string."""
   email_not_ends_with: String
+  phone: Float
+
+  """All values that are not equal to given value."""
+  phone_not: Float
+
+  """All values that are contained in given list."""
+  phone_in: [Float!]
+
+  """All values that are not contained in given list."""
+  phone_not_in: [Float!]
+
+  """All values less than the given value."""
+  phone_lt: Float
+
+  """All values less than or equal the given value."""
+  phone_lte: Float
+
+  """All values greater than the given value."""
+  phone_gt: Float
+
+  """All values greater than or equal the given value."""
+  phone_gte: Float
   password: String
 
   """All values that are not equal to given value."""
@@ -8037,6 +8071,16 @@ input UserScalarWhereInput {
 
   """All values that are not equal to given value."""
   isCharterMember_not: Boolean
+  title: Title
+
+  """All values that are not equal to given value."""
+  title_not: Title
+
+  """All values that are contained in given list."""
+  title_in: [Title!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [Title!]
   role: Role
 
   """All values that are not equal to given value."""
@@ -8164,17 +8208,18 @@ input UserUpdateInput {
   lastName: String
   username: String
   email: String
+  phone: Float
   password: String
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8196,17 +8241,18 @@ input UserUpdateManyDataInput {
   lastName: String
   username: String
   email: String
+  phone: Float
   password: String
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserUpdatetitlesInput
 }
 
 input UserUpdateManyMutationInput {
@@ -8215,17 +8261,18 @@ input UserUpdateManyMutationInput {
   lastName: String
   username: String
   email: String
+  phone: Float
   password: String
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserUpdatetitlesInput
 }
 
 input UserUpdateManyWithoutCandidateForInput {
@@ -8333,27 +8380,24 @@ input UserUpdateOneWithoutVotesReceivedInput {
   upsert: UserUpsertWithoutVotesReceivedInput
 }
 
-input UserUpdatetitlesInput {
-  set: [Title!]
-}
-
 input UserUpdateWithoutBandaidsDataInput {
   joined: DateTime
   firstName: String
   lastName: String
   username: String
   email: String
+  phone: Float
   password: String
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8374,17 +8418,18 @@ input UserUpdateWithoutCandidateForDataInput {
   lastName: String
   username: String
   email: String
+  phone: Float
   password: String
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
   votedFor: VoteUpdateManyWithoutVoterInput
@@ -8405,17 +8450,18 @@ input UserUpdateWithoutEventsCreatedDataInput {
   lastName: String
   username: String
   email: String
+  phone: Float
   password: String
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8436,17 +8482,18 @@ input UserUpdateWithoutEventsHostedDataInput {
   lastName: String
   username: String
   email: String
+  phone: Float
   password: String
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8467,17 +8514,18 @@ input UserUpdateWithoutEventsRSVPdDataInput {
   lastName: String
   username: String
   email: String
+  phone: Float
   password: String
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8498,17 +8546,18 @@ input UserUpdateWithoutLogDataInput {
   lastName: String
   username: String
   email: String
+  phone: Float
   password: String
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8529,17 +8578,18 @@ input UserUpdateWithoutMembershipLogContributionsDataInput {
   lastName: String
   username: String
   email: String
+  phone: Float
   password: String
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8560,17 +8610,18 @@ input UserUpdateWithoutMembershipLogDataInput {
   lastName: String
   username: String
   email: String
+  phone: Float
   password: String
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8591,17 +8642,18 @@ input UserUpdateWithoutRunReportsLoggedDataInput {
   lastName: String
   username: String
   email: String
+  phone: Float
   password: String
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8622,17 +8674,18 @@ input UserUpdateWithoutTrailsVisitedDataInput {
   lastName: String
   username: String
   email: String
+  phone: Float
   password: String
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8653,17 +8706,18 @@ input UserUpdateWithoutVotedForDataInput {
   lastName: String
   username: String
   email: String
+  phone: Float
   password: String
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8684,17 +8738,18 @@ input UserUpdateWithoutVotesReceivedDataInput {
   lastName: String
   username: String
   email: String
+  phone: Float
   password: String
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean
+  title: Title
   role: Role
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
   comfortLevel: String
-  titles: UserUpdatetitlesInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votedFor: VoteUpdateManyWithoutVoterInput
@@ -9056,6 +9111,28 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   email_not_ends_with: String
+  phone: Float
+
+  """All values that are not equal to given value."""
+  phone_not: Float
+
+  """All values that are contained in given list."""
+  phone_in: [Float!]
+
+  """All values that are not contained in given list."""
+  phone_not_in: [Float!]
+
+  """All values less than the given value."""
+  phone_lt: Float
+
+  """All values less than or equal the given value."""
+  phone_lte: Float
+
+  """All values greater than the given value."""
+  phone_gt: Float
+
+  """All values greater than or equal the given value."""
+  phone_gte: Float
   password: String
 
   """All values that are not equal to given value."""
@@ -9202,6 +9279,16 @@ input UserWhereInput {
 
   """All values that are not equal to given value."""
   isCharterMember_not: Boolean
+  title: Title
+
+  """All values that are not equal to given value."""
+  title_not: Title
+
+  """All values that are contained in given list."""
+  title_in: [Title!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [Title!]
   role: Role
 
   """All values that are not equal to given value."""

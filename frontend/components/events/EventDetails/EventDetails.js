@@ -84,18 +84,14 @@ export default class EventDetails extends Component {
             rsvp => rsvp.status === 'GOING',
           );
 
-          console.log('event', event);
-
           const attendeeCount = attendees.length;
 
           const userStatus = () => {
-            const rsvps = event.rsvps.find(
+            const rsvp = event.rsvps.find(
               rsvp => rsvp.member.id === myself.id,
             );
 
-            if (rsvps && rsvps.length > 0) {
-              return rsvps.status;
-            }
+            if (rsvp) { return rsvp.status; }
 
             return 'NONE';
           };

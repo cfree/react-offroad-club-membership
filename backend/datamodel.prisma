@@ -33,9 +33,6 @@ enum Office {
 
 enum Title {
   WEBMASTER
-  RUN_MASTER
-  RUN_LEADER
-  EMERITUS_MEMBER
   CHARTER_MEMBER
 }
 
@@ -82,13 +79,14 @@ type User {
   lastName: String!
   username: String! @unique
   email: String! @unique
+  phone: Float!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
   avatarSmall: String
   isCharterMember: Boolean @default(value: false)
   vehicle: Vehicle
-  titles: [Title] @scalarList(strategy:RELATION)
+  title: Title
   role: Role! @default(value: USER)
   accountStatus: AccountStatus! @default(value: LOCKED)
   accountType: AccountType! @default(value: GUEST)

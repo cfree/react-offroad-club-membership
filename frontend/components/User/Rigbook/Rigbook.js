@@ -26,7 +26,7 @@ const RIGBOOK_QUERY = gql`
       lastName
       avatarSmall
       joined
-      titles
+      title
       office
       accountType
       vehicle {

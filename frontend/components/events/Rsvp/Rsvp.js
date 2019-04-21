@@ -90,7 +90,7 @@ export default class Rsvp extends Component {
     }, callback);
   }
 
-  getPastEventText = () => {
+  getPastRsvpText = () => {
     switch (this.state.status) {
       case 'GOING':
         return `You went`;
@@ -142,34 +142,48 @@ export default class Rsvp extends Component {
             <StyledRsvp>
               {this.state.isPastEvent ? (
                 <div className="past-rsvp__status">
-                  {this.getPastEventText()}{' '}
-                  <span className="past-rsvp__count">{this.getPastCountText()}</span>
+                  {this.getPastRsvpText()}{' '}
+                  <span className="past-rsvp__count">
+                    {this.getPastCountText()}
+                  </span>
                 </div>
-              ) : (<>
-                <div className="rsvp__attendees">
+              ) : (
+                <>
+                  <div className="rsvp__attendees">
                     {this.getRsvpText()}
-                    <span className="rsvp__count">{this.state.attendeeCount} going</span>
+                    <span className="rsvp__count">
+                      {this.state.attendeeCount} going
+                    </span>
                   </div>
-                <button
-                  disabled={loading || this.state.status === 'GOING'}
-                  onClick={() => this.handleClick('GOING', setRsvp)}
-                >
-                  Yes
+                  <button
+                    disabled={
+                      loading || this.state.status === 'GOING'
+                    }
+                    onClick={() => this.handleClick('GOING', setRsvp)}
+                  >
+                    Yes
                   </button>
-                <button
-                  disabled={loading || this.state.status === 'MAYBE'}
-                  onClick={() => this.handleClick('MAYBE', setRsvp)}
-                >
-                  Maybe
+                  <button
+                    disabled={
+                      loading || this.state.status === 'MAYBE'
+                    }
+                    onClick={() => this.handleClick('MAYBE', setRsvp)}
+                  >
+                    Maybe
                   </button>
-                <button
-                  disabled={loading || this.state.status === 'CANT_GO'}
-                  onClick={() => this.handleClick('CANT_GO', setRsvp)}
-                >
-                  No
+                  <button
+                    disabled={
+                      loading || this.state.status === 'CANT_GO'
+                    }
+                    onClick={() =>
+                      this.handleClick('CANT_GO', setRsvp)
+                    }
+                  >
+                    No
                   </button>
-                <Loading loading={loading} />
-              </>)}
+                  <Loading loading={loading} />
+                </>
+              )}
             </StyledRsvp>
           );
         }}

@@ -4,6 +4,30 @@ export const getMemberType = type => {
   return `${types[type] || 'Guest'} Member`;
 };
 
+export const getPhoneNumber = phoneNo => {
+  const phoneString = phoneNo.toString();
+  return phoneString.length === 10
+    ? `(${phoneString.substring(0, 3)}) ${phoneString.substring(3, 6)}-${phoneString.substring(6)}`
+    : null;
+};
+
+export const formatFilterSelect = (obj) => {
+  return Object.entries(obj)
+    .map(entry => ({
+      value: entry[0],
+      label: entry[1],
+    }));
+};
+
+export const formatFilterSelected = (values = [], valuesMap) => {
+  const result = values.map(value => ({
+    value,
+    label: valuesMap[value],
+  }));
+  console.log('VALUES', result);
+  return result;
+};
+
 // Roles
 export const isAdmin = role => role === 'ADMIN';
 

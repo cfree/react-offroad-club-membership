@@ -33,9 +33,9 @@ export const offices = {
 
 export const titles = {
   'WEBMASTER': 'Webmaster',
-  'RUN_MASTER': 'Run Master',
-  'RUN_LEADER': 'Run Leader',
-  'EMERITUS_MEMBER': 'Emeritus Member',
+  // 'RUN_MASTER': 'Run Master',
+  // 'RUN_LEADER': 'Run Leader',
+  // 'EMERITUS_MEMBER': 'Emeritus Member',
   'CHARTER_MEMBER': 'Charter Member',
 }
 
@@ -45,6 +45,14 @@ export const trailDifficulties = {
   INTERMEDIATE: 'Intermediate',
   ADVANCED: 'Advanced',
 }
+
+export const trailConditions = {
+  UNKNOWN: 'Unknown',
+  CLEAR: 'Clear',
+  MINOR_ISSUES: 'Minor Issues',
+  MAJOR_ISSUES: 'Major Issues',
+  CLOSED: 'Closed',
+};
 
 export const migrationStatuses = {
   NEEDED: 'Not Done',
@@ -59,9 +67,9 @@ export const rsvpStatuses = {
   MAYBE: 'Maybe',
 }
 
-export const trailConditions = {
-  CLEAR: 'Clear',
-  MINOR_ISSUES: 'Minor Issues',
-  MAJOR_ISSUES: 'Major Issues',
-  CLOSED: 'Closed',
+export const pastRsvpStatuses = {
+  NONE: '',
+  CANT_GO: 'Didn\'t Go',
+  GOING: 'Went',
+  MAYBE: 'Didn\'t Go',
 }

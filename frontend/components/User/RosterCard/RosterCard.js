@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import Link from 'next/link';
-import { getMemberType } from '../../../lib/utils';
+import { getMemberType, getPhoneNumber } from '../../../lib/utils';
 
 const StyledRosterCard = styled.div`
   padding: 5px 10px;
@@ -33,7 +33,7 @@ const RosterCard = ({ user }) => {
       />
       <span>{user.firstName} {user.lastName}</span>
       <span>{getMemberType(user.accountType)}</span>
-      <span>{ user.phone }</span >
+      <span>{getPhoneNumber(user.phone)}</span >
       <Link
         href={{
           pathname: 'message',
