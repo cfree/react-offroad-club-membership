@@ -259,7 +259,7 @@ export default class EventDetails extends Component {
                         </div>
                       ))}
                   </section>
-                  {!isPastEvent && (
+                  {isPastEvent && (
                     <section className="event__section">
                       <h3>Photos</h3>
                       <form>

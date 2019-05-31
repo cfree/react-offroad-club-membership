@@ -14,8 +14,8 @@ const Dashboard = () => (
         </Link>
       </Box>
       <Box p={3} width={1 / 2}>
-        <Link href="/docs">
-          <a>Club Documents</a>
+        <Link href="/events">
+          <a>Events Schedule</a>
         </Link>
       </Box>
     </Flex>

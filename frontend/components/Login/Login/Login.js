@@ -13,11 +13,11 @@ const Error = styled.div``;
 
 const LOGIN_MUTATION = gql`
   mutation LOGIN_MUTATION(
-    $email: String!
+    $username: String!
     $password: String!
   ) {
     login(
-      email: $email
+      username: $username
       password: $password
     ) {
       id
@@ -29,7 +29,7 @@ const LOGIN_MUTATION = gql`
 
 export default class Login extends Component {
   state = {
-    email: '',
+    username: '',
     password: '',
   }
 
@@ -53,8 +53,8 @@ export default class Login extends Component {
           <h2>Login</h2>
           <ErrorMessage error={error} />
           <fieldset disabled={loading} aria-busy={loading}>
-            <label htmlFor="email">
-              <input type="email" id="email" name="email" placeholder="Email" value={this.state.email} onChange={this.saveToState} />
+            <label htmlFor="username">
+              <input type="username" id="username" name="username" placeholder="User" value={this.state.username} onChange={this.saveToState} />
             </label>
             <label htmlFor="password">
               <input type="password" id="password" name="password" placeholder="Password" value={this.state.password} onChange={this.saveToState} />

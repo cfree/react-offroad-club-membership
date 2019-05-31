@@ -22,7 +22,6 @@ export class MembershipList extends Component {
   };
 
   handleFilterUpdate = (updatedVals, filter) => {
-    console.log('MEOW', updatedVals);
     this.setState(state => ({
       activeFilters: {
         ...state.activeFilters,

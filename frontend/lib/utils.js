@@ -20,13 +20,26 @@ export const formatFilterSelect = (obj) => {
 };
 
 export const formatFilterSelected = (values = [], valuesMap) => {
-  const result = values.map(value => ({
-    value,
-    label: valuesMap[value],
-  }));
-  console.log('VALUES', result);
+  const result = values
+    .filter(value => valuesMap[value])
+    .map(value => ({
+      value,
+      label: valuesMap[value],
+    }));
+  
   return result;
 };
+
+export const emailGroups = [
+  { value: 'officers', label: 'Officers' },
+  { value: 'runmaster', label: 'Run Master' },
+  { value: 'webmaster', label: 'Webmaster' },
+  { value: 'run_leaders', label: 'Run Leaders' },
+  { value: 'full_membership', label: 'Active Full Members' },
+  { value: 'all_active', label: 'Active Users' },
+  { value: 'guests', label: 'Active Guests' },
+  { value: 'all_users', label: 'ALL USERS' },
+];
 
 // Roles
 export const isAdmin = role => role === 'ADMIN';

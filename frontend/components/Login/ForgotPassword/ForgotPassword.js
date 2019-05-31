@@ -21,10 +21,7 @@ const REQUEST_RESET_MUTATION = gql`
 `;
 
 export default class ForgotPassword extends Component {
-  state = {
-    email: '',
-    isSuccessful: false,
-  }
+  state = { email: '' }
 
   saveToState = (e) => {
     this.setState({ [e.target.name]: e.target.value });
@@ -36,15 +33,15 @@ export default class ForgotPassword extends Component {
       variables={this.state}
       refetchQueries={['CURRENT_USER_QUERY']}
     >
-      {(requestReset, { error, loading }) => {
+      {(requestReset, { data = {}, error, loading }) => {
         return <StyledForm method="post" onSubmit={async e => {
           e.preventDefault();
-          const res = await requestReset();
-
-          this.setState({ email: '', isSuccessful: true });
+          await requestReset();
         }}>
-          <h2>Reset Password</h2>
-          {this.state.isSuccessful && <p>Check your email for a link to reset your password.</p>}
+          <h2>Forgot Password</h2>
+          {data.requestReset && (
+            <p>{data.requestReset.message}</p>
+          )}
           <ErrorMessage error={error} />
           <fieldset disabled={loading} aria-busy={loading}>
             <label htmlFor="email">

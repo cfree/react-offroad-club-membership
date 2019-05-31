@@ -15,7 +15,7 @@ const USER_QUERY = gql`
       joined
       role
       username
-      titles
+      title
       office
       phone
       accountType
@@ -173,8 +173,7 @@ const Profile = ({ username }) => {
         }
 
         const { user } = data;
-
-        const convertedTitles = user.titles.map(title => titles[title]);
+        const convertedTitles = titles[user.title];
 
         return (
           <StyledProfile>
@@ -207,7 +206,7 @@ const Profile = ({ username }) => {
                         <li>
                           {[
                             offices[user.office] || '',
-                            ...convertedTitles,
+                            convertedTitles,
                           ].join(', ')}
                         </li>
                       )}

@@ -3,7 +3,7 @@ import { Component } from 'react';
 import Rigbook from '../components/user/Rigbook';
 import Roster from '../components/user/Roster';
 import Gate from '../components/login/Gate';
-import { isAtLeastAssociateMember, isActive } from '../lib/utils';
+import { isAtLeastEmeritusMember, isActive } from '../lib/utils';
 
 class RosterPage extends Component {
   constructor(props) {
@@ -29,7 +29,7 @@ class RosterPage extends Component {
   render() {
     return (
       <Gate
-        typeCheck={isAtLeastAssociateMember}
+        typeCheck={isAtLeastEmeritusMember}
         statusCheck={isActive}
         redirect="/roster"
       >
