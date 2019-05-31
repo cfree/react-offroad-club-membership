@@ -1,30 +1,38 @@
-const nodemailer = require('nodemailer');
+const SendGrid = require('@sendgrid/mail');
 
-const transport = nodemailer.createTransport({
-  host: process.env.MAIL_HOST,
-  port: process.env.MAIL_PORT,
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASSWORD,
+SendGrid.setApiKey(process.env.SENDGRID_API_KEY);
+
+const sendTransactionalEmail = async (emailData) => {
+  const mailSettings = {};
+
+  // This will send the email in sandbox mode
+  if (process.env.NODE_ENV !== 'production') {
+    mailSettings.mail_settings = {
+      sandbox_mode: {
+        enable: true,
+      },
+    };
   }
-});
 
-const makeANiceEmail = (text) => {
-  return `
-    <div class="email" style="
-      border: 1px solid black;
-      padding: 20px;
-      font-family: sans-serif;
-      line-height: 2;
-      font-size: 20px;
-    ">
-      <h2>Hello!</h2>
-      <p>${text}</p>
+  const data = {
+    ...emailData,
+    ...mailSettings
+  };
 
-      <p>Love, C</p>
-    </div>
-  `;
-}
+  return SendGrid.send(data);
+    // {
+    //   to,
+    //   from,
+    //   subject,
+    //   text,
+    //   html,
+    //   // templateId: 'd-f43daeeaef504760851f727007e0b5d0',
+    //   // dynamic_template_data: {
+    //   //   subject: 'Testing Templates',
+    //   //   name: 'Some One',
+    //   //   city: 'Denver',
+    //   // },
+    // },
+};
 
-module.exports.transport = transport;
-module.exports.makeANiceEmail = makeANiceEmail;
+module.exports.sendTransactionalEmail = sendTransactionalEmail;

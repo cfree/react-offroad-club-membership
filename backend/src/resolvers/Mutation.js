@@ -5,8 +5,16 @@ const { promisify } = require('util');
 
 const HASH_SECRET = process.env.HASH_SECRET;
 const JWT_SECRET = process.env.JWT_SECRET;
-const { transport, makeANiceEmail } = require('../mail');
-const { yearInMs, resetTokenTimeoutInMs, hasRole, hasAccountStatus, hasAccountType } = require('../utils');
+const { sendTransactionalEmail } = require('../mail');
+const {
+  yearInMs,
+  resetTokenTimeoutInMs,
+  hasRole,
+  hasAccountStatus,
+  hasAccountType
+} = require('../utils');
+const { roles, emailGroups } = require('../config');
+
 
 const getHash = async pw => {
   const salt = await bcrypt.hash(HASH_SECRET, 10);
@@ -50,12 +58,12 @@ const Mutations = {
 
     return user;
   },
-  async login(parent, { email, password }, ctx, info) {
+  async login(parent, { username, password }, ctx, info) {
     // Check if there is a user with that email
-    const user = await ctx.db.query.user({ where: { email } });
+    const user = await ctx.db.query.user({ where: { username } });
 
     if (!user) {
-      throw new Error('Username or password incorrect for email'); // fix
+      throw new Error('Username or password incorrect');
     }
 
     // Check if password is correct
@@ -78,14 +86,14 @@ const Mutations = {
     ctx.response.clearCookie('token');
     return { message: 'Goodbye' };
   },
-  async requestReset(parent, args, ctx, info) {
+  async requestReset(parent, { email }, ctx, info) {
     // Check if this is a real user
     const user = await ctx.db.query.user({
-      where: { email: args.email },
+      where: { email: email },
     });
 
     if (!user) {
-      throw new Error('Username or password incorrect for email'); // fix
+      throw new Error('Invalid email entered');
     }
 
     // Set reset token and expiry
@@ -93,24 +101,42 @@ const Mutations = {
     const resetToken = (await promisifiedRandomBytes(20)).toString('hex');
     const resetTokenExpiry = Date.now() + resetTokenTimeoutInMs;
     const res = await ctx.db.mutation.updateUser({
-      where: { email: args.email },
+      where: { email: email },
       data: { resetToken, resetTokenExpiry },
     });
 
     // Email reset token
-    const mailRes = await transport.sendMail({
-      from: 'craigfreeman@gmail.com',
+    return sendTransactionalEmail({
       to: user.email,
-      subject: 'Your password reset',
-      html: makeANiceEmail(`
-        Your password reset token is here!
-        <a href="${
-          process.env.FRONTEND_URL
-        }/reset?token=${resetToken}">Click here to reset your password</a>
-      `),
-    });
+      from: 'no-reply@4-playersofcolorado.org',
+      subject: 'Your 4-Players Password Reset',
+      text: `
+        ${user.firstName},
 
-    return { message: 'En route' };
+        Your password reset token for user "${user.username}" is here!
+
+        Visit this URL to reset your password:
+        ${
+        process.env.FRONTEND_URL
+        }/reset?token=${resetToken}
+      `,
+      html: `
+        Your password reset token for user "${user.username}" is here!
+        <a href="${
+        process.env.FRONTEND_URL
+        }/reset?token=${resetToken}">Click here to reset your password</a>
+      `,
+    })
+      .then(() => ({ message: 'Password reset is en route' }))
+      .catch((err) => {
+        //Extract error msg
+        // const { message, code, response } = err;
+
+        //Extract response msg
+        // const { headers, body } = response;
+
+        throw new Error(err.toString());
+      });
   },
   async resetPassword(parent, args, ctx, info) {
     // Check if passwords match
@@ -304,6 +330,188 @@ const Mutations = {
     );
 
     return { message: 'Thank you for RSVPing' };
+  },
+  async sendMessage(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error('User must be logged in');
+    }
+
+    // Requesting user has proper account status?
+    const { user } = ctx.request;
+
+    const {
+      to,
+      subject,
+      htmlText,
+    } = args;
+
+    if (to.length === 0) {
+      throw new Error('No recipients found');
+    }
+
+    // Can email ALL users
+    if (to.includes('all_users')) {
+      hasRole(user, ['ADMIN']);
+      hasAccountStatus(user, ['ACTIVE']);
+      hasAccountType(user, ['FULL']);
+    }
+
+    // Can email guests or full members
+    if (to.includes('guests')
+      || to.includes('all_active')
+      || to.includes('full_membership')
+    ) {
+      // Is active full member and at least an officer
+      hasRole(user, ['ADMIN', 'OFFICER']);
+      hasAccountStatus(user, ['ACTIVE']);
+      hasAccountType(user, ['FULL']);
+    }
+
+    // Can email run leaders
+    if (to.includes('run_leaders')) {
+      // Is active full member and at least the Run Master
+      hasRole(user, ['ADMIN', 'OFFICER', 'RUN_MASTER']);
+      hasAccountStatus(user, ['ACTIVE']);
+      hasAccountType(user, ['FULL']);
+    }
+
+    // Can email multiple individual members
+    if (
+      (!to.includes('officers') || !to.includes('webmaster'))
+      && !to.some(subject => subject === emailGroups)
+      && to.length > 1
+    ) {
+      // Is active full or emeritus and at least a run leader
+      hasRole(user, roles.filter(role => role !== 'USER'));
+      hasAccountStatus(user, ['ACTIVE']);
+      hasAccountType(user, ['FULL', 'EMERITUS']);
+    }
+
+    // Can email individual members
+    if (
+      (!to.includes('officers') || !to.includes('webmaster'))
+      && !to.some(subject => subject === emailGroups)
+    ) {
+      // Is active full or emeritus
+      hasAccountStatus(user, ['ACTIVE']);
+      hasAccountType(user, ['FULL', 'EMERITUS', 'ASSOCIATE']);
+    }
+
+    // Can email Run Master
+    if (to.includes('runmaster')) {
+      // Is active member
+      hasAccountStatus(user, ['ACTIVE']);
+    }
+    
+    // Anyone logged in can email the officers or the webmaster
+
+    const emailSettings = {
+      from: user.email,
+      subject: `[4-Players] ${subject || `Message from ${user.firstName}`}`,
+      // text,
+      html: htmlText,
+    };
+
+    if (to.length === 1 && !emailGroups.some(recipient => recipient === to[0])) {
+      // Send email to one person
+      const email = await ctx.db.query.user(
+        {
+          where: { username: to[0] },
+        },
+        '{ email }',
+      );
+
+      emailSettings.to = [email];
+    } else {
+      // Send email to many people
+      // To do: email permissions
+      const peopleQueries = to
+        .filter(recipient => !emailGroups.includes(recipient))
+        .map(person => ({ username: person }));
+      const groupQueries = to
+        .filter(recipient => emailGroups.includes(recipient))
+        .map(group => {
+          switch (group) {
+            case 'officers':
+              return {
+                NOT: { office: null },
+              };
+            case 'runmaster':
+              return { role: 'RUN_MASTER' };
+            case 'webmaster':
+              return { title: 'WEBMASTER' };
+            case 'run_leaders':
+              return { role: 'RUN_LEADER' };
+            case 'full_membership':
+              return {
+                AND: [
+                  {
+                    OR: [
+                      { accountType: 'FULL' },
+                      { accountType: 'EMITERUS' },
+                      { accountType: 'ASSOCIATE' },
+                    ],
+                  },
+                  { accountStatus: 'ACTIVE' },
+                ],
+              };
+            case 'all_active':
+              return { accountStatus: 'ACTIVE' };
+            case 'all_users':
+              return {
+                NOT: { email: null },
+              };
+            default: // guests
+              return {
+                AND: [
+                  { accountType: 'GUEST' },
+                  { accountStatus: 'ACTIVE' },
+                ]
+              };
+          }
+        });
+
+      // To do: handle duplicates, if any
+      let query = {
+        where: {
+          OR: peopleQueries,
+        },
+      };
+
+      if (groupQueries.length) {
+        query = {
+          where: {
+            OR: [
+              ...query.where['OR'],
+              ...groupQueries,
+            ],
+          },
+        };
+      }
+
+      const emails = await ctx.db.query.users(
+        query,
+        '{ email }',
+      );
+
+      if (emails && emails.length > 1) {
+        emailSettings.to = 'info@4-playersofcolorado.org';
+        emailSettings.bcc = emails.map(email => email.email);
+      } else {
+        emailSettings.to = user.email;
+      }
+    }
+
+    if (emailSettings.to.length >= 1) {
+      return sendTransactionalEmail(emailSettings)
+        .then(() => ({ message: 'Message has been sent' }))
+        .catch((err) => {
+          throw new Error(err.toString());
+        });
+    }
+
+    throw new Error('No email addresses found for recipient(s)');
   },
   async submitElection(parent, args, ctx, info) {
     // Logged in?

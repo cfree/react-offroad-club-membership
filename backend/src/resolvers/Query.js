@@ -171,6 +171,41 @@ const Query = {
 
     return results;
   },
+  async getMessageRecipients(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    const { user } = ctx.request;
+    const members = ['FULL', 'ASSOCIATE', 'EMERITUS'];
+    const query = {
+      where: {},
+      orderBy: 'firstName_ASC',
+    };
+    
+    if (!hasAccountStatus(user, ['ACTIVE'], false)) { return []; }
+    
+    if (hasRole(user, ['ADMIN', 'OFFICER'], false)) {
+      query.where = { accountType_in: config.accountType };
+    } else if (hasAccountType(user, members, false)) {
+      query.where = {
+        AND: [
+          { accountStatus: 'ACTIVE' },
+          { accountType_in: members },
+        ]
+      };
+    } else {
+      return [];
+    }
+
+    const results = await ctx.db.query.users(query, info);
+
+    // Sort by lastName then firstName
+    results.sort((a, b) => (a.lastName > b.lastName ? 1 : -1));
+
+    return results;
+  },
   async getUpcomingEvents(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {

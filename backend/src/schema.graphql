@@ -5,13 +5,14 @@ type SuccessMessage {
 
 type Mutation {
   signUp(email: String!, password: String!, firstName: String!, lastName: String!, username: String!): User!
-  login(email: String!, password: String!): User!
+  login(username: String!, password: String!): User!
   logout: SuccessMessage
   requestReset(email: String!): SuccessMessage
   resetPassword(resetToken: String!, password: String!, confirmPassword: String!): User!
   updateRole(role: Role, userId: ID!): User
   createEvent(event: EventCreateInput!): SuccessMessage
   setRSVP(rsvp: RSVPInput): SuccessMessage
+  sendMessage(to: [String!]!, subject: String, htmlText: String!): SuccessMessage
   submitElection(election: ElectionInput!): Election
   submitVote(vote: VoteInput): SuccessMessage
 }
@@ -29,6 +30,7 @@ type Query {
   user(username: String): User!
   getOfficer(office: Office!): User!
   getMembers(accountTypes: [AccountType]): [User]!
+  getMessageRecipients: [User]!
   getUpcomingEvents: [Event]!
   getPastEvents: [Event]!
   getEvent(eventId: ID!): Event!
