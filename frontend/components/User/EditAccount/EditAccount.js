@@ -1,7 +1,9 @@
+import AccountForm from '../AccountForm';
+
 const EditAccount = () => {
   return (
     <div>
-      Edit Account      
+      <AccountForm />
     </div>
   );
 };

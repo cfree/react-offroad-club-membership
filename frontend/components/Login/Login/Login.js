@@ -12,14 +12,8 @@ const StyledForm = styled.form``;
 const Error = styled.div``;
 
 const LOGIN_MUTATION = gql`
-  mutation LOGIN_MUTATION(
-    $username: String!
-    $password: String!
-  ) {
-    login(
-      username: $username
-      password: $password
-    ) {
+  mutation LOGIN_MUTATION($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
       id
       email
       firstName
@@ -31,39 +25,60 @@ export default class Login extends Component {
   state = {
     username: '',
     password: '',
-  }
+  };
 
-  saveToState = (e) => {
+  saveToState = e => {
     this.setState({ [e.target.name]: e.target.value });
-  }
+  };
 
   render() {
-    return <Mutation
-      mutation={LOGIN_MUTATION}
-      variables={this.state}
-      refetchQueries={['CURRENT_USER_QUERY']}
-    >
-      {(login, { error, loading }) => {
-        return <StyledForm method="post" onSubmit={async e => {
-          e.preventDefault();
-          const res = await login();
+    return (
+      <Mutation
+        mutation={LOGIN_MUTATION}
+        variables={this.state}
+        refetchQueries={['CURRENT_USER_QUERY']}
+      >
+        {(login, { error, loading }) => {
+          return (
+            <StyledForm
+              method="post"
+              onSubmit={async e => {
+                e.preventDefault();
+                const res = await login();
 
-          Router.push(this.props.redirect || '/');
-        }}>
-          <h2>Login</h2>
-          <ErrorMessage error={error} />
-          <fieldset disabled={loading} aria-busy={loading}>
-            <label htmlFor="username">
-              <input type="username" id="username" name="username" placeholder="User" value={this.state.username} onChange={this.saveToState} />
-            </label>
-            <label htmlFor="password">
-              <input type="password" id="password" name="password" placeholder="Password" value={this.state.password} onChange={this.saveToState} />
-            </label>
-            <button type="submit">Login</button>
-            <Loading loading={loading} />
-          </fieldset>
-        </StyledForm>;
-      }}
-    </Mutation>;
+                Router.push(this.props.redirect || '/');
+              }}
+            >
+              <h2>Login</h2>
+              <ErrorMessage error={error} />
+              <fieldset disabled={loading} aria-busy={loading}>
+                <label htmlFor="username">
+                  <input
+                    type="username"
+                    id="username"
+                    name="username"
+                    placeholder="User"
+                    value={this.state.username}
+                    onChange={this.saveToState}
+                  />
+                </label>
+                <label htmlFor="password">
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Password"
+                    value={this.state.password}
+                    onChange={this.saveToState}
+                  />
+                </label>
+                <button type="submit">Login</button>
+                <Loading loading={loading} />
+              </fieldset>
+            </StyledForm>
+          );
+        }}
+      </Mutation>
+    );
   }
-};
+}

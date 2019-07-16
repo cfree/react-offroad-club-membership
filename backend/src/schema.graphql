@@ -4,15 +4,30 @@ type SuccessMessage {
 }
 
 type Mutation {
-  signUp(email: String!, password: String!, firstName: String!, lastName: String!, username: String!): User!
+  signUp(
+    email: String!
+    password: String!
+    firstName: String!
+    lastName: String!
+    username: String!
+  ): User!
   login(username: String!, password: String!): User!
   logout: SuccessMessage
   requestReset(email: String!): SuccessMessage
-  resetPassword(resetToken: String!, password: String!, confirmPassword: String!): User!
+  resetPassword(
+    resetToken: String!
+    password: String!
+    confirmPassword: String!
+  ): User!
   updateRole(role: Role, userId: ID!): User
   createEvent(event: EventCreateInput!): SuccessMessage
   setRSVP(rsvp: RSVPInput): SuccessMessage
-  sendMessage(to: [String!]!, subject: String, htmlText: String!): SuccessMessage
+  sendMessage(
+    to: [String!]!
+    subject: String
+    htmlText: String!
+  ): SuccessMessage
+  updateUserProfileSettings(data: UserUpdateInput!, id: ID!): SuccessMessage
   submitElection(election: ElectionInput!): Election
   submitVote(vote: VoteInput): SuccessMessage
 }
@@ -20,12 +35,12 @@ type Mutation {
 type Query {
   myself: User
   users(
-    role: [Role], 
-    accountStatus: [AccountStatus], 
-    accountType: [AccountType], 
-    title: [Title],
-    office: [Office],
-    orderBy: [String],
+    role: [Role]
+    accountStatus: [AccountStatus]
+    accountType: [AccountType]
+    title: [Title]
+    office: [Office]
+    orderBy: [String]
   ): [User]!
   user(username: String): User!
   getOfficer(office: Office!): User!
@@ -34,7 +49,10 @@ type Query {
   getUpcomingEvents: [Event]!
   getPastEvents: [Event]!
   getEvent(eventId: ID!): Event!
-  electionCandidates(accountType: AccountType!, accountStatus: AccountStatus!): [User]!
+  electionCandidates(
+    accountType: AccountType!
+    accountStatus: AccountStatus!
+  ): [User]!
   getActiveElections: [Election]!
   getActiveElectionsWithResults: [Election]!
   getElection(id: ID!): Election!
@@ -45,11 +63,15 @@ type Query {
 type User {
   id: ID
   joined: DateTime
-  username: String
   firstName: String
   lastName: String
   email: String
-  phone: Float
+  gender: Gender
+  birthdate: DateTime
+  username: String
+  preferences: Preference
+  userMeta: UserMeta
+  contactInfo: ContactInfo
   avatarSmall: String
   title: Title
   role: Role!
@@ -159,6 +181,23 @@ input RSVPInput {
   status: RSVPStatus
 }
 
+input UserUpdateInput {
+  firstName: String!
+  lastName: String!
+  username: String!
+  gender: String!
+  birthdate: DateTime!
+  joined: DateTime!
+  street: String!
+  city: String!
+  state: String!
+  zip: String!
+  phone: Int!
+  emergencyContactName: String!
+  emergencyContactPhone: Int!
+  showPhoneNumber: Boolean!
+}
+
 input ElectionInput {
   electionName: String!
   startTime: String!
@@ -167,7 +206,7 @@ input ElectionInput {
 }
 
 input BallotInput {
-  id: String,
+  id: String
   title: String!
   desc: String
   candidates: [UserInput!]!

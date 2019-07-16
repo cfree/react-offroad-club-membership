@@ -68,6 +68,13 @@ enum TrailCondition {
   CLOSED
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  UNDISCLOSED
+}
+
 scalar DateTime
 
 type User {
@@ -77,12 +84,16 @@ type User {
   joined: DateTime
   firstName: String!
   lastName: String!
-  username: String! @unique
   email: String! @unique
-  phone: Float!
+  gender: Gender
+  birthdate: DateTime
+  username: String! @unique
   password: String!
   resetToken: String
   resetTokenExpiry: Float
+  contactInfo: ContactInfo @relation(name: "UserContactInfo")
+  preferences: Preference @relation(name: "UserPreferences")
+  userMeta: UserMeta @relation(name: "UserMeta")
   avatarSmall: String
   isCharterMember: Boolean @default(value: false)
   vehicle: Vehicle
@@ -97,7 +108,8 @@ type User {
   comfortLevel: String
   log: [LogItem] @relation(name: "LogMember")
   membershipLog: [MembershipLogItem] @relation(name: "LogItemMember")
-  membershipLogContributions: [MembershipLogItem] @relation(name: "LogItemInitiator")
+  membershipLogContributions: [MembershipLogItem]
+    @relation(name: "LogItemInitiator")
   eventsCreated: [Event] @relation(name: "EventCreator")
   eventsRSVPd: [RSVP] @relation(name: "UserRSVP")
   eventsHosted: [Event] @relation(name: "EventHost")
@@ -105,6 +117,38 @@ type User {
   bandaids: [Bandaid] @relation(name: "BandaidSubject")
   runReportsLogged: [RunReport]! @relation(name: "RunReporter")
   #trailsFavorited: [Trail]
+}
+
+type ContactInfo {
+  id: ID! @unique @id
+  createdAt: DateTime @createdAt
+  updatedAt: DateTime! @updatedAt
+  user: User @relation(link: TABLE, name: "UserContactInfo")
+  street: String
+  city: String
+  state: String
+  zip: String
+  phone: Int!
+}
+
+type Preference {
+  id: ID! @unique @id
+  createdAt: DateTime @createdAt
+  updatedAt: DateTime! @updatedAt
+  user: User @relation(link: TABLE, name: "UserPreferences")
+  emergencyContactName: String
+  emergencyContactPhone: Int
+  photoPermissions: Boolean
+  showPhoneNumber: Boolean
+}
+
+type UserMeta {
+  id: ID! @unique @id
+  createdAt: DateTime @createdAt
+  updatedAt: DateTime! @updatedAt
+  user: User @relation(link: TABLE, name: "UserMeta")
+  emailVerified: Boolean @default(value: false)
+  oldSitemigrationComplete: Boolean @default(value: false)
 }
 
 type Event {
@@ -127,7 +171,6 @@ type Event {
   bandaids: [Bandaid] @relation(name: "EventBandaid")
   runReports: [RunReport] @relation(name: "EventRunReport")
   membersOnly: Boolean
-  
 }
 
 type RSVP {
@@ -153,9 +196,9 @@ type Trail {
   currentConditions: String #computed
   conditionsLastReported: DateTime #computed
   favoriteCount: Int #computed
-  pastEvents: [Event] @relation(name: "EventTrail")
-  visitors: [User] @relation(name: "TrailVisitor")
-  runReports: [RunReport] @relation(name: "TrailRunReport")
+  pastEvents: [Event] @relation(link: TABLE, name: "EventTrail")
+  visitors: [User] @relation(link: TABLE, name: "TrailVisitor")
+  runReports: [RunReport] @relation(link: TABLE, name: "TrailRunReport")
 }
 
 type RunReport {
@@ -235,7 +278,7 @@ type Vehicle {
   name: String
   trim: String
   image: String
-  mods: [String] @scalarList(strategy:RELATION)
+  mods: [String] @scalarList(strategy: RELATION)
 }
 
 type LogItem {

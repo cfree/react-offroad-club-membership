@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/four-players-co/four-players-co/dev
-# timestamp: Sat Apr 20 2019 22:37:38 GMT-0600 (MDT)
+# timestamp: Fri Jul 05 2019 16:55:18 GMT-0600 (Mountain Daylight Time)
 
 enum AccountStatus {
   ACTIVE
@@ -31,6 +31,10 @@ type AggregateCondition {
   count: Int!
 }
 
+type AggregateContactInfo {
+  count: Int!
+}
+
 type AggregateElection {
   count: Int!
 }
@@ -47,6 +51,10 @@ type AggregateMembershipLogItem {
   count: Int!
 }
 
+type AggregatePreference {
+  count: Int!
+}
+
 type AggregateRSVP {
   count: Int!
 }
@@ -60,6 +68,10 @@ type AggregateTrail {
 }
 
 type AggregateUser {
+  count: Int!
+}
+
+type AggregateUserMeta {
   count: Int!
 }
 
@@ -1501,6 +1513,451 @@ input ConditionWhereInput {
 }
 
 input ConditionWhereUniqueInput {
+  id: ID
+}
+
+type ContactInfo implements Node {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime!
+  user: User
+  street: String
+  city: String
+  state: String
+  zip: String
+  phone: Int!
+}
+
+"""A connection to a list of items."""
+type ContactInfoConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ContactInfoEdge]!
+  aggregate: AggregateContactInfo!
+}
+
+input ContactInfoCreateInput {
+  id: ID
+  street: String
+  city: String
+  state: String
+  zip: String
+  phone: Int!
+  user: UserCreateOneWithoutContactInfoInput
+}
+
+input ContactInfoCreateOneWithoutUserInput {
+  create: ContactInfoCreateWithoutUserInput
+  connect: ContactInfoWhereUniqueInput
+}
+
+input ContactInfoCreateWithoutUserInput {
+  id: ID
+  street: String
+  city: String
+  state: String
+  zip: String
+  phone: Int!
+}
+
+"""An edge in a connection."""
+type ContactInfoEdge {
+  """The item at the end of the edge."""
+  node: ContactInfo!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum ContactInfoOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  street_ASC
+  street_DESC
+  city_ASC
+  city_DESC
+  state_ASC
+  state_DESC
+  zip_ASC
+  zip_DESC
+  phone_ASC
+  phone_DESC
+}
+
+type ContactInfoPreviousValues {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime!
+  street: String
+  city: String
+  state: String
+  zip: String
+  phone: Int!
+}
+
+type ContactInfoSubscriptionPayload {
+  mutation: MutationType!
+  node: ContactInfo
+  updatedFields: [String!]
+  previousValues: ContactInfoPreviousValues
+}
+
+input ContactInfoSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ContactInfoSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ContactInfoSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ContactInfoSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ContactInfoWhereInput
+}
+
+input ContactInfoUpdateInput {
+  street: String
+  city: String
+  state: String
+  zip: String
+  phone: Int
+  user: UserUpdateOneWithoutContactInfoInput
+}
+
+input ContactInfoUpdateManyMutationInput {
+  street: String
+  city: String
+  state: String
+  zip: String
+  phone: Int
+}
+
+input ContactInfoUpdateOneWithoutUserInput {
+  create: ContactInfoCreateWithoutUserInput
+  connect: ContactInfoWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: ContactInfoUpdateWithoutUserDataInput
+  upsert: ContactInfoUpsertWithoutUserInput
+}
+
+input ContactInfoUpdateWithoutUserDataInput {
+  street: String
+  city: String
+  state: String
+  zip: String
+  phone: Int
+}
+
+input ContactInfoUpsertWithoutUserInput {
+  update: ContactInfoUpdateWithoutUserDataInput!
+  create: ContactInfoCreateWithoutUserInput!
+}
+
+input ContactInfoWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ContactInfoWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ContactInfoWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ContactInfoWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  street: String
+
+  """All values that are not equal to given value."""
+  street_not: String
+
+  """All values that are contained in given list."""
+  street_in: [String!]
+
+  """All values that are not contained in given list."""
+  street_not_in: [String!]
+
+  """All values less than the given value."""
+  street_lt: String
+
+  """All values less than or equal the given value."""
+  street_lte: String
+
+  """All values greater than the given value."""
+  street_gt: String
+
+  """All values greater than or equal the given value."""
+  street_gte: String
+
+  """All values containing the given string."""
+  street_contains: String
+
+  """All values not containing the given string."""
+  street_not_contains: String
+
+  """All values starting with the given string."""
+  street_starts_with: String
+
+  """All values not starting with the given string."""
+  street_not_starts_with: String
+
+  """All values ending with the given string."""
+  street_ends_with: String
+
+  """All values not ending with the given string."""
+  street_not_ends_with: String
+  city: String
+
+  """All values that are not equal to given value."""
+  city_not: String
+
+  """All values that are contained in given list."""
+  city_in: [String!]
+
+  """All values that are not contained in given list."""
+  city_not_in: [String!]
+
+  """All values less than the given value."""
+  city_lt: String
+
+  """All values less than or equal the given value."""
+  city_lte: String
+
+  """All values greater than the given value."""
+  city_gt: String
+
+  """All values greater than or equal the given value."""
+  city_gte: String
+
+  """All values containing the given string."""
+  city_contains: String
+
+  """All values not containing the given string."""
+  city_not_contains: String
+
+  """All values starting with the given string."""
+  city_starts_with: String
+
+  """All values not starting with the given string."""
+  city_not_starts_with: String
+
+  """All values ending with the given string."""
+  city_ends_with: String
+
+  """All values not ending with the given string."""
+  city_not_ends_with: String
+  state: String
+
+  """All values that are not equal to given value."""
+  state_not: String
+
+  """All values that are contained in given list."""
+  state_in: [String!]
+
+  """All values that are not contained in given list."""
+  state_not_in: [String!]
+
+  """All values less than the given value."""
+  state_lt: String
+
+  """All values less than or equal the given value."""
+  state_lte: String
+
+  """All values greater than the given value."""
+  state_gt: String
+
+  """All values greater than or equal the given value."""
+  state_gte: String
+
+  """All values containing the given string."""
+  state_contains: String
+
+  """All values not containing the given string."""
+  state_not_contains: String
+
+  """All values starting with the given string."""
+  state_starts_with: String
+
+  """All values not starting with the given string."""
+  state_not_starts_with: String
+
+  """All values ending with the given string."""
+  state_ends_with: String
+
+  """All values not ending with the given string."""
+  state_not_ends_with: String
+  zip: String
+
+  """All values that are not equal to given value."""
+  zip_not: String
+
+  """All values that are contained in given list."""
+  zip_in: [String!]
+
+  """All values that are not contained in given list."""
+  zip_not_in: [String!]
+
+  """All values less than the given value."""
+  zip_lt: String
+
+  """All values less than or equal the given value."""
+  zip_lte: String
+
+  """All values greater than the given value."""
+  zip_gt: String
+
+  """All values greater than or equal the given value."""
+  zip_gte: String
+
+  """All values containing the given string."""
+  zip_contains: String
+
+  """All values not containing the given string."""
+  zip_not_contains: String
+
+  """All values starting with the given string."""
+  zip_starts_with: String
+
+  """All values not starting with the given string."""
+  zip_not_starts_with: String
+
+  """All values ending with the given string."""
+  zip_ends_with: String
+
+  """All values not ending with the given string."""
+  zip_not_ends_with: String
+  phone: Int
+
+  """All values that are not equal to given value."""
+  phone_not: Int
+
+  """All values that are contained in given list."""
+  phone_in: [Int!]
+
+  """All values that are not contained in given list."""
+  phone_not_in: [Int!]
+
+  """All values less than the given value."""
+  phone_lt: Int
+
+  """All values less than or equal the given value."""
+  phone_lte: Int
+
+  """All values greater than the given value."""
+  phone_gt: Int
+
+  """All values greater than or equal the given value."""
+  phone_gte: Int
+  user: UserWhereInput
+}
+
+input ContactInfoWhereUniqueInput {
   id: ID
 }
 
@@ -3165,6 +3622,13 @@ input EventWhereUniqueInput {
   id: ID
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  UNDISCLOSED
+}
+
 type LogItem implements Node {
   id: ID!
   createdAt: DateTime!
@@ -4176,6 +4640,9 @@ input MembershipLogItemWhereUniqueInput {
 
 type Mutation {
   createUser(data: UserCreateInput!): User!
+  createContactInfo(data: ContactInfoCreateInput!): ContactInfo!
+  createPreference(data: PreferenceCreateInput!): Preference!
+  createUserMeta(data: UserMetaCreateInput!): UserMeta!
   createRSVP(data: RSVPCreateInput!): RSVP!
   createTrail(data: TrailCreateInput!): Trail!
   createRunReport(data: RunReportCreateInput!): RunReport!
@@ -4189,6 +4656,9 @@ type Mutation {
   createVehicle(data: VehicleCreateInput!): Vehicle!
   createBallot(data: BallotCreateInput!): Ballot!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateContactInfo(data: ContactInfoUpdateInput!, where: ContactInfoWhereUniqueInput!): ContactInfo
+  updatePreference(data: PreferenceUpdateInput!, where: PreferenceWhereUniqueInput!): Preference
+  updateUserMeta(data: UserMetaUpdateInput!, where: UserMetaWhereUniqueInput!): UserMeta
   updateRSVP(data: RSVPUpdateInput!, where: RSVPWhereUniqueInput!): RSVP
   updateTrail(data: TrailUpdateInput!, where: TrailWhereUniqueInput!): Trail
   updateRunReport(data: RunReportUpdateInput!, where: RunReportWhereUniqueInput!): RunReport
@@ -4202,6 +4672,9 @@ type Mutation {
   updateVehicle(data: VehicleUpdateInput!, where: VehicleWhereUniqueInput!): Vehicle
   updateBallot(data: BallotUpdateInput!, where: BallotWhereUniqueInput!): Ballot
   deleteUser(where: UserWhereUniqueInput!): User
+  deleteContactInfo(where: ContactInfoWhereUniqueInput!): ContactInfo
+  deletePreference(where: PreferenceWhereUniqueInput!): Preference
+  deleteUserMeta(where: UserMetaWhereUniqueInput!): UserMeta
   deleteRSVP(where: RSVPWhereUniqueInput!): RSVP
   deleteTrail(where: TrailWhereUniqueInput!): Trail
   deleteRunReport(where: RunReportWhereUniqueInput!): RunReport
@@ -4215,6 +4688,9 @@ type Mutation {
   deleteVehicle(where: VehicleWhereUniqueInput!): Vehicle
   deleteBallot(where: BallotWhereUniqueInput!): Ballot
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertContactInfo(where: ContactInfoWhereUniqueInput!, create: ContactInfoCreateInput!, update: ContactInfoUpdateInput!): ContactInfo!
+  upsertPreference(where: PreferenceWhereUniqueInput!, create: PreferenceCreateInput!, update: PreferenceUpdateInput!): Preference!
+  upsertUserMeta(where: UserMetaWhereUniqueInput!, create: UserMetaCreateInput!, update: UserMetaUpdateInput!): UserMeta!
   upsertRSVP(where: RSVPWhereUniqueInput!, create: RSVPCreateInput!, update: RSVPUpdateInput!): RSVP!
   upsertTrail(where: TrailWhereUniqueInput!, create: TrailCreateInput!, update: TrailUpdateInput!): Trail!
   upsertRunReport(where: RunReportWhereUniqueInput!, create: RunReportCreateInput!, update: RunReportUpdateInput!): RunReport!
@@ -4228,6 +4704,9 @@ type Mutation {
   upsertVehicle(where: VehicleWhereUniqueInput!, create: VehicleCreateInput!, update: VehicleUpdateInput!): Vehicle!
   upsertBallot(where: BallotWhereUniqueInput!, create: BallotCreateInput!, update: BallotUpdateInput!): Ballot!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  updateManyContactInfoes(data: ContactInfoUpdateManyMutationInput!, where: ContactInfoWhereInput): BatchPayload!
+  updateManyPreferences(data: PreferenceUpdateManyMutationInput!, where: PreferenceWhereInput): BatchPayload!
+  updateManyUserMetas(data: UserMetaUpdateManyMutationInput!, where: UserMetaWhereInput): BatchPayload!
   updateManyRSVPs(data: RSVPUpdateManyMutationInput!, where: RSVPWhereInput): BatchPayload!
   updateManyTrails(data: TrailUpdateManyMutationInput!, where: TrailWhereInput): BatchPayload!
   updateManyRunReports(data: RunReportUpdateManyMutationInput!, where: RunReportWhereInput): BatchPayload!
@@ -4240,6 +4719,9 @@ type Mutation {
   updateManyVehicles(data: VehicleUpdateManyMutationInput!, where: VehicleWhereInput): BatchPayload!
   updateManyBallots(data: BallotUpdateManyMutationInput!, where: BallotWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyContactInfoes(where: ContactInfoWhereInput): BatchPayload!
+  deleteManyPreferences(where: PreferenceWhereInput): BatchPayload!
+  deleteManyUserMetas(where: UserMetaWhereInput): BatchPayload!
   deleteManyRSVPs(where: RSVPWhereInput): BatchPayload!
   deleteManyTrails(where: TrailWhereInput): BatchPayload!
   deleteManyRunReports(where: RunReportWhereInput): BatchPayload!
@@ -4288,8 +4770,335 @@ type PageInfo {
   endCursor: String
 }
 
+type Preference implements Node {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime!
+  user: User
+  emergencyContactName: String
+  emergencyContactPhone: Int
+  photoPermissions: Boolean
+  showPhoneNumber: Boolean
+}
+
+"""A connection to a list of items."""
+type PreferenceConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [PreferenceEdge]!
+  aggregate: AggregatePreference!
+}
+
+input PreferenceCreateInput {
+  id: ID
+  emergencyContactName: String
+  emergencyContactPhone: Int
+  photoPermissions: Boolean
+  showPhoneNumber: Boolean
+  user: UserCreateOneWithoutPreferencesInput
+}
+
+input PreferenceCreateOneWithoutUserInput {
+  create: PreferenceCreateWithoutUserInput
+  connect: PreferenceWhereUniqueInput
+}
+
+input PreferenceCreateWithoutUserInput {
+  id: ID
+  emergencyContactName: String
+  emergencyContactPhone: Int
+  photoPermissions: Boolean
+  showPhoneNumber: Boolean
+}
+
+"""An edge in a connection."""
+type PreferenceEdge {
+  """The item at the end of the edge."""
+  node: Preference!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum PreferenceOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  emergencyContactName_ASC
+  emergencyContactName_DESC
+  emergencyContactPhone_ASC
+  emergencyContactPhone_DESC
+  photoPermissions_ASC
+  photoPermissions_DESC
+  showPhoneNumber_ASC
+  showPhoneNumber_DESC
+}
+
+type PreferencePreviousValues {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime!
+  emergencyContactName: String
+  emergencyContactPhone: Int
+  photoPermissions: Boolean
+  showPhoneNumber: Boolean
+}
+
+type PreferenceSubscriptionPayload {
+  mutation: MutationType!
+  node: Preference
+  updatedFields: [String!]
+  previousValues: PreferencePreviousValues
+}
+
+input PreferenceSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [PreferenceSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [PreferenceSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [PreferenceSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: PreferenceWhereInput
+}
+
+input PreferenceUpdateInput {
+  emergencyContactName: String
+  emergencyContactPhone: Int
+  photoPermissions: Boolean
+  showPhoneNumber: Boolean
+  user: UserUpdateOneWithoutPreferencesInput
+}
+
+input PreferenceUpdateManyMutationInput {
+  emergencyContactName: String
+  emergencyContactPhone: Int
+  photoPermissions: Boolean
+  showPhoneNumber: Boolean
+}
+
+input PreferenceUpdateOneWithoutUserInput {
+  create: PreferenceCreateWithoutUserInput
+  connect: PreferenceWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: PreferenceUpdateWithoutUserDataInput
+  upsert: PreferenceUpsertWithoutUserInput
+}
+
+input PreferenceUpdateWithoutUserDataInput {
+  emergencyContactName: String
+  emergencyContactPhone: Int
+  photoPermissions: Boolean
+  showPhoneNumber: Boolean
+}
+
+input PreferenceUpsertWithoutUserInput {
+  update: PreferenceUpdateWithoutUserDataInput!
+  create: PreferenceCreateWithoutUserInput!
+}
+
+input PreferenceWhereInput {
+  """Logical AND on all given filters."""
+  AND: [PreferenceWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [PreferenceWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [PreferenceWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  emergencyContactName: String
+
+  """All values that are not equal to given value."""
+  emergencyContactName_not: String
+
+  """All values that are contained in given list."""
+  emergencyContactName_in: [String!]
+
+  """All values that are not contained in given list."""
+  emergencyContactName_not_in: [String!]
+
+  """All values less than the given value."""
+  emergencyContactName_lt: String
+
+  """All values less than or equal the given value."""
+  emergencyContactName_lte: String
+
+  """All values greater than the given value."""
+  emergencyContactName_gt: String
+
+  """All values greater than or equal the given value."""
+  emergencyContactName_gte: String
+
+  """All values containing the given string."""
+  emergencyContactName_contains: String
+
+  """All values not containing the given string."""
+  emergencyContactName_not_contains: String
+
+  """All values starting with the given string."""
+  emergencyContactName_starts_with: String
+
+  """All values not starting with the given string."""
+  emergencyContactName_not_starts_with: String
+
+  """All values ending with the given string."""
+  emergencyContactName_ends_with: String
+
+  """All values not ending with the given string."""
+  emergencyContactName_not_ends_with: String
+  emergencyContactPhone: Int
+
+  """All values that are not equal to given value."""
+  emergencyContactPhone_not: Int
+
+  """All values that are contained in given list."""
+  emergencyContactPhone_in: [Int!]
+
+  """All values that are not contained in given list."""
+  emergencyContactPhone_not_in: [Int!]
+
+  """All values less than the given value."""
+  emergencyContactPhone_lt: Int
+
+  """All values less than or equal the given value."""
+  emergencyContactPhone_lte: Int
+
+  """All values greater than the given value."""
+  emergencyContactPhone_gt: Int
+
+  """All values greater than or equal the given value."""
+  emergencyContactPhone_gte: Int
+  photoPermissions: Boolean
+
+  """All values that are not equal to given value."""
+  photoPermissions_not: Boolean
+  showPhoneNumber: Boolean
+
+  """All values that are not equal to given value."""
+  showPhoneNumber_not: Boolean
+  user: UserWhereInput
+}
+
+input PreferenceWhereUniqueInput {
+  id: ID
+}
+
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  contactInfoes(where: ContactInfoWhereInput, orderBy: ContactInfoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ContactInfo]!
+  preferences(where: PreferenceWhereInput, orderBy: PreferenceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Preference]!
+  userMetas(where: UserMetaWhereInput, orderBy: UserMetaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserMeta]!
   rSVPs(where: RSVPWhereInput, orderBy: RSVPOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [RSVP]!
   trails(where: TrailWhereInput, orderBy: TrailOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Trail]!
   runReports(where: RunReportWhereInput, orderBy: RunReportOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [RunReport]!
@@ -4303,6 +5112,9 @@ type Query {
   vehicles(where: VehicleWhereInput, orderBy: VehicleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vehicle]!
   ballots(where: BallotWhereInput, orderBy: BallotOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Ballot]!
   user(where: UserWhereUniqueInput!): User
+  contactInfo(where: ContactInfoWhereUniqueInput!): ContactInfo
+  preference(where: PreferenceWhereUniqueInput!): Preference
+  userMeta(where: UserMetaWhereUniqueInput!): UserMeta
   rSVP(where: RSVPWhereUniqueInput!): RSVP
   trail(where: TrailWhereUniqueInput!): Trail
   runReport(where: RunReportWhereUniqueInput!): RunReport
@@ -4316,6 +5128,9 @@ type Query {
   vehicle(where: VehicleWhereUniqueInput!): Vehicle
   ballot(where: BallotWhereUniqueInput!): Ballot
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  contactInfoesConnection(where: ContactInfoWhereInput, orderBy: ContactInfoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ContactInfoConnection!
+  preferencesConnection(where: PreferenceWhereInput, orderBy: PreferenceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PreferenceConnection!
+  userMetasConnection(where: UserMetaWhereInput, orderBy: UserMetaOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserMetaConnection!
   rSVPsConnection(where: RSVPWhereInput, orderBy: RSVPOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RSVPConnection!
   trailsConnection(where: TrailWhereInput, orderBy: TrailOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TrailConnection!
   runReportsConnection(where: RunReportWhereInput, orderBy: RunReportOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RunReportConnection!
@@ -5806,6 +6621,9 @@ input RunReportWhereUniqueInput {
 
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  contactInfo(where: ContactInfoSubscriptionWhereInput): ContactInfoSubscriptionPayload
+  preference(where: PreferenceSubscriptionWhereInput): PreferenceSubscriptionPayload
+  userMeta(where: UserMetaSubscriptionWhereInput): UserMetaSubscriptionPayload
   rSVP(where: RSVPSubscriptionWhereInput): RSVPSubscriptionPayload
   trail(where: TrailSubscriptionWhereInput): TrailSubscriptionPayload
   runReport(where: RunReportSubscriptionWhereInput): RunReportSubscriptionPayload
@@ -7024,12 +7842,16 @@ type User implements Node {
   joined: DateTime
   firstName: String!
   lastName: String!
-  username: String!
   email: String!
-  phone: Float!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
+  contactInfo: ContactInfo
+  preferences: Preference
+  userMeta: UserMeta
   avatarSmall: String
   isCharterMember: Boolean
   vehicle: Vehicle
@@ -7068,9 +7890,10 @@ input UserCreateInput {
   joined: DateTime
   firstName: String!
   lastName: String!
-  username: String!
   email: String!
-  phone: Float!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
@@ -7082,6 +7905,9 @@ input UserCreateInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoCreateOneWithoutUserInput
+  preferences: PreferenceCreateOneWithoutUserInput
+  userMeta: UserMetaCreateOneWithoutUserInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7109,6 +7935,11 @@ input UserCreateManyWithoutTrailsVisitedInput {
 
 input UserCreateOneWithoutBandaidsInput {
   create: UserCreateWithoutBandaidsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutContactInfoInput {
+  create: UserCreateWithoutContactInfoInput
   connect: UserWhereUniqueInput
 }
 
@@ -7142,8 +7973,18 @@ input UserCreateOneWithoutMembershipLogInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreateOneWithoutPreferencesInput {
+  create: UserCreateWithoutPreferencesInput
+  connect: UserWhereUniqueInput
+}
+
 input UserCreateOneWithoutRunReportsLoggedInput {
   create: UserCreateWithoutRunReportsLoggedInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutUserMetaInput {
+  create: UserCreateWithoutUserMetaInput
   connect: UserWhereUniqueInput
 }
 
@@ -7162,9 +8003,10 @@ input UserCreateWithoutBandaidsInput {
   joined: DateTime
   firstName: String!
   lastName: String!
-  username: String!
   email: String!
-  phone: Float!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
@@ -7176,6 +8018,9 @@ input UserCreateWithoutBandaidsInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoCreateOneWithoutUserInput
+  preferences: PreferenceCreateOneWithoutUserInput
+  userMeta: UserMetaCreateOneWithoutUserInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7195,9 +8040,10 @@ input UserCreateWithoutCandidateForInput {
   joined: DateTime
   firstName: String!
   lastName: String!
-  username: String!
   email: String!
-  phone: Float!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
@@ -7209,7 +8055,47 @@ input UserCreateWithoutCandidateForInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoCreateOneWithoutUserInput
+  preferences: PreferenceCreateOneWithoutUserInput
+  userMeta: UserMetaCreateOneWithoutUserInput
   vehicle: VehicleCreateOneInput
+  votesReceived: VoteCreateManyWithoutCandidateInput
+  votedFor: VoteCreateManyWithoutVoterInput
+  log: LogItemCreateManyWithoutUserInput
+  membershipLog: MembershipLogItemCreateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemCreateManyWithoutInitiatorInput
+  eventsCreated: EventCreateManyWithoutCreatorInput
+  eventsRSVPd: RSVPCreateManyWithoutMemberInput
+  eventsHosted: EventCreateManyWithoutHostInput
+  trailsVisited: TrailCreateManyWithoutVisitorsInput
+  bandaids: BandaidCreateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportCreateManyWithoutReporterInput
+}
+
+input UserCreateWithoutContactInfoInput {
+  id: ID
+  joined: DateTime
+  firstName: String!
+  lastName: String!
+  email: String!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  title: Title
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  preferences: PreferenceCreateOneWithoutUserInput
+  userMeta: UserMetaCreateOneWithoutUserInput
+  vehicle: VehicleCreateOneInput
+  candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
   votedFor: VoteCreateManyWithoutVoterInput
   log: LogItemCreateManyWithoutUserInput
@@ -7228,9 +8114,10 @@ input UserCreateWithoutEventsCreatedInput {
   joined: DateTime
   firstName: String!
   lastName: String!
-  username: String!
   email: String!
-  phone: Float!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
@@ -7242,6 +8129,9 @@ input UserCreateWithoutEventsCreatedInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoCreateOneWithoutUserInput
+  preferences: PreferenceCreateOneWithoutUserInput
+  userMeta: UserMetaCreateOneWithoutUserInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7261,9 +8151,10 @@ input UserCreateWithoutEventsHostedInput {
   joined: DateTime
   firstName: String!
   lastName: String!
-  username: String!
   email: String!
-  phone: Float!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
@@ -7275,6 +8166,9 @@ input UserCreateWithoutEventsHostedInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoCreateOneWithoutUserInput
+  preferences: PreferenceCreateOneWithoutUserInput
+  userMeta: UserMetaCreateOneWithoutUserInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7294,9 +8188,10 @@ input UserCreateWithoutEventsRSVPdInput {
   joined: DateTime
   firstName: String!
   lastName: String!
-  username: String!
   email: String!
-  phone: Float!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
@@ -7308,6 +8203,9 @@ input UserCreateWithoutEventsRSVPdInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoCreateOneWithoutUserInput
+  preferences: PreferenceCreateOneWithoutUserInput
+  userMeta: UserMetaCreateOneWithoutUserInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7327,9 +8225,10 @@ input UserCreateWithoutLogInput {
   joined: DateTime
   firstName: String!
   lastName: String!
-  username: String!
   email: String!
-  phone: Float!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
@@ -7341,6 +8240,9 @@ input UserCreateWithoutLogInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoCreateOneWithoutUserInput
+  preferences: PreferenceCreateOneWithoutUserInput
+  userMeta: UserMetaCreateOneWithoutUserInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7360,9 +8262,10 @@ input UserCreateWithoutMembershipLogContributionsInput {
   joined: DateTime
   firstName: String!
   lastName: String!
-  username: String!
   email: String!
-  phone: Float!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
@@ -7374,6 +8277,9 @@ input UserCreateWithoutMembershipLogContributionsInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoCreateOneWithoutUserInput
+  preferences: PreferenceCreateOneWithoutUserInput
+  userMeta: UserMetaCreateOneWithoutUserInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7393,9 +8299,10 @@ input UserCreateWithoutMembershipLogInput {
   joined: DateTime
   firstName: String!
   lastName: String!
-  username: String!
   email: String!
-  phone: Float!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
@@ -7407,6 +8314,9 @@ input UserCreateWithoutMembershipLogInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoCreateOneWithoutUserInput
+  preferences: PreferenceCreateOneWithoutUserInput
+  userMeta: UserMetaCreateOneWithoutUserInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7421,14 +8331,15 @@ input UserCreateWithoutMembershipLogInput {
   runReportsLogged: RunReportCreateManyWithoutReporterInput
 }
 
-input UserCreateWithoutRunReportsLoggedInput {
+input UserCreateWithoutPreferencesInput {
   id: ID
   joined: DateTime
   firstName: String!
   lastName: String!
-  username: String!
   email: String!
-  phone: Float!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
@@ -7440,6 +8351,46 @@ input UserCreateWithoutRunReportsLoggedInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoCreateOneWithoutUserInput
+  userMeta: UserMetaCreateOneWithoutUserInput
+  vehicle: VehicleCreateOneInput
+  candidateFor: BallotCreateManyWithoutCandidatesInput
+  votesReceived: VoteCreateManyWithoutCandidateInput
+  votedFor: VoteCreateManyWithoutVoterInput
+  log: LogItemCreateManyWithoutUserInput
+  membershipLog: MembershipLogItemCreateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemCreateManyWithoutInitiatorInput
+  eventsCreated: EventCreateManyWithoutCreatorInput
+  eventsRSVPd: RSVPCreateManyWithoutMemberInput
+  eventsHosted: EventCreateManyWithoutHostInput
+  trailsVisited: TrailCreateManyWithoutVisitorsInput
+  bandaids: BandaidCreateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportCreateManyWithoutReporterInput
+}
+
+input UserCreateWithoutRunReportsLoggedInput {
+  id: ID
+  joined: DateTime
+  firstName: String!
+  lastName: String!
+  email: String!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  title: Title
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  contactInfo: ContactInfoCreateOneWithoutUserInput
+  preferences: PreferenceCreateOneWithoutUserInput
+  userMeta: UserMetaCreateOneWithoutUserInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7459,9 +8410,10 @@ input UserCreateWithoutTrailsVisitedInput {
   joined: DateTime
   firstName: String!
   lastName: String!
-  username: String!
   email: String!
-  phone: Float!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
@@ -7473,6 +8425,9 @@ input UserCreateWithoutTrailsVisitedInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoCreateOneWithoutUserInput
+  preferences: PreferenceCreateOneWithoutUserInput
+  userMeta: UserMetaCreateOneWithoutUserInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7487,14 +8442,15 @@ input UserCreateWithoutTrailsVisitedInput {
   runReportsLogged: RunReportCreateManyWithoutReporterInput
 }
 
-input UserCreateWithoutVotedForInput {
+input UserCreateWithoutUserMetaInput {
   id: ID
   joined: DateTime
   firstName: String!
   lastName: String!
-  username: String!
   email: String!
-  phone: Float!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
@@ -7506,6 +8462,46 @@ input UserCreateWithoutVotedForInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoCreateOneWithoutUserInput
+  preferences: PreferenceCreateOneWithoutUserInput
+  vehicle: VehicleCreateOneInput
+  candidateFor: BallotCreateManyWithoutCandidatesInput
+  votesReceived: VoteCreateManyWithoutCandidateInput
+  votedFor: VoteCreateManyWithoutVoterInput
+  log: LogItemCreateManyWithoutUserInput
+  membershipLog: MembershipLogItemCreateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemCreateManyWithoutInitiatorInput
+  eventsCreated: EventCreateManyWithoutCreatorInput
+  eventsRSVPd: RSVPCreateManyWithoutMemberInput
+  eventsHosted: EventCreateManyWithoutHostInput
+  trailsVisited: TrailCreateManyWithoutVisitorsInput
+  bandaids: BandaidCreateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportCreateManyWithoutReporterInput
+}
+
+input UserCreateWithoutVotedForInput {
+  id: ID
+  joined: DateTime
+  firstName: String!
+  lastName: String!
+  email: String!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  title: Title
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  contactInfo: ContactInfoCreateOneWithoutUserInput
+  preferences: PreferenceCreateOneWithoutUserInput
+  userMeta: UserMetaCreateOneWithoutUserInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -7525,9 +8521,10 @@ input UserCreateWithoutVotesReceivedInput {
   joined: DateTime
   firstName: String!
   lastName: String!
-  username: String!
   email: String!
-  phone: Float!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
@@ -7539,6 +8536,9 @@ input UserCreateWithoutVotesReceivedInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoCreateOneWithoutUserInput
+  preferences: PreferenceCreateOneWithoutUserInput
+  userMeta: UserMetaCreateOneWithoutUserInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votedFor: VoteCreateManyWithoutVoterInput
@@ -7562,6 +8562,250 @@ type UserEdge {
   cursor: String!
 }
 
+type UserMeta implements Node {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime!
+  user: User
+  emailVerified: Boolean
+  oldSitemigrationComplete: Boolean
+}
+
+"""A connection to a list of items."""
+type UserMetaConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [UserMetaEdge]!
+  aggregate: AggregateUserMeta!
+}
+
+input UserMetaCreateInput {
+  id: ID
+  emailVerified: Boolean
+  oldSitemigrationComplete: Boolean
+  user: UserCreateOneWithoutUserMetaInput
+}
+
+input UserMetaCreateOneWithoutUserInput {
+  create: UserMetaCreateWithoutUserInput
+  connect: UserMetaWhereUniqueInput
+}
+
+input UserMetaCreateWithoutUserInput {
+  id: ID
+  emailVerified: Boolean
+  oldSitemigrationComplete: Boolean
+}
+
+"""An edge in a connection."""
+type UserMetaEdge {
+  """The item at the end of the edge."""
+  node: UserMeta!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum UserMetaOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  emailVerified_ASC
+  emailVerified_DESC
+  oldSitemigrationComplete_ASC
+  oldSitemigrationComplete_DESC
+}
+
+type UserMetaPreviousValues {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime!
+  emailVerified: Boolean
+  oldSitemigrationComplete: Boolean
+}
+
+type UserMetaSubscriptionPayload {
+  mutation: MutationType!
+  node: UserMeta
+  updatedFields: [String!]
+  previousValues: UserMetaPreviousValues
+}
+
+input UserMetaSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserMetaSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserMetaSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserMetaSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: UserMetaWhereInput
+}
+
+input UserMetaUpdateInput {
+  emailVerified: Boolean
+  oldSitemigrationComplete: Boolean
+  user: UserUpdateOneWithoutUserMetaInput
+}
+
+input UserMetaUpdateManyMutationInput {
+  emailVerified: Boolean
+  oldSitemigrationComplete: Boolean
+}
+
+input UserMetaUpdateOneWithoutUserInput {
+  create: UserMetaCreateWithoutUserInput
+  connect: UserMetaWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: UserMetaUpdateWithoutUserDataInput
+  upsert: UserMetaUpsertWithoutUserInput
+}
+
+input UserMetaUpdateWithoutUserDataInput {
+  emailVerified: Boolean
+  oldSitemigrationComplete: Boolean
+}
+
+input UserMetaUpsertWithoutUserInput {
+  update: UserMetaUpdateWithoutUserDataInput!
+  create: UserMetaCreateWithoutUserInput!
+}
+
+input UserMetaWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserMetaWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserMetaWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserMetaWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  emailVerified: Boolean
+
+  """All values that are not equal to given value."""
+  emailVerified_not: Boolean
+  oldSitemigrationComplete: Boolean
+
+  """All values that are not equal to given value."""
+  oldSitemigrationComplete_not: Boolean
+  user: UserWhereInput
+}
+
+input UserMetaWhereUniqueInput {
+  id: ID
+}
+
 enum UserOrderByInput {
   id_ASC
   id_DESC
@@ -7575,12 +8819,14 @@ enum UserOrderByInput {
   firstName_DESC
   lastName_ASC
   lastName_DESC
-  username_ASC
-  username_DESC
   email_ASC
   email_DESC
-  phone_ASC
-  phone_DESC
+  gender_ASC
+  gender_DESC
+  birthdate_ASC
+  birthdate_DESC
+  username_ASC
+  username_DESC
   password_ASC
   password_DESC
   resetToken_ASC
@@ -7612,9 +8858,10 @@ type UserPreviousValues {
   joined: DateTime
   firstName: String!
   lastName: String!
-  username: String!
   email: String!
-  phone: Float!
+  gender: Gender
+  birthdate: DateTime
+  username: String!
   password: String!
   resetToken: String
   resetTokenExpiry: Float
@@ -7823,46 +9070,6 @@ input UserScalarWhereInput {
 
   """All values not ending with the given string."""
   lastName_not_ends_with: String
-  username: String
-
-  """All values that are not equal to given value."""
-  username_not: String
-
-  """All values that are contained in given list."""
-  username_in: [String!]
-
-  """All values that are not contained in given list."""
-  username_not_in: [String!]
-
-  """All values less than the given value."""
-  username_lt: String
-
-  """All values less than or equal the given value."""
-  username_lte: String
-
-  """All values greater than the given value."""
-  username_gt: String
-
-  """All values greater than or equal the given value."""
-  username_gte: String
-
-  """All values containing the given string."""
-  username_contains: String
-
-  """All values not containing the given string."""
-  username_not_contains: String
-
-  """All values starting with the given string."""
-  username_starts_with: String
-
-  """All values not starting with the given string."""
-  username_not_starts_with: String
-
-  """All values ending with the given string."""
-  username_ends_with: String
-
-  """All values not ending with the given string."""
-  username_not_ends_with: String
   email: String
 
   """All values that are not equal to given value."""
@@ -7903,28 +9110,78 @@ input UserScalarWhereInput {
 
   """All values not ending with the given string."""
   email_not_ends_with: String
-  phone: Float
+  gender: Gender
 
   """All values that are not equal to given value."""
-  phone_not: Float
+  gender_not: Gender
 
   """All values that are contained in given list."""
-  phone_in: [Float!]
+  gender_in: [Gender!]
 
   """All values that are not contained in given list."""
-  phone_not_in: [Float!]
+  gender_not_in: [Gender!]
+  birthdate: DateTime
+
+  """All values that are not equal to given value."""
+  birthdate_not: DateTime
+
+  """All values that are contained in given list."""
+  birthdate_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  birthdate_not_in: [DateTime!]
 
   """All values less than the given value."""
-  phone_lt: Float
+  birthdate_lt: DateTime
 
   """All values less than or equal the given value."""
-  phone_lte: Float
+  birthdate_lte: DateTime
 
   """All values greater than the given value."""
-  phone_gt: Float
+  birthdate_gt: DateTime
 
   """All values greater than or equal the given value."""
-  phone_gte: Float
+  birthdate_gte: DateTime
+  username: String
+
+  """All values that are not equal to given value."""
+  username_not: String
+
+  """All values that are contained in given list."""
+  username_in: [String!]
+
+  """All values that are not contained in given list."""
+  username_not_in: [String!]
+
+  """All values less than the given value."""
+  username_lt: String
+
+  """All values less than or equal the given value."""
+  username_lte: String
+
+  """All values greater than the given value."""
+  username_gt: String
+
+  """All values greater than or equal the given value."""
+  username_gte: String
+
+  """All values containing the given string."""
+  username_contains: String
+
+  """All values not containing the given string."""
+  username_not_contains: String
+
+  """All values starting with the given string."""
+  username_starts_with: String
+
+  """All values not starting with the given string."""
+  username_not_starts_with: String
+
+  """All values ending with the given string."""
+  username_ends_with: String
+
+  """All values not ending with the given string."""
+  username_not_ends_with: String
   password: String
 
   """All values that are not equal to given value."""
@@ -8206,9 +9463,10 @@ input UserUpdateInput {
   joined: DateTime
   firstName: String
   lastName: String
-  username: String
   email: String
-  phone: Float
+  gender: Gender
+  birthdate: DateTime
+  username: String
   password: String
   resetToken: String
   resetTokenExpiry: Float
@@ -8220,6 +9478,9 @@ input UserUpdateInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoUpdateOneWithoutUserInput
+  preferences: PreferenceUpdateOneWithoutUserInput
+  userMeta: UserMetaUpdateOneWithoutUserInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8239,9 +9500,10 @@ input UserUpdateManyDataInput {
   joined: DateTime
   firstName: String
   lastName: String
-  username: String
   email: String
-  phone: Float
+  gender: Gender
+  birthdate: DateTime
+  username: String
   password: String
   resetToken: String
   resetTokenExpiry: Float
@@ -8259,9 +9521,10 @@ input UserUpdateManyMutationInput {
   joined: DateTime
   firstName: String
   lastName: String
-  username: String
   email: String
-  phone: Float
+  gender: Gender
+  birthdate: DateTime
+  username: String
   password: String
   resetToken: String
   resetTokenExpiry: Float
@@ -8362,6 +9625,15 @@ input UserUpdateOneWithoutBandaidsInput {
   upsert: UserUpsertWithoutBandaidsInput
 }
 
+input UserUpdateOneWithoutContactInfoInput {
+  create: UserCreateWithoutContactInfoInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: UserUpdateWithoutContactInfoDataInput
+  upsert: UserUpsertWithoutContactInfoInput
+}
+
 input UserUpdateOneWithoutEventsHostedInput {
   create: UserCreateWithoutEventsHostedInput
   connect: UserWhereUniqueInput
@@ -8369,6 +9641,24 @@ input UserUpdateOneWithoutEventsHostedInput {
   delete: Boolean
   update: UserUpdateWithoutEventsHostedDataInput
   upsert: UserUpsertWithoutEventsHostedInput
+}
+
+input UserUpdateOneWithoutPreferencesInput {
+  create: UserCreateWithoutPreferencesInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: UserUpdateWithoutPreferencesDataInput
+  upsert: UserUpsertWithoutPreferencesInput
+}
+
+input UserUpdateOneWithoutUserMetaInput {
+  create: UserCreateWithoutUserMetaInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: UserUpdateWithoutUserMetaDataInput
+  upsert: UserUpsertWithoutUserMetaInput
 }
 
 input UserUpdateOneWithoutVotesReceivedInput {
@@ -8384,9 +9674,10 @@ input UserUpdateWithoutBandaidsDataInput {
   joined: DateTime
   firstName: String
   lastName: String
-  username: String
   email: String
-  phone: Float
+  gender: Gender
+  birthdate: DateTime
+  username: String
   password: String
   resetToken: String
   resetTokenExpiry: Float
@@ -8398,6 +9689,9 @@ input UserUpdateWithoutBandaidsDataInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoUpdateOneWithoutUserInput
+  preferences: PreferenceUpdateOneWithoutUserInput
+  userMeta: UserMetaUpdateOneWithoutUserInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8416,9 +9710,10 @@ input UserUpdateWithoutCandidateForDataInput {
   joined: DateTime
   firstName: String
   lastName: String
-  username: String
   email: String
-  phone: Float
+  gender: Gender
+  birthdate: DateTime
+  username: String
   password: String
   resetToken: String
   resetTokenExpiry: Float
@@ -8430,7 +9725,46 @@ input UserUpdateWithoutCandidateForDataInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoUpdateOneWithoutUserInput
+  preferences: PreferenceUpdateOneWithoutUserInput
+  userMeta: UserMetaUpdateOneWithoutUserInput
   vehicle: VehicleUpdateOneInput
+  votesReceived: VoteUpdateManyWithoutCandidateInput
+  votedFor: VoteUpdateManyWithoutVoterInput
+  log: LogItemUpdateManyWithoutUserInput
+  membershipLog: MembershipLogItemUpdateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemUpdateManyWithoutInitiatorInput
+  eventsCreated: EventUpdateManyWithoutCreatorInput
+  eventsRSVPd: RSVPUpdateManyWithoutMemberInput
+  eventsHosted: EventUpdateManyWithoutHostInput
+  trailsVisited: TrailUpdateManyWithoutVisitorsInput
+  bandaids: BandaidUpdateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportUpdateManyWithoutReporterInput
+}
+
+input UserUpdateWithoutContactInfoDataInput {
+  joined: DateTime
+  firstName: String
+  lastName: String
+  email: String
+  gender: Gender
+  birthdate: DateTime
+  username: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  title: Title
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  preferences: PreferenceUpdateOneWithoutUserInput
+  userMeta: UserMetaUpdateOneWithoutUserInput
+  vehicle: VehicleUpdateOneInput
+  candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
   votedFor: VoteUpdateManyWithoutVoterInput
   log: LogItemUpdateManyWithoutUserInput
@@ -8448,9 +9782,10 @@ input UserUpdateWithoutEventsCreatedDataInput {
   joined: DateTime
   firstName: String
   lastName: String
-  username: String
   email: String
-  phone: Float
+  gender: Gender
+  birthdate: DateTime
+  username: String
   password: String
   resetToken: String
   resetTokenExpiry: Float
@@ -8462,6 +9797,9 @@ input UserUpdateWithoutEventsCreatedDataInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoUpdateOneWithoutUserInput
+  preferences: PreferenceUpdateOneWithoutUserInput
+  userMeta: UserMetaUpdateOneWithoutUserInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8480,9 +9818,10 @@ input UserUpdateWithoutEventsHostedDataInput {
   joined: DateTime
   firstName: String
   lastName: String
-  username: String
   email: String
-  phone: Float
+  gender: Gender
+  birthdate: DateTime
+  username: String
   password: String
   resetToken: String
   resetTokenExpiry: Float
@@ -8494,6 +9833,9 @@ input UserUpdateWithoutEventsHostedDataInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoUpdateOneWithoutUserInput
+  preferences: PreferenceUpdateOneWithoutUserInput
+  userMeta: UserMetaUpdateOneWithoutUserInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8512,9 +9854,10 @@ input UserUpdateWithoutEventsRSVPdDataInput {
   joined: DateTime
   firstName: String
   lastName: String
-  username: String
   email: String
-  phone: Float
+  gender: Gender
+  birthdate: DateTime
+  username: String
   password: String
   resetToken: String
   resetTokenExpiry: Float
@@ -8526,6 +9869,9 @@ input UserUpdateWithoutEventsRSVPdDataInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoUpdateOneWithoutUserInput
+  preferences: PreferenceUpdateOneWithoutUserInput
+  userMeta: UserMetaUpdateOneWithoutUserInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8544,9 +9890,10 @@ input UserUpdateWithoutLogDataInput {
   joined: DateTime
   firstName: String
   lastName: String
-  username: String
   email: String
-  phone: Float
+  gender: Gender
+  birthdate: DateTime
+  username: String
   password: String
   resetToken: String
   resetTokenExpiry: Float
@@ -8558,6 +9905,9 @@ input UserUpdateWithoutLogDataInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoUpdateOneWithoutUserInput
+  preferences: PreferenceUpdateOneWithoutUserInput
+  userMeta: UserMetaUpdateOneWithoutUserInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8576,9 +9926,10 @@ input UserUpdateWithoutMembershipLogContributionsDataInput {
   joined: DateTime
   firstName: String
   lastName: String
-  username: String
   email: String
-  phone: Float
+  gender: Gender
+  birthdate: DateTime
+  username: String
   password: String
   resetToken: String
   resetTokenExpiry: Float
@@ -8590,6 +9941,9 @@ input UserUpdateWithoutMembershipLogContributionsDataInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoUpdateOneWithoutUserInput
+  preferences: PreferenceUpdateOneWithoutUserInput
+  userMeta: UserMetaUpdateOneWithoutUserInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8608,9 +9962,10 @@ input UserUpdateWithoutMembershipLogDataInput {
   joined: DateTime
   firstName: String
   lastName: String
-  username: String
   email: String
-  phone: Float
+  gender: Gender
+  birthdate: DateTime
+  username: String
   password: String
   resetToken: String
   resetTokenExpiry: Float
@@ -8622,6 +9977,9 @@ input UserUpdateWithoutMembershipLogDataInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoUpdateOneWithoutUserInput
+  preferences: PreferenceUpdateOneWithoutUserInput
+  userMeta: UserMetaUpdateOneWithoutUserInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8636,13 +9994,14 @@ input UserUpdateWithoutMembershipLogDataInput {
   runReportsLogged: RunReportUpdateManyWithoutReporterInput
 }
 
-input UserUpdateWithoutRunReportsLoggedDataInput {
+input UserUpdateWithoutPreferencesDataInput {
   joined: DateTime
   firstName: String
   lastName: String
-  username: String
   email: String
-  phone: Float
+  gender: Gender
+  birthdate: DateTime
+  username: String
   password: String
   resetToken: String
   resetTokenExpiry: Float
@@ -8654,6 +10013,45 @@ input UserUpdateWithoutRunReportsLoggedDataInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoUpdateOneWithoutUserInput
+  userMeta: UserMetaUpdateOneWithoutUserInput
+  vehicle: VehicleUpdateOneInput
+  candidateFor: BallotUpdateManyWithoutCandidatesInput
+  votesReceived: VoteUpdateManyWithoutCandidateInput
+  votedFor: VoteUpdateManyWithoutVoterInput
+  log: LogItemUpdateManyWithoutUserInput
+  membershipLog: MembershipLogItemUpdateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemUpdateManyWithoutInitiatorInput
+  eventsCreated: EventUpdateManyWithoutCreatorInput
+  eventsRSVPd: RSVPUpdateManyWithoutMemberInput
+  eventsHosted: EventUpdateManyWithoutHostInput
+  trailsVisited: TrailUpdateManyWithoutVisitorsInput
+  bandaids: BandaidUpdateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportUpdateManyWithoutReporterInput
+}
+
+input UserUpdateWithoutRunReportsLoggedDataInput {
+  joined: DateTime
+  firstName: String
+  lastName: String
+  email: String
+  gender: Gender
+  birthdate: DateTime
+  username: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  title: Title
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  contactInfo: ContactInfoUpdateOneWithoutUserInput
+  preferences: PreferenceUpdateOneWithoutUserInput
+  userMeta: UserMetaUpdateOneWithoutUserInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8672,9 +10070,10 @@ input UserUpdateWithoutTrailsVisitedDataInput {
   joined: DateTime
   firstName: String
   lastName: String
-  username: String
   email: String
-  phone: Float
+  gender: Gender
+  birthdate: DateTime
+  username: String
   password: String
   resetToken: String
   resetTokenExpiry: Float
@@ -8686,6 +10085,9 @@ input UserUpdateWithoutTrailsVisitedDataInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoUpdateOneWithoutUserInput
+  preferences: PreferenceUpdateOneWithoutUserInput
+  userMeta: UserMetaUpdateOneWithoutUserInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8700,13 +10102,14 @@ input UserUpdateWithoutTrailsVisitedDataInput {
   runReportsLogged: RunReportUpdateManyWithoutReporterInput
 }
 
-input UserUpdateWithoutVotedForDataInput {
+input UserUpdateWithoutUserMetaDataInput {
   joined: DateTime
   firstName: String
   lastName: String
-  username: String
   email: String
-  phone: Float
+  gender: Gender
+  birthdate: DateTime
+  username: String
   password: String
   resetToken: String
   resetTokenExpiry: Float
@@ -8718,6 +10121,45 @@ input UserUpdateWithoutVotedForDataInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoUpdateOneWithoutUserInput
+  preferences: PreferenceUpdateOneWithoutUserInput
+  vehicle: VehicleUpdateOneInput
+  candidateFor: BallotUpdateManyWithoutCandidatesInput
+  votesReceived: VoteUpdateManyWithoutCandidateInput
+  votedFor: VoteUpdateManyWithoutVoterInput
+  log: LogItemUpdateManyWithoutUserInput
+  membershipLog: MembershipLogItemUpdateManyWithoutUserInput
+  membershipLogContributions: MembershipLogItemUpdateManyWithoutInitiatorInput
+  eventsCreated: EventUpdateManyWithoutCreatorInput
+  eventsRSVPd: RSVPUpdateManyWithoutMemberInput
+  eventsHosted: EventUpdateManyWithoutHostInput
+  trailsVisited: TrailUpdateManyWithoutVisitorsInput
+  bandaids: BandaidUpdateManyWithoutMemberInvolvedInput
+  runReportsLogged: RunReportUpdateManyWithoutReporterInput
+}
+
+input UserUpdateWithoutVotedForDataInput {
+  joined: DateTime
+  firstName: String
+  lastName: String
+  email: String
+  gender: Gender
+  birthdate: DateTime
+  username: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  avatarSmall: String
+  isCharterMember: Boolean
+  title: Title
+  role: Role
+  accountStatus: AccountStatus
+  accountType: AccountType
+  office: Office
+  comfortLevel: String
+  contactInfo: ContactInfoUpdateOneWithoutUserInput
+  preferences: PreferenceUpdateOneWithoutUserInput
+  userMeta: UserMetaUpdateOneWithoutUserInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -8736,9 +10178,10 @@ input UserUpdateWithoutVotesReceivedDataInput {
   joined: DateTime
   firstName: String
   lastName: String
-  username: String
   email: String
-  phone: Float
+  gender: Gender
+  birthdate: DateTime
+  username: String
   password: String
   resetToken: String
   resetTokenExpiry: Float
@@ -8750,6 +10193,9 @@ input UserUpdateWithoutVotesReceivedDataInput {
   accountType: AccountType
   office: Office
   comfortLevel: String
+  contactInfo: ContactInfoUpdateOneWithoutUserInput
+  preferences: PreferenceUpdateOneWithoutUserInput
+  userMeta: UserMetaUpdateOneWithoutUserInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votedFor: VoteUpdateManyWithoutVoterInput
@@ -8777,6 +10223,11 @@ input UserUpdateWithWhereUniqueWithoutTrailsVisitedInput {
 input UserUpsertWithoutBandaidsInput {
   update: UserUpdateWithoutBandaidsDataInput!
   create: UserCreateWithoutBandaidsInput!
+}
+
+input UserUpsertWithoutContactInfoInput {
+  update: UserUpdateWithoutContactInfoDataInput!
+  create: UserCreateWithoutContactInfoInput!
 }
 
 input UserUpsertWithoutEventsCreatedInput {
@@ -8809,9 +10260,19 @@ input UserUpsertWithoutMembershipLogInput {
   create: UserCreateWithoutMembershipLogInput!
 }
 
+input UserUpsertWithoutPreferencesInput {
+  update: UserUpdateWithoutPreferencesDataInput!
+  create: UserCreateWithoutPreferencesInput!
+}
+
 input UserUpsertWithoutRunReportsLoggedInput {
   update: UserUpdateWithoutRunReportsLoggedDataInput!
   create: UserCreateWithoutRunReportsLoggedInput!
+}
+
+input UserUpsertWithoutUserMetaInput {
+  update: UserUpdateWithoutUserMetaDataInput!
+  create: UserCreateWithoutUserMetaInput!
 }
 
 input UserUpsertWithoutVotedForInput {
@@ -9031,46 +10492,6 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   lastName_not_ends_with: String
-  username: String
-
-  """All values that are not equal to given value."""
-  username_not: String
-
-  """All values that are contained in given list."""
-  username_in: [String!]
-
-  """All values that are not contained in given list."""
-  username_not_in: [String!]
-
-  """All values less than the given value."""
-  username_lt: String
-
-  """All values less than or equal the given value."""
-  username_lte: String
-
-  """All values greater than the given value."""
-  username_gt: String
-
-  """All values greater than or equal the given value."""
-  username_gte: String
-
-  """All values containing the given string."""
-  username_contains: String
-
-  """All values not containing the given string."""
-  username_not_contains: String
-
-  """All values starting with the given string."""
-  username_starts_with: String
-
-  """All values not starting with the given string."""
-  username_not_starts_with: String
-
-  """All values ending with the given string."""
-  username_ends_with: String
-
-  """All values not ending with the given string."""
-  username_not_ends_with: String
   email: String
 
   """All values that are not equal to given value."""
@@ -9111,28 +10532,78 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   email_not_ends_with: String
-  phone: Float
+  gender: Gender
 
   """All values that are not equal to given value."""
-  phone_not: Float
+  gender_not: Gender
 
   """All values that are contained in given list."""
-  phone_in: [Float!]
+  gender_in: [Gender!]
 
   """All values that are not contained in given list."""
-  phone_not_in: [Float!]
+  gender_not_in: [Gender!]
+  birthdate: DateTime
+
+  """All values that are not equal to given value."""
+  birthdate_not: DateTime
+
+  """All values that are contained in given list."""
+  birthdate_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  birthdate_not_in: [DateTime!]
 
   """All values less than the given value."""
-  phone_lt: Float
+  birthdate_lt: DateTime
 
   """All values less than or equal the given value."""
-  phone_lte: Float
+  birthdate_lte: DateTime
 
   """All values greater than the given value."""
-  phone_gt: Float
+  birthdate_gt: DateTime
 
   """All values greater than or equal the given value."""
-  phone_gte: Float
+  birthdate_gte: DateTime
+  username: String
+
+  """All values that are not equal to given value."""
+  username_not: String
+
+  """All values that are contained in given list."""
+  username_in: [String!]
+
+  """All values that are not contained in given list."""
+  username_not_in: [String!]
+
+  """All values less than the given value."""
+  username_lt: String
+
+  """All values less than or equal the given value."""
+  username_lte: String
+
+  """All values greater than the given value."""
+  username_gt: String
+
+  """All values greater than or equal the given value."""
+  username_gte: String
+
+  """All values containing the given string."""
+  username_contains: String
+
+  """All values not containing the given string."""
+  username_not_contains: String
+
+  """All values starting with the given string."""
+  username_starts_with: String
+
+  """All values not starting with the given string."""
+  username_not_starts_with: String
+
+  """All values ending with the given string."""
+  username_ends_with: String
+
+  """All values not ending with the given string."""
+  username_not_ends_with: String
   password: String
 
   """All values that are not equal to given value."""
@@ -9369,6 +10840,9 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   comfortLevel_not_ends_with: String
+  contactInfo: ContactInfoWhereInput
+  preferences: PreferenceWhereInput
+  userMeta: UserMetaWhereInput
   vehicle: VehicleWhereInput
   candidateFor_every: BallotWhereInput
   candidateFor_some: BallotWhereInput
@@ -9410,8 +10884,8 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: ID
-  username: String
   email: String
+  username: String
   office: Office
 }
 

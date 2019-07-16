@@ -1,23 +1,27 @@
-import React from 'react'
+import Gate from '../components/login/Gate';
+import { isAdmin } from '../lib/utils';
 
 const garagePage = () => {
   return (
-    <div>
+    <Gate
+      typeCheck={isAdmin}
+      redirect="/"
+    >
       <p>
         Vehicle Information:
         <br />
-        {user.vehicle.year} {user.vehicle.make}{' '}
-        {user.vehicle.model} {user.vehicle.trim}
+        {/* {/* {user.vehicle.year} {user.vehicle.make}{' '} */} */}
+        {/* {/* {user.vehicle.model} {user.vehicle.trim} */} */}
         <br />
-        {user.vehicle.name}
+        {/* {user.vehicle.name} */}
         <br />
         Mods
         <br />
         Comfort level
         <br />
-        Select primary vehicle:
+        {/* Select primary vehicle: */}
       </p>
-    </div>
+    </Gate>
   );
 };
 

@@ -42,7 +42,7 @@ class UserRole extends React.Component {
 
   handleRoleChange = (e, updateCallback) => {
     this.setState({ role: e.target.value }, updateCallback);
-  }
+  };
 
   render() {
     const { user } = this.props;
@@ -124,4 +124,3 @@ const Roles = props => {
 };
 
 export default Roles;
-

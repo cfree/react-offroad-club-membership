@@ -19,7 +19,7 @@ const ELECTION_CANDIDATES_QUERY = gql`
           id
           firstName
           lastName
-          avatarSmall 
+          avatarSmall
         }
         results {
           candidate {
@@ -29,10 +29,7 @@ const ELECTION_CANDIDATES_QUERY = gql`
         }
       }
     }
-    electionCandidates(
-      accountType: FULL
-      accountStatus: ACTIVE
-    ) {
+    electionCandidates(accountType: FULL, accountStatus: ACTIVE) {
       id
       firstName
       lastName
@@ -86,11 +83,14 @@ class EditElection extends Component {
       await remove();
       // @TODO Show remove message
     }
-  }
+  };
 
   render() {
     return (
-      <Query query={ELECTION_CANDIDATES_QUERY} variables={{ id: this.props.election }}>
+      <Query
+        query={ELECTION_CANDIDATES_QUERY}
+        variables={{ id: this.props.election }}
+      >
         {({ loading, error, data }) => {
           if (loading) {
             return <div>Loading...</div>;
@@ -124,7 +124,10 @@ class EditElection extends Component {
                   <input
                     name="startDate"
                     id="startDate"
-                    defaultValue={this.state.startTime || format(getElection.startTime, 'YYYY-MM-DD')}
+                    defaultValue={
+                      this.state.startTime ||
+                      format(getElection.startTime, 'YYYY-MM-DD')
+                    }
                     min={format(Date.now(), 'YYYY-MM-DD')}
                     onChange={this.updateState}
                     type="date"
@@ -138,7 +141,10 @@ class EditElection extends Component {
                   <input
                     name="endDate"
                     id="endDate"
-                    defaultValue={this.state.endTime || format(getElection.endTime, 'YYYY-MM-DD')}
+                    defaultValue={
+                      this.state.endTime ||
+                      format(getElection.endTime, 'YYYY-MM-DD')
+                    }
                     onChange={this.updateState}
                     type="date"
                     id="endDate"

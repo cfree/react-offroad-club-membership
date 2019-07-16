@@ -7,16 +7,18 @@ export const getMemberType = type => {
 export const getPhoneNumber = phoneNo => {
   const phoneString = phoneNo.toString();
   return phoneString.length === 10
-    ? `(${phoneString.substring(0, 3)}) ${phoneString.substring(3, 6)}-${phoneString.substring(6)}`
+    ? `(${phoneString.substring(0, 3)}) ${phoneString.substring(
+        3,
+        6,
+      )}-${phoneString.substring(6)}`
     : null;
 };
 
-export const formatFilterSelect = (obj) => {
-  return Object.entries(obj)
-    .map(entry => ({
-      value: entry[0],
-      label: entry[1],
-    }));
+export const formatFilterSelect = obj => {
+  return Object.entries(obj).map(entry => ({
+    value: entry[0],
+    label: entry[1],
+  }));
 };
 
 export const formatFilterSelected = (values = [], valuesMap) => {
@@ -26,7 +28,7 @@ export const formatFilterSelected = (values = [], valuesMap) => {
       value,
       label: valuesMap[value],
     }));
-  
+
   return result;
 };
 
@@ -69,7 +71,7 @@ export const isAssociateMember = type => type === 'ASSOCIATE';
 
 export const isAtLeastAssociateMember = type => {
   return ['ASSOCIATE', 'FULL'].includes(type);
-}
+};
 
 export const isEmeritusMember = type => type === 'EMERITUS';
 
@@ -81,6 +83,15 @@ export const isGuestMember = type => type === 'GUEST';
 
 export const isAtLeastGuestMember = type => {
   return ['GUEST', 'EMERITUS', 'ASSOCIATE', 'FULL'].includes(type);
+};
+
+export const formatPhone = phoneNum => {
+  const phone = phoneNum.toString();
+  const areaCode = phone.substring(0, 3);
+  const prefix = phone.substring(3, 6);
+  const line = phone.substring(6);
+
+  return `${areaCode}-${prefix}-${line}`;
 };
 
 // Statuses

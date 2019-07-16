@@ -23,6 +23,7 @@
     "enzyme": "^3.6.0",
     "enzyme-adapter-react-16": "^1.5.0",
     "express": "^4.16.4",
+    "formik": "^1.5.7",
     "graphql": "^14.0.2",
     "graphql-tag": "^2.9.2",
     "jss": "^9.8.7",
@@ -46,16 +47,19 @@
     "styled-components": "^3.4.9",
     "typeface-roboto": "^0.0.54",
     "victory": "^31.0.1",
-    "waait": "^1.0.2"
+    "waait": "^1.0.2",
+    "yup": "^0.27.0"
   },
   "devDependencies": {
     "babel-jest": "^23.6.0",
     "babel-plugin-module-resolver": "^3.1.1",
     "casual": "^1.5.19",
     "enzyme-to-json": "^3.3.4",
+    "eslint-plugin-prettier": "^3.1.0",
     "graphql-tools": "^4.0.0",
     "jest": "^23.6.0",
-    "jest-transform-graphql": "^2.1.0"
+    "jest-transform-graphql": "^2.1.0",
+    "prettier": "1.18.2"
   },
   "jest": {
     "setupTestFrameworkScriptFile": "<rootDir>/jest.setup.js",

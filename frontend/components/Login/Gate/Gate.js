@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { Query } from 'react-apollo';
 import { CURRENT_USER_QUERY } from '../../user/User';
 import Login from '../Login';
+import Link from 'next/link';
 
 class Gate extends Component {
   static defaultProps = {
@@ -31,12 +32,13 @@ class Gate extends Component {
 
           const { role, accountStatus, accountType } = data.myself;
 
+          const contactWebmasterMessage = <><Link href="/message?to=webmaster"><a>Contact the webmaster</a></Link> for help</>;
+
           // Improper role
           if (this.props.roleCheck && !this.props.roleCheck(role)) {
             return (
               <p>
-                Your account is not authorized to view this content. Contact the
-                webmaster for help.
+                Your account is not authorized to view this content. 
               </p>
             );
           }
@@ -45,7 +47,7 @@ class Gate extends Component {
           if (this.props.statusCheck && !this.props.statusCheck(accountStatus)) {
             return <p>
               Your account does not have the proper status to view
-              this content. Contact the webmaster for help.
+              this content. {contactWebmasterMessage}.
             </p>;
           }
 
@@ -53,7 +55,7 @@ class Gate extends Component {
           if (this.props.typeCheck && !this.props.typeCheck(accountType)) {
             return <p>
               You do not have the proper account type to view
-              this content. Contact the webmaster for help.
+              this content. {contactWebmasterMessage}.
             </p>;
           }
 

@@ -1,7 +1,9 @@
+import ProfileForm from '../ProfileForm';
+
 const EditProfile = () => {
   return (
     <div>
-      Edit Profile
+      <ProfileForm />
     </div>
   );
 };
