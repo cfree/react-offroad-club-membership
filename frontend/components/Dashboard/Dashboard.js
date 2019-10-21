@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Flex, Box } from 'rebass';
 
-import Filter from '../login/Filter';
+import Filter from '../Login/Filter';
 import PollingPlace from '../voting/PollingPlace';
 import { isFullMember } from '../../lib/utils';
 

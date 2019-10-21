@@ -3,9 +3,10 @@ import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import styled from 'styled-components';
 import Router from 'next/router';
+import Link from 'next/link';
 import Loading from '../../utility/Loading';
 import ErrorMessage from '../../utility/ErrorMessage';
-import CURRENT_USER_QUERY from '../../user/User/User';
+import CURRENT_USER_QUERY from '../../User/User';
 import { assertResolveFunctionsPresent } from 'graphql-tools';
 
 const StyledForm = styled.form``;
@@ -49,7 +50,7 @@ export default class Login extends Component {
                 Router.push(this.props.redirect || '/');
               }}
             >
-              <h2>Login</h2>
+              <h3>Login</h3>
               <ErrorMessage error={error} />
               <fieldset disabled={loading} aria-busy={loading}>
                 <label htmlFor="username">
@@ -74,6 +75,10 @@ export default class Login extends Component {
                 </label>
                 <button type="submit">Login</button>
                 <Loading loading={loading} />
+                <br />
+                <Link href="/password-reset">
+                  <a>Forgot password?</a>
+                </Link>
               </fieldset>
             </StyledForm>
           );

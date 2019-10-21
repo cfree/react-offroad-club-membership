@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/four-players-co/four-players-co/dev
-# timestamp: Fri Jul 05 2019 16:55:18 GMT-0600 (Mountain Daylight Time)
+# timestamp: Sun Aug 11 2019 21:14:27 GMT-0600 (Mountain Daylight Time)
 
 enum AccountStatus {
   ACTIVE
@@ -362,9 +362,7 @@ input BallotSubscriptionWhereInput {
   """Logical NOT on all given filters combined by AND."""
   NOT: [BallotSubscriptionWhereInput!]
 
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
+  """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
 
   """
@@ -942,9 +940,7 @@ input BandaidSubscriptionWhereInput {
   """Logical NOT on all given filters combined by AND."""
   NOT: [BandaidSubscriptionWhereInput!]
 
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
+  """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
 
   """
@@ -1314,9 +1310,7 @@ input ConditionSubscriptionWhereInput {
   """Logical NOT on all given filters combined by AND."""
   NOT: [ConditionSubscriptionWhereInput!]
 
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
+  """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
 
   """
@@ -1525,7 +1519,7 @@ type ContactInfo implements Node {
   city: String
   state: String
   zip: String
-  phone: Int!
+  phone: String!
 }
 
 """A connection to a list of items."""
@@ -1544,7 +1538,7 @@ input ContactInfoCreateInput {
   city: String
   state: String
   zip: String
-  phone: Int!
+  phone: String!
   user: UserCreateOneWithoutContactInfoInput
 }
 
@@ -1559,7 +1553,7 @@ input ContactInfoCreateWithoutUserInput {
   city: String
   state: String
   zip: String
-  phone: Int!
+  phone: String!
 }
 
 """An edge in a connection."""
@@ -1598,7 +1592,7 @@ type ContactInfoPreviousValues {
   city: String
   state: String
   zip: String
-  phone: Int!
+  phone: String!
 }
 
 type ContactInfoSubscriptionPayload {
@@ -1618,9 +1612,7 @@ input ContactInfoSubscriptionWhereInput {
   """Logical NOT on all given filters combined by AND."""
   NOT: [ContactInfoSubscriptionWhereInput!]
 
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
+  """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
 
   """
@@ -1645,7 +1637,7 @@ input ContactInfoUpdateInput {
   city: String
   state: String
   zip: String
-  phone: Int
+  phone: String
   user: UserUpdateOneWithoutContactInfoInput
 }
 
@@ -1654,7 +1646,7 @@ input ContactInfoUpdateManyMutationInput {
   city: String
   state: String
   zip: String
-  phone: Int
+  phone: String
 }
 
 input ContactInfoUpdateOneWithoutUserInput {
@@ -1671,7 +1663,7 @@ input ContactInfoUpdateWithoutUserDataInput {
   city: String
   state: String
   zip: String
-  phone: Int
+  phone: String
 }
 
 input ContactInfoUpsertWithoutUserInput {
@@ -1932,28 +1924,46 @@ input ContactInfoWhereInput {
 
   """All values not ending with the given string."""
   zip_not_ends_with: String
-  phone: Int
+  phone: String
 
   """All values that are not equal to given value."""
-  phone_not: Int
+  phone_not: String
 
   """All values that are contained in given list."""
-  phone_in: [Int!]
+  phone_in: [String!]
 
   """All values that are not contained in given list."""
-  phone_not_in: [Int!]
+  phone_not_in: [String!]
 
   """All values less than the given value."""
-  phone_lt: Int
+  phone_lt: String
 
   """All values less than or equal the given value."""
-  phone_lte: Int
+  phone_lte: String
 
   """All values greater than the given value."""
-  phone_gt: Int
+  phone_gt: String
 
   """All values greater than or equal the given value."""
-  phone_gte: Int
+  phone_gte: String
+
+  """All values containing the given string."""
+  phone_contains: String
+
+  """All values not containing the given string."""
+  phone_not_contains: String
+
+  """All values starting with the given string."""
+  phone_starts_with: String
+
+  """All values not starting with the given string."""
+  phone_not_starts_with: String
+
+  """All values ending with the given string."""
+  phone_ends_with: String
+
+  """All values not ending with the given string."""
+  phone_not_ends_with: String
   user: UserWhereInput
 }
 
@@ -2041,9 +2051,7 @@ input ElectionSubscriptionWhereInput {
   """Logical NOT on all given filters combined by AND."""
   NOT: [ElectionSubscriptionWhereInput!]
 
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
+  """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
 
   """
@@ -2909,9 +2917,7 @@ input EventSubscriptionWhereInput {
   """Logical NOT on all given filters combined by AND."""
   NOT: [EventSubscriptionWhereInput!]
 
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
+  """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
 
   """
@@ -3845,9 +3851,7 @@ input LogItemSubscriptionWhereInput {
   """Logical NOT on all given filters combined by AND."""
   NOT: [LogItemSubscriptionWhereInput!]
 
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
+  """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
 
   """
@@ -4346,9 +4350,7 @@ input MembershipLogItemSubscriptionWhereInput {
   """Logical NOT on all given filters combined by AND."""
   NOT: [MembershipLogItemSubscriptionWhereInput!]
 
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
+  """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
 
   """
@@ -4776,7 +4778,7 @@ type Preference implements Node {
   updatedAt: DateTime!
   user: User
   emergencyContactName: String
-  emergencyContactPhone: Int
+  emergencyContactPhone: String
   photoPermissions: Boolean
   showPhoneNumber: Boolean
 }
@@ -4794,7 +4796,7 @@ type PreferenceConnection {
 input PreferenceCreateInput {
   id: ID
   emergencyContactName: String
-  emergencyContactPhone: Int
+  emergencyContactPhone: String
   photoPermissions: Boolean
   showPhoneNumber: Boolean
   user: UserCreateOneWithoutPreferencesInput
@@ -4808,7 +4810,7 @@ input PreferenceCreateOneWithoutUserInput {
 input PreferenceCreateWithoutUserInput {
   id: ID
   emergencyContactName: String
-  emergencyContactPhone: Int
+  emergencyContactPhone: String
   photoPermissions: Boolean
   showPhoneNumber: Boolean
 }
@@ -4844,7 +4846,7 @@ type PreferencePreviousValues {
   createdAt: DateTime
   updatedAt: DateTime!
   emergencyContactName: String
-  emergencyContactPhone: Int
+  emergencyContactPhone: String
   photoPermissions: Boolean
   showPhoneNumber: Boolean
 }
@@ -4866,9 +4868,7 @@ input PreferenceSubscriptionWhereInput {
   """Logical NOT on all given filters combined by AND."""
   NOT: [PreferenceSubscriptionWhereInput!]
 
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
+  """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
 
   """
@@ -4890,7 +4890,7 @@ input PreferenceSubscriptionWhereInput {
 
 input PreferenceUpdateInput {
   emergencyContactName: String
-  emergencyContactPhone: Int
+  emergencyContactPhone: String
   photoPermissions: Boolean
   showPhoneNumber: Boolean
   user: UserUpdateOneWithoutPreferencesInput
@@ -4898,7 +4898,7 @@ input PreferenceUpdateInput {
 
 input PreferenceUpdateManyMutationInput {
   emergencyContactName: String
-  emergencyContactPhone: Int
+  emergencyContactPhone: String
   photoPermissions: Boolean
   showPhoneNumber: Boolean
 }
@@ -4914,7 +4914,7 @@ input PreferenceUpdateOneWithoutUserInput {
 
 input PreferenceUpdateWithoutUserDataInput {
   emergencyContactName: String
-  emergencyContactPhone: Int
+  emergencyContactPhone: String
   photoPermissions: Boolean
   showPhoneNumber: Boolean
 }
@@ -5057,28 +5057,46 @@ input PreferenceWhereInput {
 
   """All values not ending with the given string."""
   emergencyContactName_not_ends_with: String
-  emergencyContactPhone: Int
+  emergencyContactPhone: String
 
   """All values that are not equal to given value."""
-  emergencyContactPhone_not: Int
+  emergencyContactPhone_not: String
 
   """All values that are contained in given list."""
-  emergencyContactPhone_in: [Int!]
+  emergencyContactPhone_in: [String!]
 
   """All values that are not contained in given list."""
-  emergencyContactPhone_not_in: [Int!]
+  emergencyContactPhone_not_in: [String!]
 
   """All values less than the given value."""
-  emergencyContactPhone_lt: Int
+  emergencyContactPhone_lt: String
 
   """All values less than or equal the given value."""
-  emergencyContactPhone_lte: Int
+  emergencyContactPhone_lte: String
 
   """All values greater than the given value."""
-  emergencyContactPhone_gt: Int
+  emergencyContactPhone_gt: String
 
   """All values greater than or equal the given value."""
-  emergencyContactPhone_gte: Int
+  emergencyContactPhone_gte: String
+
+  """All values containing the given string."""
+  emergencyContactPhone_contains: String
+
+  """All values not containing the given string."""
+  emergencyContactPhone_not_contains: String
+
+  """All values starting with the given string."""
+  emergencyContactPhone_starts_with: String
+
+  """All values not starting with the given string."""
+  emergencyContactPhone_not_starts_with: String
+
+  """All values ending with the given string."""
+  emergencyContactPhone_ends_with: String
+
+  """All values not ending with the given string."""
+  emergencyContactPhone_not_ends_with: String
   photoPermissions: Boolean
 
   """All values that are not equal to given value."""
@@ -5363,9 +5381,7 @@ input RSVPSubscriptionWhereInput {
   """Logical NOT on all given filters combined by AND."""
   NOT: [RSVPSubscriptionWhereInput!]
 
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
+  """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
 
   """
@@ -6086,9 +6102,7 @@ input RunReportSubscriptionWhereInput {
   """Logical NOT on all given filters combined by AND."""
   NOT: [RunReportSubscriptionWhereInput!]
 
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
+  """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
 
   """
@@ -7248,9 +7262,7 @@ input TrailSubscriptionWhereInput {
   """Logical NOT on all given filters combined by AND."""
   NOT: [TrailSubscriptionWhereInput!]
 
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
+  """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
 
   """
@@ -8646,9 +8658,7 @@ input UserMetaSubscriptionWhereInput {
   """Logical NOT on all given filters combined by AND."""
   NOT: [UserMetaSubscriptionWhereInput!]
 
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
+  """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
 
   """
@@ -9437,9 +9447,7 @@ input UserSubscriptionWhereInput {
   """Logical NOT on all given filters combined by AND."""
   NOT: [UserSubscriptionWhereInput!]
 
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
+  """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
 
   """
@@ -10992,9 +11000,7 @@ input VehicleSubscriptionWhereInput {
   """Logical NOT on all given filters combined by AND."""
   NOT: [VehicleSubscriptionWhereInput!]
 
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
+  """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
 
   """
@@ -11578,9 +11584,7 @@ input VoteSubscriptionWhereInput {
   """Logical NOT on all given filters combined by AND."""
   NOT: [VoteSubscriptionWhereInput!]
 
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
+  """The subscription event gets dispatched when it's listed in mutation_in"""
   mutation_in: [MutationType!]
 
   """

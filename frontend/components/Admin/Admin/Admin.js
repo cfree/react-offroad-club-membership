@@ -1,6 +1,6 @@
 import Link from 'next/link';
 // import PollingPlace from '../../voting/PollingPlace';
-import Filter from '../../login/Filter';
+import Filter from '../../Login/Filter';
 import { isAdmin, isNotLocked } from '../../../lib/utils';
 
 const Admin = () => (

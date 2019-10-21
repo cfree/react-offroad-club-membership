@@ -1,4 +1,4 @@
-import Gate from '../components/login/Gate';
+import Gate from '../components/Login/Gate';
 import EventDetails from '../components/events/EventDetails';
 import { isAtLeastGuestMember, isNotLocked } from '../lib/utils';
 

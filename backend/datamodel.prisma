@@ -102,9 +102,9 @@ type User {
   accountStatus: AccountStatus! @default(value: LOCKED)
   accountType: AccountType! @default(value: GUEST)
   office: Office @unique
-  candidateFor: [Ballot]! @relation(name: "CandidateUser")
-  votesReceived: [Vote]! @relation(name: "VotesRecdUser")
-  votedFor: [Vote]! @relation(name: "VotedUser")
+  candidateFor: [Ballot] @relation(name: "CandidateUser")
+  votesReceived: [Vote] @relation(name: "VotesRecdUser")
+  votedFor: [Vote] @relation(name: "VotedUser")
   comfortLevel: String
   log: [LogItem] @relation(name: "LogMember")
   membershipLog: [MembershipLogItem] @relation(name: "LogItemMember")
@@ -115,8 +115,8 @@ type User {
   eventsHosted: [Event] @relation(name: "EventHost")
   trailsVisited: [Trail] @relation(name: "TrailVisitor")
   bandaids: [Bandaid] @relation(name: "BandaidSubject")
-  runReportsLogged: [RunReport]! @relation(name: "RunReporter")
-  #trailsFavorited: [Trail]
+  runReportsLogged: [RunReport] @relation(name: "RunReporter")
+  #trailsFavorited: [Trail] 
 }
 
 type ContactInfo {
@@ -128,7 +128,7 @@ type ContactInfo {
   city: String
   state: String
   zip: String
-  phone: Int!
+  phone: String!
 }
 
 type Preference {
@@ -137,7 +137,7 @@ type Preference {
   updatedAt: DateTime! @updatedAt
   user: User @relation(link: TABLE, name: "UserPreferences")
   emergencyContactName: String
-  emergencyContactPhone: Int
+  emergencyContactPhone: String
   photoPermissions: Boolean
   showPhoneNumber: Boolean
 }
@@ -208,7 +208,7 @@ type RunReport {
   startTime: DateTime!
   endTime: DateTime!
   reportFiled: DateTime!
-  reporter: User! @relation(name: "RunReporter")
+  reporter: User! @relation(link: TABLE, name: "RunReporter")
   title: String!
   description: String
   trail: Trail! @relation(name: "TrailRunReport")
@@ -246,7 +246,7 @@ type Election {
   electionName: String!
   startTime: DateTime
   endTime: DateTime
-  races: [Ballot!]!
+  races: [Ballot]
 }
 
 type Ballot {
@@ -255,7 +255,7 @@ type Ballot {
   updatedAt: DateTime! @updatedAt
   title: String!
   desc: String
-  candidates: [User!]! @relation(name: "CandidateUser")
+  candidates: [User] @relation(name: "CandidateUser")
   votes: [Vote] @relation(name: "BallotVote")
 }
 

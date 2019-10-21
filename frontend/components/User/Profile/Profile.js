@@ -3,6 +3,8 @@ import gql from 'graphql-tag';
 import { format } from 'date-fns';
 import styled from 'styled-components';
 import Link from 'next/link';
+import get from 'lodash/get';
+import ErrorMessage from '../../utility/ErrorMessage';
 import { accountTypes as types, offices, titles } from '../../../lib/constants';
 
 const USER_QUERY = gql`
@@ -17,9 +19,11 @@ const USER_QUERY = gql`
       username
       title
       office
-      phone
       accountType
       comfortLevel
+      contactInfo {
+        phone
+      }
       vehicle {
         make
         model
@@ -82,7 +86,6 @@ const StyledProfile = styled.div`
   }
 
   .user-name-info {
-    
   }
 
   .user-name {
@@ -169,131 +172,130 @@ const Profile = ({ username }) => {
           return <div>Loading...</div>;
         }
         if (error) {
-          return <div>Error: {error.message}</div>;
+          return <ErrorMessage error={error} />;
         }
 
         const { user } = data;
-        const convertedTitles = titles[user.title];
+        const convertedTitles = get(titles, 'user.title') || '';
 
         return (
           <StyledProfile>
             <header>
               <div
-                aria-label={`${user.firstName}'s Vehicle`}
+                aria-label={"User's Vehicle"}
                 className="user-vehicle"
                 style={{
-                  backgroundImage:
-                    'url(/static/img/default-vehicle.jpg)',
+                  backgroundImage: 'url(/static/img/default-vehicle.jpg)',
                 }}
               />
 
-              <div className="user-header">
-                <div className="user-demographics">
-                  <img
-                    src="/static/img/default-user.jpg"
-                    height="130"
-                  />
-                  <div className="user-name-info">
-                    <div className="user-name">
-                      <h2 className="user-full-name">
-                        {user.firstName} {user.lastName}
-                      </h2>
+              {user ? (
+                <div className="user-header">
+                  <div className="user-demographics">
+                    <img src="/static/img/default-user.jpg" height="130" />
+                    <div className="user-name-info">
+                      <div className="user-name">
+                        <h2 className="user-full-name">
+                          {user.firstName} {user.lastName}
+                        </h2>
+                      </div>
+                      <ul className="user-info">
+                        {user.foundingMember && <li>Founding Member</li>}
+                        <li>{types[user.accountType]} Member</li>
+                        {(user.office || convertedTitles.length > 0) && (
+                          <li>
+                            {[offices[user.office] || '', convertedTitles].join(
+                              ', ',
+                            )}
+                          </li>
+                        )}
+                        <li>Joined {format(user.joined, 'YYYY')}</li>
+                      </ul>
                     </div>
-                    <ul className="user-info">
-                      {user.foundingMember && <li>Founding Member</li>}
-                      <li>{types[user.accountType]} Member</li>
-                      {(user.office || convertedTitles.length > 0) && (
-                        <li>
-                          {[
-                            offices[user.office] || '',
-                            convertedTitles,
-                          ].join(', ')}
-                        </li>
-                      )}
-                      <li>Joined {format(user.joined, 'YYYY')}</li>
-                    </ul>
                   </div>
-                </div>
-                <ul className="user-actions">
-                  <li>
-                    <Link
-                      href={{
-                        pathname: 'message',
-                        query: { to: user.username },
-                      }}
-                    >
-                      <a>Send Message</a>
-                    </Link>
-                  </li>
-                  {isSelf && (
+                  <ul className="user-actions">
                     <li>
-                      <Link href="/settings/profile">
-                        <a>Edit Profile</a>
+                      <Link
+                        href={{
+                          pathname: 'message',
+                          query: { to: user.username },
+                        }}
+                      >
+                        <a>Send Message</a>
                       </Link>
                     </li>
-                  )}
-                </ul>
-              </div>
-            </header>
-
-            <main>
-              {user.vehicle && (
-                <div className="user-garage">
-                  <h3>{user.firstName}'s Garage</h3>
-                  <ul>
-                    <li>
-                      {user.vehicle.year} {user.vehicle.make}{' '}
-                      {user.vehicle.model} {user.vehicle.trim}
-                    </li>
-                    {user.vehicle.name && (
-                      <li>"{user.vehicle.name}"</li>
+                    {isSelf && (
+                      <li>
+                        <Link href="/settings/profile">
+                          <a>Edit Profile</a>
+                        </Link>
+                      </li>
                     )}
-                    {user.comfortLevel && <li>{user.comfortLevel}</li>}
-                    {user.vehicle.mods && <li>{user.vehicle.mods}</li>}
                   </ul>
                 </div>
+              ) : (
+                <h3>No user information</h3>
               )}
+            </header>
 
-              <section>
-                <h3>Logs</h3>
-                <div className="user-logs">
-                  <div className="membership-log">
-                    <h4>Membership History</h4>
-                    {user.membershipLog.length > 0 ? (
-                      <ul>
-                        {user.membershipLog.map(logItem => (
-                          <li key={logItem.id}>
-                            {logItem.message}: {logItem.startTime}-
-                            {logItem.endTime || 'present'}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <span>No items found...</span>
-                    )}
+            {user && (
+              <main>
+                {user.vehicle && (
+                  <div className="user-garage">
+                    <h3>{user.firstName}'s Garage</h3>
+                    <ul>
+                      <li>
+                        {user.vehicle.year} {user.vehicle.make}{' '}
+                        {user.vehicle.model} {user.vehicle.trim}
+                      </li>
+                      {user.vehicle.name && <li>"{user.vehicle.name}"</li>}
+                      {user.comfortLevel && <li>{user.comfortLevel}</li>}
+                      {user.vehicle.mods && <li>{user.vehicle.mods}</li>}
+                    </ul>
                   </div>
-                  <div className="activity-log">
-                    <h4>Activity Log</h4>
-                    {user.log.length > 0 ? (
-                      <ul>
-                        {user.log.map(logItem => (
-                          <li key={logItem.id}>
-                            {logItem.time} - {logItem.message}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <span>No items found...</span>
-                    )}
+                )}
+
+                <section>
+                  <h3>Logs</h3>
+                  <div className="user-logs">
+                    <div className="membership-log">
+                      <h4>Membership History</h4>
+                      {user.membershipLog.length > 0 ? (
+                        <ul>
+                          {user.membershipLog.map(logItem => (
+                            <li key={logItem.id}>
+                              {logItem.message}: {logItem.startTime}-
+                              {logItem.endTime || 'present'}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <span>No items found...</span>
+                      )}
+                    </div>
+                    <div className="activity-log">
+                      <h4>Activity Log</h4>
+                      {user.log.length > 0 ? (
+                        <ul>
+                          {user.log.map(logItem => (
+                            <li key={logItem.id}>
+                              {logItem.time} - {logItem.message}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <span>No items found...</span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </section>
-            </main>
+                </section>
+              </main>
+            )}
           </StyledProfile>
         );
       }}
     </Query>
   );
-}
+};
 
 export default Profile;

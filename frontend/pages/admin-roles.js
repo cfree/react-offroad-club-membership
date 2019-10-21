@@ -1,5 +1,5 @@
-import Roles from '../components/admin/Roles';
-import Gate from '../components/login/Gate';
+import Roles from '../components/Admin/Roles';
+import Gate from '../components/Login/Gate';
 import { isAdmin, isNotLocked } from '../lib/utils';
 
 const RolesPage = () => {

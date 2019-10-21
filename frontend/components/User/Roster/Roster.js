@@ -31,8 +31,10 @@ const MEMBERSHIP_QUERY = gql`
       firstName
       lastName
       avatarSmall
-      phone
       accountType
+      contactInfo {
+        phone
+      }
     }
   }
 `;

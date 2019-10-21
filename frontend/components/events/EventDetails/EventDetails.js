@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import Link from 'next/link'; 
+import Link from 'next/link';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import { format, getTime, distanceInWordsToNow } from 'date-fns';
-import getConfig from 'next/config'
-const { publicRuntimeConfig } = getConfig()
+import parse from 'html-react-parser';
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
 
 import { trailDifficulties, trailConditions } from '../../../lib/constants';
 import Calendar from '../Calendar';
@@ -58,16 +59,13 @@ const EVENT_QUERY = gql`
 `;
 
 export default class EventDetails extends Component {
-  onMapImgError = (e) => {
+  onMapImgError = e => {
     e.target.src = '/static/img/default-map.png';
-  }
+  };
 
   render() {
     return (
-      <Query
-        query={EVENT_QUERY}
-        variables={{ eventId: this.props.id }}
-      >
+      <Query query={EVENT_QUERY} variables={{ eventId: this.props.id }}>
         {({ loading, error, data }) => {
           if (loading) {
             return <div>Loading...</div>;
@@ -80,24 +78,22 @@ export default class EventDetails extends Component {
 
           const isPastEvent = Date.now() > getTime(event.startTime);
 
-          const attendees = event.rsvps.filter(
-            rsvp => rsvp.status === 'GOING',
-          );
+          const attendees = event.rsvps.filter(rsvp => rsvp.status === 'GOING');
 
           const attendeeCount = attendees.length;
 
           const userStatus = () => {
-            const rsvp = event.rsvps.find(
-              rsvp => rsvp.member.id === myself.id,
-            );
+            const rsvp = event.rsvps.find(rsvp => rsvp.member.id === myself.id);
 
-            if (rsvp) { return rsvp.status; }
+            if (rsvp) {
+              return rsvp.status;
+            }
 
             return 'NONE';
           };
 
           const encodedRallyAddress = encodeURIComponent(
-            event.rallyAddress || event.address || 'Colorado'
+            event.rallyAddress || event.address || 'Colorado',
           );
 
           const encodedAddress = encodeURIComponent(
@@ -119,10 +115,7 @@ export default class EventDetails extends Component {
                   <h2 className="event__title">{event.title}</h2>
                   {event.host.firstName && (
                     <div className="event__leader">
-                      <img
-                        src="/static/img/default-user.jpg"
-                        height="30"
-                      />
+                      <img src="/static/img/default-user.jpg" height="30" />
                       Hosted by {event.host.firstName}
                     </div>
                   )}
@@ -145,11 +138,8 @@ export default class EventDetails extends Component {
                       alt={event.title}
                     />
                   </section>
-                  <section
-                    className="event__section"
-                    aria-label="Description"
-                  >
-                    {event.description}
+                  <section className="event__section" aria-label="Description">
+                    {parse(event.description)}
                   </section>
                   {event.trail ? (
                     <section>
@@ -160,26 +150,20 @@ export default class EventDetails extends Component {
                       {event.trail.name}
                       </button> */}
                       </p>
-                      {(event.trailDifficulty ||
-                        event.trailNotes) && (
+                      {(event.trailDifficulty || event.trailNotes) && (
                         <>
                           <h4>Run Leader Notes</h4>
                           <p>
                             {event.trailDifficulty && (
                               <>
                                 <strong>Difficulty</strong>:{' '}
-                                {
-                                  trailDifficulties[
-                                    event.trailDifficulty
-                                  ]
-                                }
+                                {trailDifficulties[event.trailDifficulty]}
                                 <br />
                               </>
                             )}
                             {event.trailNotes && (
                               <>
-                                <strong>Comments</strong>:{' '}
-                                {event.trailNotes}
+                                <strong>Comments</strong>: {event.trailNotes}
                               </>
                             )}
                           </p>
@@ -195,17 +179,11 @@ export default class EventDetails extends Component {
                             {event.trail.avgDifficulty && (
                               <>
                                 <strong>Difficulty</strong>:{' '}
-                                {
-                                  trailDifficulties[
-                                    event.trail.avgDifficulty
-                                  ]
-                                }
+                                {trailDifficulties[event.trail.avgDifficulty]}
                                 <br />
                               </>
                             )}
-                            {!Number.isNaN(
-                              event.trail.avgRatings,
-                            ) && (
+                            {!Number.isNaN(event.trail.avgRatings) && (
                               <>
                                 <strong>Quality Rating</strong>:{' '}
                                 {event.trail.avgRatings > 0 ? (
@@ -220,9 +198,8 @@ export default class EventDetails extends Component {
                             {event.trail.favoriteCount}
                             <br />
                             <strong>Conditions</strong>:{' '}
-                            {trailConditions[
-                              event.trail.currentConditions
-                            ] || 'Unknown'}
+                            {trailConditions[event.trail.currentConditions] ||
+                              'Unknown'}
                             <br />
                             <small>
                               Last reported:{' '}
@@ -236,8 +213,7 @@ export default class EventDetails extends Component {
                     </section>
                   ) : (
                     <p>
-                      <strong>Address</strong>:{' '}
-                      {event.address || 'n/a'}
+                      <strong>Address</strong>: {event.address || 'n/a'}
                     </p>
                   )}
                   <section className="event__section">
@@ -246,15 +222,9 @@ export default class EventDetails extends Component {
                       <strong>{event.host.firstName}</strong>
                     </div>
                     {attendees
-                      .filter(
-                        attendee =>
-                          attendee.member.id !== event.host.id,
-                      )
+                      .filter(attendee => attendee.member.id !== event.host.id)
                       .map(attendee => (
-                        <div
-                          key={attendee.member.id}
-                          className="card"
-                        >
+                        <div key={attendee.member.id} className="card">
                           {attendee.member.firstName}
                         </div>
                       ))}
@@ -301,8 +271,7 @@ export default class EventDetails extends Component {
                         )}
                         {event.rallyAddress && (
                           <>
-                            <strong>Rally Point</strong>:{' '}
-                            {event.rallyAddress}
+                            <strong>Rally Point</strong>: {event.rallyAddress}
                           </>
                         )}
                       </p>
@@ -316,10 +285,7 @@ export default class EventDetails extends Component {
                             <img
                               width="250"
                               height="100"
-                              src={`https://maps.googleapis.com/maps/api/staticmap?zoom=8&size=500x200&maptype=roadmap&markers=size:mid%7Ccolor:red%7C${encodedAddress}&key=${
-                                publicRuntimeConfig.env
-                                  .GOOGLE_MAPS_API_KEY
-                              }`}
+                              src={`https://maps.googleapis.com/maps/api/staticmap?zoom=8&size=500x200&maptype=roadmap&markers=size:mid%7Ccolor:red%7C${encodedAddress}&key=${publicRuntimeConfig.env.GOOGLE_MAPS_API_KEY}`}
                               alt={`${event.title} map`}
                               onError={this.onMapImgError}
                             />

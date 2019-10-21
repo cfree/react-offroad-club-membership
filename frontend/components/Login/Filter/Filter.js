@@ -1,5 +1,5 @@
 import { Query } from 'react-apollo';
-import { CURRENT_USER_QUERY } from '../../user/User/User';
+import { CURRENT_USER_QUERY } from '../../User/User';
 
 const Filter = ({
   children,
@@ -9,13 +9,14 @@ const Filter = ({
 }) => {
   return (
     <Query query={CURRENT_USER_QUERY}>
-      {({ data, loading }) => {
+      {({ data, error, loading }) => {
         if (loading) {
           return <p>Loading...</p>;
         }
 
         // Improper role and status
         if (
+          data.myself &&
           roleCheck(data.myself.role) &&
           statusCheck(data.myself.accountStatus) &&
           typeCheck(data.myself.accountType)

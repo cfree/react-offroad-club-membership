@@ -4,8 +4,8 @@ import gql from 'graphql-tag';
 import PropTypes from 'prop-types';
 
 import { roles } from '../../../lib/constants';
-import Filters from '../../user/Filters';
-import Roster from '../../user/Roster';
+import Filters from '../../User/Filters';
+import Roster from '../../User/Roster';
 import ErrorMessage from '../../utility/ErrorMessage';
 import Loading from '../../utility/Loading';
 

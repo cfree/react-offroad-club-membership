@@ -1,9 +1,12 @@
 import styled from 'styled-components';
 import Link from 'next/link';
-import EventList from '../components/events/EventList';
-import Gate from '../components/login/Gate';
+import { withRouter } from 'next/router';
 import classNames from 'classnames';
+
+import EventList from '../components/events/EventList';
+import Gate from '../components/Login/Gate';
 import { isAtLeastGuestMember, isNotLocked } from '../lib/utils';
+import EventForm from '../components/events/EventForm';
 
 const StyledEventsPage = styled.div`
   display: grid;
@@ -15,30 +18,35 @@ const StyledEventsPage = styled.div`
   }
 `;
 
-const EventsPage = ({ query }) => {
-  const isUpcoming = query.type !== 'past';
+const EventsPage = ({ query, router }) => {
+  const { type } = query;
+  const isUpcoming = type !== 'past';
+  const isNew = type === 'new';
 
   return (
     <Gate>
       <StyledEventsPage>
         <div className="events-aside">
           <ul>
-            <li className={classNames({ active: isUpcoming })}>
+            <li className={classNames({ active: isUpcoming && !isNew })}>
               <Link href="/events">
                 <a>Upcoming</a>
               </Link>
             </li>
-            <li className={classNames({ active: !isUpcoming })}>
+            <li className={classNames({ active: !isUpcoming && !isNew })}>
               <Link href="/events/past">
                 <a>Past</a>
               </Link>
             </li>
           </ul>
+          <button onClick={() => router.push('/events/new')}>
+            Create Event
+          </button>
         </div>
-        <EventList upcoming={isUpcoming} />
+        <div>{isNew ? <EventForm /> : <EventList upcoming={isUpcoming} />}</div>
       </StyledEventsPage>
     </Gate>
   );
-}
+};
 
-export default EventsPage;
+export default withRouter(EventsPage);

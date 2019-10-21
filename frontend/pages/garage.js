@@ -1,4 +1,4 @@
-import Gate from '../components/login/Gate';
+import Gate from '../components/Login/Gate';
 import { isAdmin } from '../lib/utils';
 
 const garagePage = () => {

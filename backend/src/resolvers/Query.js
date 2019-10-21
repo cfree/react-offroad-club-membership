@@ -13,7 +13,7 @@ const Query = {
       {
         where: { id: ctx.request.userId },
       },
-      info,
+      info
     );
   },
   async users(parent, args, ctx, info) {
@@ -32,8 +32,6 @@ const Query = {
       orderBy: 'firstName_ASC',
       where: {},
     };
-
-    console.log('args', args);
 
     if (args.role && args.role.length) {
       query.where = {
@@ -74,8 +72,6 @@ const Query = {
       // };
     }
 
-    console.log('query', query);
-
     // Sorting?
     // if (args.orderBy && args.orderBy.length > 0) {
     //   query.orderBy = args.orderBy[0];
@@ -96,16 +92,22 @@ const Query = {
     // Requesting user has proper account status?
     hasAccountStatus(ctx.request.user, ['ACTIVE']);
 
-    // If they do, query all the users
+    // If they do, query the user
     if (args.username) {
-      return ctx.db.query.user(
+      const user = await ctx.db.query.user(
         {
           where: {
             username: args.username,
           },
         },
-        info,
+        info
       );
+
+      if (user) {
+        return user;
+      } else {
+        throw new Error('User cannot be found');
+      }
     }
 
     return ctx.db.query.user(
@@ -114,7 +116,7 @@ const Query = {
           id: ctx.request.user.id,
         },
       },
-      info,
+      info
     );
   },
   async getOfficer(parent, args, ctx, info) {
@@ -135,7 +137,7 @@ const Query = {
           office: args.office,
         },
       },
-      info,
+      info
     );
 
     return results.length > 0 ? results[0] : {};
@@ -163,7 +165,41 @@ const Query = {
         },
         orderBy: 'firstName_ASC',
       },
-      info,
+      info
+    );
+
+    // Sort by lastName then firstName
+    results.sort((a, b) => (a.lastName > b.lastName ? 1 : -1));
+
+    return results;
+  },
+  async getRunLeaders(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+    // Requesting user has proper role?
+    hasRole(ctx.request.user, ['ADMIN', 'OFFICER', 'RUN_MASTER']);
+
+    // Requesting user has proper account type?
+    hasAccountType(ctx.request.user, ['FULL']);
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+
+    // Return all run leaders
+    const results = await ctx.db.query.users(
+      {
+        where: {
+          AND: [
+            { accountStatus: 'ACTIVE' },
+            { accountType: 'FULL' },
+            { role_in: ['ADMIN', 'OFFICER', 'RUN_MASTER', 'RUN_LEADER'] },
+          ],
+        },
+        orderBy: 'firstName_ASC',
+      },
+      info
     );
 
     // Sort by lastName then firstName
@@ -183,17 +219,16 @@ const Query = {
       where: {},
       orderBy: 'firstName_ASC',
     };
-    
-    if (!hasAccountStatus(user, ['ACTIVE'], false)) { return []; }
-    
+
+    if (!hasAccountStatus(user, ['ACTIVE'], false)) {
+      return [];
+    }
+
     if (hasRole(user, ['ADMIN', 'OFFICER'], false)) {
       query.where = { accountType_in: config.accountType };
     } else if (hasAccountType(user, members, false)) {
       query.where = {
-        AND: [
-          { accountStatus: 'ACTIVE' },
-          { accountType_in: members },
-        ]
+        AND: [{ accountStatus: 'ACTIVE' }, { accountType_in: members }],
       };
     } else {
       return [];
@@ -223,7 +258,7 @@ const Query = {
         },
         orderBy: 'startTime_ASC',
       },
-      info,
+      info
     );
   },
   async getPastEvents(parent, args, ctx, info) {
@@ -243,7 +278,7 @@ const Query = {
         },
         orderBy: 'startTime_DESC',
       },
-      info,
+      info
     );
   },
   async getEvent(parent, args, ctx, info) {
@@ -260,8 +295,22 @@ const Query = {
       {
         where: { id: args.eventId },
       },
-      info,
+      info
     );
+  },
+  async getTrails(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    // Requesting user has proper account status?
+    hasRole(ctx.request.user, ['ADMIN', 'OFFICER', 'RUN_MASTER', 'RUN_LEADER']);
+    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+    hasAccountType(ctx.request.user, ['FULL']);
+
+    // If they do, query all the users
+    return ctx.db.query.trails({}, info);
   },
   async electionCandidates(parent, args, ctx, info) {
     // Logged in?
@@ -283,7 +332,7 @@ const Query = {
           accountStatus: args.accountStatus,
         },
       },
-      info,
+      info
     );
   },
   getActiveElections(parent, args, ctx, info) {
@@ -308,7 +357,7 @@ const Query = {
         },
         orderBy: 'endTime_ASC',
       },
-      info,
+      info
     );
   },
   getActiveElectionsWithResults(parent, args, ctx, info) {
@@ -333,7 +382,7 @@ const Query = {
         },
         orderBy: 'endTime_ASC',
       },
-      info,
+      info
     );
   },
   getElection(parent, args, ctx, info) {
@@ -354,7 +403,7 @@ const Query = {
           id: args.id,
         },
       },
-      info,
+      info
     );
   },
   async getUserVote(parent, args, ctx, info) {
@@ -379,7 +428,7 @@ const Query = {
         },
         first: true,
       },
-      info,
+      info
     );
 
     // console.log('VOTEs', votes);

@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { Query } from 'react-apollo';
 import { format } from 'date-fns';
 import Link from 'next/link';
+import parse from 'html-react-parser';
 
 import { UPCOMING_EVENTS_QUERY, PAST_EVENTS_QUERY } from './eventList.gql.js';
 import {
@@ -27,7 +28,7 @@ class EventList extends Component {
 
   handleUpdateEventAttendees = eventUpdate => {
     this.setState({ attendees: eventUpdate });
-  }
+  };
 
   render() {
     return (
@@ -47,7 +48,7 @@ class EventList extends Component {
           return (
             <StyledEvents>
               <StyledEventsList>
-                {events &&
+                {events.length > 0 ? (
                   events.map(event => {
                     const attendeesList = event.rsvps.filter(
                       rsvp => rsvp.status === 'GOING',
@@ -74,9 +75,7 @@ class EventList extends Component {
                           />
                           <div className="event-details">
                             <div className="event-date">
-                              <Link
-                                href={`/event/${event.id}`}
-                              >
+                              <Link href={`/event/${event.id}`}>
                                 <a>
                                   {format(
                                     event.startTime,
@@ -86,47 +85,28 @@ class EventList extends Component {
                               </Link>
                             </div>
                             <h2 className="event-title">
-                              <Link
-                                href={`/event/${event.id}`}
-                              >
+                              <Link href={`/event/${event.id}`}>
                                 <a>{event.title}</a>
                               </Link>
                             </h2>
                             <div className="event-location">
                               {event.address}
                             </div>
-                            <div>
-                              <p>{event.description}</p>
-                            </div>
+                            <div>{parse(event.description)}</div>
                             <div className="event-meta">
-                              {this.state.attendees[
-                                event.id
-                              ] &&
-                                this.state.attendees[
-                                  event.id
-                                ].length > 0 && (
+                              {this.state.attendees[event.id] &&
+                                this.state.attendees[event.id].length > 0 && (
                                   <span className="event-attendees">
-                                    {event.rsvps &&
-                                      event.rsvps.length >
-                                        0 && (
-                                        <span className="event-attendees__avatars">
-                                          {this.getAttendees(
-                                            event.id,
-                                          ).map(rsvp => (
-                                            <i
-                                              key={
-                                                rsvp.member
-                                                  .id
-                                              }
-                                            />
-                                          ))}
-                                        </span>
-                                      )}
-                                    {
-                                      this.state.attendees[
-                                        event.id
-                                      ].length
-                                    }{' '}
+                                    {event.rsvps && event.rsvps.length > 0 && (
+                                      <span className="event-attendees__avatars">
+                                        {this.getAttendees(event.id).map(
+                                          rsvp => (
+                                            <i key={rsvp.member.id} />
+                                          ),
+                                        )}
+                                      </span>
+                                    )}
+                                    {this.state.attendees[event.id].length}{' '}
                                     attendees
                                   </span>
                                 )}
@@ -138,14 +118,11 @@ class EventList extends Component {
                                 )}
                                 <AttendeeStatus
                                   isUpcoming={this.props.upcoming}
-                                  attendees={
-                                    this.state.attendees
-                                  }
+                                  attendees={this.state.attendees}
                                   eventId={event.id}
                                   user={myself}
                                   onUpdateEventAttendees={
-                                    this
-                                      .handleUpdateEventAttendees
+                                    this.handleUpdateEventAttendees
                                   }
                                 />
                               </span>
@@ -154,7 +131,10 @@ class EventList extends Component {
                         </div>
                       </StyledEvent>
                     );
-                  })}
+                  })
+                ) : (
+                  <h3>No events planned</h3>
+                )}
               </StyledEventsList>
             </StyledEvents>
           );

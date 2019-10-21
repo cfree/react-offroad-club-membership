@@ -10,6 +10,8 @@ type Mutation {
     firstName: String!
     lastName: String!
     username: String!
+    gender: Gender!
+    birthdate: DateTime!
   ): User!
   login(username: String!, password: String!): User!
   logout: SuccessMessage
@@ -20,7 +22,7 @@ type Mutation {
     confirmPassword: String!
   ): User!
   updateRole(role: Role, userId: ID!): User
-  createEvent(event: EventCreateInput!): SuccessMessage
+  createEvent(event: CreateEventInput!): SuccessMessage
   setRSVP(rsvp: RSVPInput): SuccessMessage
   sendMessage(
     to: [String!]!
@@ -45,10 +47,12 @@ type Query {
   user(username: String): User!
   getOfficer(office: Office!): User!
   getMembers(accountTypes: [AccountType]): [User]!
+  getRunLeaders: [User]!
   getMessageRecipients: [User]!
   getUpcomingEvents: [Event]!
   getPastEvents: [Event]!
   getEvent(eventId: ID!): Event!
+  getTrails: [Trail]!
   electionCandidates(
     accountType: AccountType!
     accountStatus: AccountStatus!
@@ -120,6 +124,7 @@ type Event {
   trailNotes: String
   rallyAddress: String
   rallyTime: String
+  membersOnly: Boolean
   trail: Trail
   bandaids: [Bandaid]
   runReports: [RunReport]
@@ -188,14 +193,31 @@ input UserUpdateInput {
   gender: String!
   birthdate: DateTime!
   joined: DateTime!
+  contactInfoId: ID!
   street: String!
   city: String!
   state: String!
   zip: String!
-  phone: Int!
+  phone: String!
+  preferencesId: ID!
   emergencyContactName: String!
-  emergencyContactPhone: Int!
+  emergencyContactPhone: String!
   showPhoneNumber: Boolean!
+}
+
+input CreateEventInput {
+  title: String!
+  description: String
+  startTime: DateTime!
+  endTime: DateTime!
+  address: String
+  trailDifficulty: TrailDifficulty!
+  trailNotes: String
+  rallyAddress: String
+  rallyTime: DateTime
+  membersOnly: Boolean!
+  host: String!
+  trail: String
 }
 
 input ElectionInput {

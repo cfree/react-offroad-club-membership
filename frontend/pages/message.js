@@ -1,5 +1,5 @@
 import Message from '../components/Message';
-import Gate from '../components/login/Gate';
+import Gate from '../components/Login/Gate';
 import { isAtLeastGuestMember } from '../lib/utils';
 
 const MessagePage = ({ query }) => {

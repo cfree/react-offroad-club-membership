@@ -31,9 +31,11 @@ const RosterCard = ({ user }) => {
         src="/static/img/default-user.jpg"
         alt={user.firstName}
       />
-      <span>{user.firstName} {user.lastName}</span>
+      <span>
+        {user.firstName} {user.lastName}
+      </span>
       <span>{getMemberType(user.accountType)}</span>
-      <span>{getPhoneNumber(user.phone)}</span >
+      <span>{getPhoneNumber(user.contactInfo.phone)}</span>
       <Link
         href={{
           pathname: 'message',

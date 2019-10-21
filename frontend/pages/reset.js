@@ -1,4 +1,4 @@
-import ResetPassword from '../components/login/ResetPassword';
+import ResetPassword from '../components/Login/ResetPassword';
 
 const ResetPage = props => <ResetPassword token={props.query.token} />;
 

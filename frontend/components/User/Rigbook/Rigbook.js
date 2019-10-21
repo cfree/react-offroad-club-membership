@@ -130,23 +130,33 @@ const Rigbook = () => {
             return <div>Error: {error.message}</div>;
           }
 
-          console.log('OFFICERS', data);
-
           return (
             <>
               <h3>Officers</h3>
               <StyledRigbook>
-                {data.president.id && <RigbookCard key={data.president.id} user={data.president} />}
-                {data.vicePresident.id && <RigbookCard key={data.vicePresident.id} user={data.vicePresident} />}
-                {data.secretary.id && <RigbookCard key={data.secretary.id} user={data.secretary} />}
-                {data.treasurer.id && <RigbookCard key={data.treasurer.id} user={data.treasurer} />}
+                {data.president.id && (
+                  <RigbookCard key={data.president.id} user={data.president} />
+                )}
+                {data.vicePresident.id && (
+                  <RigbookCard
+                    key={data.vicePresident.id}
+                    user={data.vicePresident}
+                  />
+                )}
+                {data.secretary.id && (
+                  <RigbookCard key={data.secretary.id} user={data.secretary} />
+                )}
+                {data.treasurer.id && (
+                  <RigbookCard key={data.treasurer.id} user={data.treasurer} />
+                )}
               </StyledRigbook>
 
               <h3>Membership</h3>
               <StyledRigbook>
-                {data.membership && data.membership.map(member => (
-                  <RigbookCard key={member.id} user={member} />
-                ))}
+                {data.membership &&
+                  data.membership.map(member => (
+                    <RigbookCard key={member.id} user={member} />
+                  ))}
               </StyledRigbook>
             </>
           );
@@ -154,6 +164,6 @@ const Rigbook = () => {
       </Query>
     </div>
   );
-}
+};
 
 export default Rigbook;

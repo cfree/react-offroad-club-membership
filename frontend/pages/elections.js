@@ -1,7 +1,7 @@
 import CreateElection from '../components/voting/CreateElection';
 import EditElection from '../components/voting/EditElection';
 import PollingPlace from '../components/voting/PollingPlace';
-import Gate from '../components/login/Gate';
+import Gate from '../components/Login/Gate';
 import { isAtLeastBoardMember, isNotLocked } from '../lib/utils';
 
 const PollManagementPage = ({ query }) => {

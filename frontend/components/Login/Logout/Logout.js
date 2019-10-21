@@ -1,7 +1,7 @@
 import { Mutation } from 'react-apollo';
 import Router from 'next/router';
 import gql from 'graphql-tag';
-import { CURRENT_USER_QUERY } from '../../user/User/User';
+import { CURRENT_USER_QUERY } from '../../User/User';
 
 const LOGOUT_MUTATION = gql`
   mutation LOGOUT_MUTATION {
@@ -12,17 +12,14 @@ const LOGOUT_MUTATION = gql`
 `;
 
 const Logout = () => (
-  <Mutation
-    mutation={LOGOUT_MUTATION}
-    refetchQueries={['CURRENT_USER_QUERY']}
-  >
+  <Mutation mutation={LOGOUT_MUTATION} refetchQueries={['CURRENT_USER_QUERY']}>
     {logout => (
       <a
         href="/logout"
         onClick={e => {
           e.preventDefault();
           logout();
-          Router.push('/login');
+          Router.push('/');
         }}
       >
         Logout

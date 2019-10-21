@@ -1,7 +1,7 @@
-import Gate from '../components/login/Gate';
-import EditProfile from '../components/user/EditProfile';
+import Gate from '../components/Login/Gate';
+import EditProfile from '../components/User/EditProfile';
 import EditGarage from '../components/vehicles/EditGarage';
-import EditAccount from '../components/user/EditAccount';
+import EditAccount from '../components/User/EditAccount';
 
 const SettingsPage = ({ query }) => {
   const page = (settings) => {

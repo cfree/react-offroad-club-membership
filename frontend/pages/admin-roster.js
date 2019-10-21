@@ -1,5 +1,5 @@
-import MembershipList from '../components/admin/MembershipList';
-import Gate from '../components/login/Gate';
+import MembershipList from '../components/Admin/MembershipList';
+import Gate from '../components/Login/Gate';
 import { isAtLeastBoardMember, isNotLocked } from '../lib/utils';
 
 const AdminRosterPage = () => {

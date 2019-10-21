@@ -9,7 +9,7 @@ import {
 } from 'formik';
 import * as yup from 'yup';
 import { defaultProps } from 'recompose';
-import { format, subYears, subDays } from 'date-fns';
+import { format } from 'date-fns';
 import styled from 'styled-components';
 
 import AvatarUploader from '../../common/AvatarUploader';
@@ -17,6 +17,7 @@ import ErrorMessage from '../../utility/ErrorMessage';
 import Loading from '../../utility/Loading';
 import { states } from '../../../lib/constants';
 import { formatPhone } from '../../../lib/utils';
+import { dateEighteenYearsAgo } from '../../../utilities/dates';
 
 const StyledForm = styled.div`
   padding: 20px;
@@ -50,8 +51,8 @@ const StyledFormField = styled.div`
 `;
 
 const PROFILE_QUERY = gql`
-  query PROFILE_QUERY($username: String!) {
-    user(username: $username) {
+  query PROFILE_QUERY {
+    user {
       id
       firstName
       lastName
@@ -60,6 +61,7 @@ const PROFILE_QUERY = gql`
       birthdate
       joined
       contactInfo {
+        id
         street
         city
         state
@@ -67,6 +69,7 @@ const PROFILE_QUERY = gql`
         phone
       }
       preferences {
+        id
         emergencyContactName
         emergencyContactPhone
         photoPermissions
@@ -85,13 +88,15 @@ const USER_UPDATE_PROFILE_MUTATION = gql`
     $gender: String!
     $birthdate: DateTime!
     $joined: DateTime!
+    $contactInfoId: ID!
     $street: String!
     $city: String!
     $state: String!
     $zip: String!
-    $phone: Int!
+    $phone: String!
+    $preferencesId: ID!
     $emergencyContactName: String!
-    $emergencyContactPhone: Int!
+    $emergencyContactPhone: String!
     $showPhoneNumber: Boolean!
   ) {
     updateUserProfileSettings(
@@ -102,11 +107,13 @@ const USER_UPDATE_PROFILE_MUTATION = gql`
         gender: $gender
         birthdate: $birthdate
         joined: $joined
+        contactInfoId: $contactInfoId
         street: $street
         city: $city
         state: $state
         zip: $zip
         phone: $phone
+        preferencesId: $preferencesId
         emergencyContactName: $emergencyContactName
         emergencyContactPhone: $emergencyContactPhone
         showPhoneNumber: $showPhoneNumber
@@ -118,6 +125,46 @@ const USER_UPDATE_PROFILE_MUTATION = gql`
   }
 `;
 
+const userSchema = yup.object().shape({
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
+  username: yup.string().required('Username is required'),
+  gender: yup.string(),
+  birthdate: yup
+    .date()
+    .max(dateEighteenYearsAgo, 'You must be 18 years old to join')
+    .required('Birthdate is required'),
+  joined: yup.date().max(format(new Date(), 'YYYY-MM-DD')),
+  phone: yup
+    .string()
+    .matches(
+      new RegExp(/[0-9]{3}-[0-9]{3}-[0-9]{4}/),
+      'Use proper format: 303-555-5555',
+    )
+    .required('Phone number is required'),
+  showPhoneNumber: yup.string().required(),
+  street: yup.string().required('Street is required'),
+  city: yup.string().required('City is required'),
+  state: yup.string(),
+  zip: yup
+    .string()
+    .matches(
+      new RegExp(/^[0-9]{5}(?:-[0-9]{4})?$/),
+      "Use proper format: '80206' or '80206-1919'",
+    )
+    .required('Zip code is required'),
+  emergencyContactName: yup
+    .string()
+    .required('Emergency contact name is required'),
+  emergencyContactPhone: yup
+    .string()
+    .matches(
+      new RegExp(/[0-9]{3}-[0-9]{3}-[0-9]{4}/),
+      'Use proper format: 303-555-5555',
+    )
+    .required('Emergency contact phone number is required'),
+});
+
 export class ProfileForm extends Component {
   state = {
     avatarImage: '',
@@ -128,59 +175,14 @@ export class ProfileForm extends Component {
   render() {
     const isAdmin = true;
 
-    const dateEighteenYearsAgo = format(
-      subYears(subDays(new Date(), 1), 18),
-      'YYYY-MM-DD',
-    );
-
-    const userSchema = yup.object().shape({
-      firstName: yup.string().required('First name is required'),
-      lastName: yup.string().required('Last name is required'),
-      username: yup.string().required('Username is required'),
-      gender: yup.string(),
-      birthdate: yup
-        .date()
-        .max(dateEighteenYearsAgo, 'You must be 18 years old to join')
-        .required('Birthdate is required'),
-      joined: yup.date().max(format(new Date(), 'YYYY-MM-DD')),
-      phone: yup
-        .string()
-        .matches(
-          new RegExp(/[0-9]{3}-[0-9]{3}-[0-9]{4}/),
-          'Use proper format: 303-555-5555',
-        )
-        .required('Phone number is required'),
-      showPhoneNumber: yup.string().required(),
-      street: yup.string().required('Street is required'),
-      city: yup.string().required('City is required'),
-      state: yup.string(),
-      zip: yup
-        .string()
-        .matches(
-          new RegExp(/^[0-9]{5}(?:-[0-9]{4})?$/),
-          "Use proper format: '80206' or '80206-1919'",
-        )
-        .required('Zip code is required'),
-      emergencyContactName: yup
-        .string()
-        .required('Emergency contact name is required'),
-      emergencyContactPhone: yup
-        .string()
-        .matches(
-          new RegExp(/[0-9]{3}-[0-9]{3}-[0-9]{4}/),
-          'Use proper format: 303-555-5555',
-        )
-        .required('Emergency contact phone number is required'),
-    });
-
     return (
-      <Query query={PROFILE_QUERY} variables={{ username: 'cfree' }}>
+      <Query query={PROFILE_QUERY}>
         {({ loading: queryLoading, error: queryError, data: queryData }) => {
           if (queryLoading) {
             return <div>Loading...</div>;
           }
           if (queryError) {
-            return <div>Error: {error.message}</div>;
+            return <ErrorMessage error={queryError} />;
           }
 
           const userFormValues = {
@@ -251,6 +253,7 @@ export class ProfileForm extends Component {
               <Mutation
                 mutation={USER_UPDATE_PROFILE_MUTATION}
                 variables={this.state.userForm}
+                refetchQueries={['PROFILE_QUERY']}
               >
                 {(
                   userUpdateProfile,
@@ -259,387 +262,362 @@ export class ProfileForm extends Component {
                     loading: mutationLoading,
                     data: mutationData,
                   },
-                ) => {
-                  return (
-                    <Formik
-                      initialValues={userFormValues}
-                      validationSchema={userSchema}
-                      onSubmit={(values, { setSubmitting }) => {
-                        console.log(
-                          'Submitting',
-                          values.phone.split('-').join(''),
-                          values.emergencyContactPhone.split('-').join(''),
-                        );
-
-                        this.setState(
-                          {
-                            userForm: {
-                              ...values,
-                              id: queryData.user.id,
-                              showPhoneNumber: values.showPhoneNumber === 'yes',
-                              phone: parseInt(
-                                values.phone.split('-').join('%'),
-                                10,
-                              ),
-                              emergencyContactPhone: parseInt(
-                                values.emergencyContactPhone
-                                  .split('-')
-                                  .join(''),
-                                10,
-                              ),
-                            },
+                ) => (
+                  <Formik
+                    initialValues={userFormValues}
+                    validationSchema={userSchema}
+                    onSubmit={(values, { setSubmitting }) => {
+                      this.setState(
+                        {
+                          userForm: {
+                            ...values,
+                            id: queryData.user.id,
+                            contactInfoId: queryData.user.contactInfo.id,
+                            showPhoneNumber: values.showPhoneNumber === 'yes',
+                            phone: values.phone.split('-').join(''),
+                            preferencesId: queryData.user.preferences.id,
+                            emergencyContactPhone: values.emergencyContactPhone
+                              .split('-')
+                              .join(''),
                           },
-                          () => {
-                            setSubmitting(true);
-                            userUpdateProfile();
-                            setSubmitting(false);
-                          },
-                        );
-                      }}
-                      render={formikProps => (
-                        <StyledForm className="profile-form--user">
-                          <form onSubmit={formikProps.handleSubmit}>
-                            <StyledFormField>
-                              <label
-                                className="profile-form-label"
-                                htmlFor="firstName"
-                              >
-                                First Name
-                              </label>
-                              <div className="profile-form-field">
-                                <Field
-                                  type="text"
-                                  onChange={formikProps.handleChange}
-                                  id="firstName"
-                                  name="firstName"
-                                />
-                                <FormikErrorMessage
-                                  name="firstName"
-                                  component="div"
-                                />
-                              </div>
-                            </StyledFormField>
+                        },
+                        () => {
+                          setSubmitting(true);
+                          userUpdateProfile();
+                          setSubmitting(false);
+                        },
+                      );
+                    }}
+                    render={formikProps => (
+                      <StyledForm className="profile-form--user">
+                        <form onSubmit={formikProps.handleSubmit}>
+                          <StyledFormField>
+                            <label
+                              className="profile-form-label"
+                              htmlFor="firstName"
+                            >
+                              First Name
+                            </label>
+                            <div className="profile-form-field">
+                              <Field
+                                type="text"
+                                onChange={formikProps.handleChange}
+                                id="firstName"
+                                name="firstName"
+                              />
+                              <FormikErrorMessage
+                                name="firstName"
+                                component="div"
+                              />
+                            </div>
+                          </StyledFormField>
 
-                            <StyledFormField>
-                              <label
-                                className="profile-form-label"
-                                htmlFor="lastName"
-                              >
-                                Last Name
-                              </label>
-                              <div className="profile-form-field">
-                                <Field
-                                  type="text"
-                                  onChange={formikProps.handleChange}
-                                  id="lastName"
-                                  name="lastName"
-                                />
-                                <FormikErrorMessage
-                                  name="lastName"
-                                  component="div"
-                                />
-                              </div>
-                            </StyledFormField>
+                          <StyledFormField>
+                            <label
+                              className="profile-form-label"
+                              htmlFor="lastName"
+                            >
+                              Last Name
+                            </label>
+                            <div className="profile-form-field">
+                              <Field
+                                type="text"
+                                onChange={formikProps.handleChange}
+                                id="lastName"
+                                name="lastName"
+                              />
+                              <FormikErrorMessage
+                                name="lastName"
+                                component="div"
+                              />
+                            </div>
+                          </StyledFormField>
 
-                            <StyledFormField>
-                              <label
-                                className="profile-form-label"
-                                htmlFor="username"
-                              >
-                                Username
-                              </label>
-                              <div className="profile-form-field">
-                                <Field
-                                  type="text"
-                                  onChange={formikProps.handleChange}
-                                  id="username"
-                                  name="username"
-                                  disabled={!isAdmin}
-                                />
-                                <FormikErrorMessage
-                                  name="username"
-                                  component="div"
-                                />
-                              </div>
-                            </StyledFormField>
+                          <StyledFormField>
+                            <label
+                              className="profile-form-label"
+                              htmlFor="username"
+                            >
+                              Username
+                            </label>
+                            <div className="profile-form-field">
+                              <Field
+                                type="text"
+                                onChange={formikProps.handleChange}
+                                id="username"
+                                name="username"
+                                disabled={!isAdmin}
+                              />
+                              <FormikErrorMessage
+                                name="username"
+                                component="div"
+                              />
+                            </div>
+                          </StyledFormField>
 
-                            <StyledFormField>
-                              <label
-                                className="profile-form-label"
-                                htmlFor="gender"
+                          <StyledFormField>
+                            <label
+                              className="profile-form-label"
+                              htmlFor="gender"
+                            >
+                              Gender
+                            </label>
+                            <div className="profile-form-field">
+                              <Field
+                                component="select"
+                                name="gender"
+                                id="gender"
                               >
-                                Gender
-                              </label>
-                              <div className="profile-form-field">
-                                <Field
-                                  component="select"
-                                  name="gender"
-                                  id="gender"
-                                >
-                                  <option value="MALE">Male</option>
-                                  <option value="FEMALE">Female</option>
-                                  <option value="OTHER">Other</option>
-                                  <option value="UNDISCLOSED">
-                                    Prefer not to say
-                                  </option>
-                                </Field>
-                                <FormikErrorMessage
-                                  name="gender"
-                                  component="div"
-                                />
-                              </div>
-                            </StyledFormField>
+                                <option value="MALE">Male</option>
+                                <option value="FEMALE">Female</option>
+                                <option value="OTHER">Other</option>
+                                <option value="UNDISCLOSED">
+                                  Prefer not to say
+                                </option>
+                              </Field>
+                              <FormikErrorMessage
+                                name="gender"
+                                component="div"
+                              />
+                            </div>
+                          </StyledFormField>
 
+                          <StyledFormField>
+                            <label
+                              className="profile-form-label"
+                              htmlFor="birthdate"
+                            >
+                              Birthdate
+                            </label>
+                            <div className="profile-form-field">
+                              <Field
+                                type="date"
+                                id="birthdate"
+                                name="birthdate"
+                                max={dateEighteenYearsAgo}
+                                disabled={!isAdmin}
+                              />
+                              <FormikErrorMessage
+                                name="birthdate"
+                                component="div"
+                              />
+                            </div>
+                          </StyledFormField>
+
+                          {isAdmin && (
                             <StyledFormField>
                               <label
                                 className="profile-form-label"
-                                htmlFor="birthdate"
+                                htmlFor="joined"
                               >
-                                Birthdate
+                                Date Joined
                               </label>
                               <div className="profile-form-field">
                                 <Field
                                   type="date"
-                                  id="birthdate"
-                                  name="birthdate"
-                                  max={dateEighteenYearsAgo}
-                                  disabled={!isAdmin}
+                                  id="joined"
+                                  name="joined"
+                                  max={format(new Date(), 'YYYY-MM-DD')}
                                 />
                                 <FormikErrorMessage
-                                  name="birthdate"
+                                  name="joined"
                                   component="div"
                                 />
                               </div>
                             </StyledFormField>
+                          )}
 
-                            {isAdmin && (
-                              <StyledFormField>
-                                <label
-                                  className="profile-form-label"
-                                  htmlFor="joined"
-                                >
-                                  Date Joined
-                                </label>
-                                <div className="profile-form-field">
-                                  <Field
-                                    type="date"
-                                    id="joined"
-                                    name="joined"
-                                    max={format(new Date(), 'YYYY-MM-DD')}
-                                  />
-                                  <FormikErrorMessage
-                                    name="joined"
-                                    component="div"
-                                  />
-                                </div>
-                              </StyledFormField>
-                            )}
-
-                            <StyledFormField>
-                              <label
-                                className="profile-form-label"
-                                htmlFor="phone"
-                              >
-                                Phone Number
-                              </label>
-                              <div className="profile-form-field">
-                                <Field
-                                  type="text"
-                                  inputMode="numeric"
-                                  placeholder="ex: 303-555-5555"
-                                  id="phone"
-                                  name="phone"
-                                />
-                                <FormikErrorMessage
-                                  name="phone"
-                                  component="div"
-                                />
-                              </div>
-                            </StyledFormField>
-
-                            <StyledFormField>
-                              <div className="profile-form-label">
-                                Display phone number in profile?
-                              </div>
-                              <div className="profile-form-field">
-                                <label htmlFor="showPhoneNumberYes">
-                                  <Field
-                                    type="radio"
-                                    id="showPhoneNumberYes"
-                                    name="showPhoneNumber"
-                                    value="yes"
-                                    checked={
-                                      formikProps.values.showPhoneNumber ===
-                                      'yes'
-                                    }
-                                  />
-                                  Yes
-                                </label>
-                                <label htmlFor="showPhoneNumberNo">
-                                  <Field
-                                    type="radio"
-                                    id="showPhoneNumberNo"
-                                    name="showPhoneNumber"
-                                    value="no"
-                                    checked={
-                                      formikProps.values.showPhoneNumber ===
-                                      'no'
-                                    }
-                                  />
-                                  No
-                                </label>
-                                <FormikErrorMessage
-                                  name="showPhoneNumber"
-                                  component="div"
-                                />
-                              </div>
-                            </StyledFormField>
-
-                            <StyledFormField>
-                              <label
-                                className="profile-form-label"
-                                htmlFor="street"
-                              >
-                                Street Address
-                              </label>
-                              <div className="profile-form-field">
-                                <Field type="text" id="street" name="street" />
-                                <FormikErrorMessage
-                                  name="street"
-                                  component="div"
-                                />
-                              </div>
-                            </StyledFormField>
-
-                            <StyledFormField>
-                              <label
-                                className="profile-form-label"
-                                htmlFor="city"
-                              >
-                                City
-                              </label>
-                              <div className="profile-form-field">
-                                <Field type="text" id="city" name="city" />
-                                <FormikErrorMessage
-                                  name="city"
-                                  component="div"
-                                />
-                              </div>
-                            </StyledFormField>
-
-                            <StyledFormField>
-                              <label
-                                className="profile-form-label"
-                                htmlFor="state"
-                              >
-                                State
-                              </label>
-                              <div className="profile-form-field">
-                                <Field
-                                  component="select"
-                                  id="state"
-                                  name="state"
-                                >
-                                  {Object.entries(states).map(
-                                    ([abbrev, state]) => (
-                                      <option key={abbrev} value={abbrev}>
-                                        {state}
-                                      </option>
-                                    ),
-                                  )}
-                                </Field>
-                                <FormikErrorMessage
-                                  name="state"
-                                  component="div"
-                                />
-                              </div>
-                            </StyledFormField>
-
-                            <StyledFormField>
-                              <label
-                                className="profile-form-label"
-                                htmlFor="zip"
-                              >
-                                Zip Code
-                              </label>
-                              <div className="profile-form-field">
-                                <Field
-                                  type="text"
-                                  placeholder="ex: 80206"
-                                  inputMode="numeric"
-                                  id="zip"
-                                  name="zip"
-                                />
-                                <FormikErrorMessage
-                                  name="zip"
-                                  component="div"
-                                />
-                              </div>
-                            </StyledFormField>
-
-                            <StyledFormField>
-                              <label
-                                className="profile-form-label"
-                                htmlFor="emergencyContactName"
-                              >
-                                Emergency Contact Name
-                              </label>
-                              <div className="profile-form-field">
-                                <Field
-                                  type="text"
-                                  id="emergencyContactName"
-                                  name="emergencyContactName"
-                                />
-                                <FormikErrorMessage
-                                  name="emergencyContactName"
-                                  component="div"
-                                />
-                              </div>
-                            </StyledFormField>
-
-                            <StyledFormField>
-                              <label
-                                className="profile-form-label"
-                                htmlFor="emergencyContactPhone"
-                              >
-                                Emergency Contact Phone Number
-                              </label>
-                              <div className="profile-form-field">
-                                <Field
-                                  type="text"
-                                  inputMode="numeric"
-                                  placeholder="ex: 303-555-5555"
-                                  id="emergencyContactPhone"
-                                  name="emergencyContactPhone"
-                                />
-                                <FormikErrorMessage
-                                  name="emergencyContactPhone"
-                                  component="div"
-                                />
-                              </div>
-                            </StyledFormField>
-
-                            <div className="form-footer">
-                              <button
-                                type="submit"
-                                disabled={
-                                  !formikProps.dirty &&
-                                  !formikProps.isValid &&
-                                  !formikProps.isSubmitting
-                                }
-                              >
-                                Submit
-                              </button>
-                              <Loading loading={mutationLoading} />
-                              <ErrorMessage error={mutationError} />
-                              {mutationData && mutationData.message}
+                          <StyledFormField>
+                            <label
+                              className="profile-form-label"
+                              htmlFor="phone"
+                            >
+                              Phone Number
+                            </label>
+                            <div className="profile-form-field">
+                              <Field
+                                type="text"
+                                inputMode="numeric"
+                                placeholder="ex: 303-555-5555"
+                                id="phone"
+                                name="phone"
+                              />
+                              <FormikErrorMessage
+                                name="phone"
+                                component="div"
+                              />
                             </div>
-                          </form>
-                        </StyledForm>
-                      )}
-                    />
-                  );
-                }}
+                          </StyledFormField>
+
+                          <StyledFormField>
+                            <div className="profile-form-label">
+                              Display phone number in profile?
+                            </div>
+                            <div className="profile-form-field">
+                              <label htmlFor="showPhoneNumberYes">
+                                <Field
+                                  type="radio"
+                                  id="showPhoneNumberYes"
+                                  name="showPhoneNumber"
+                                  value="yes"
+                                  checked={
+                                    formikProps.values.showPhoneNumber === 'yes'
+                                  }
+                                />
+                                Yes
+                              </label>
+                              <label htmlFor="showPhoneNumberNo">
+                                <Field
+                                  type="radio"
+                                  id="showPhoneNumberNo"
+                                  name="showPhoneNumber"
+                                  value="no"
+                                  checked={
+                                    formikProps.values.showPhoneNumber === 'no'
+                                  }
+                                />
+                                No
+                              </label>
+                              <FormikErrorMessage
+                                name="showPhoneNumber"
+                                component="div"
+                              />
+                            </div>
+                          </StyledFormField>
+
+                          <StyledFormField>
+                            <label
+                              className="profile-form-label"
+                              htmlFor="street"
+                            >
+                              Street Address
+                            </label>
+                            <div className="profile-form-field">
+                              <Field type="text" id="street" name="street" />
+                              <FormikErrorMessage
+                                name="street"
+                                component="div"
+                              />
+                            </div>
+                          </StyledFormField>
+
+                          <StyledFormField>
+                            <label
+                              className="profile-form-label"
+                              htmlFor="city"
+                            >
+                              City
+                            </label>
+                            <div className="profile-form-field">
+                              <Field type="text" id="city" name="city" />
+                              <FormikErrorMessage name="city" component="div" />
+                            </div>
+                          </StyledFormField>
+
+                          <StyledFormField>
+                            <label
+                              className="profile-form-label"
+                              htmlFor="state"
+                            >
+                              State
+                            </label>
+                            <div className="profile-form-field">
+                              <Field component="select" id="state" name="state">
+                                {Object.entries(states).map(
+                                  ([abbrev, state]) => (
+                                    <option key={abbrev} value={abbrev}>
+                                      {state}
+                                    </option>
+                                  ),
+                                )}
+                              </Field>
+                              <FormikErrorMessage
+                                name="state"
+                                component="div"
+                              />
+                            </div>
+                          </StyledFormField>
+
+                          <StyledFormField>
+                            <label className="profile-form-label" htmlFor="zip">
+                              Zip Code
+                            </label>
+                            <div className="profile-form-field">
+                              <Field
+                                type="text"
+                                placeholder="ex: 80206"
+                                inputMode="numeric"
+                                id="zip"
+                                name="zip"
+                              />
+                              <FormikErrorMessage name="zip" component="div" />
+                            </div>
+                          </StyledFormField>
+
+                          <StyledFormField>
+                            <label
+                              className="profile-form-label"
+                              htmlFor="emergencyContactName"
+                            >
+                              Emergency Contact Name
+                            </label>
+                            <div className="profile-form-field">
+                              <Field
+                                type="text"
+                                id="emergencyContactName"
+                                name="emergencyContactName"
+                              />
+                              <FormikErrorMessage
+                                name="emergencyContactName"
+                                component="div"
+                              />
+                            </div>
+                          </StyledFormField>
+
+                          <StyledFormField>
+                            <label
+                              className="profile-form-label"
+                              htmlFor="emergencyContactPhone"
+                            >
+                              Emergency Contact Phone Number
+                            </label>
+                            <div className="profile-form-field">
+                              <Field
+                                type="text"
+                                inputMode="numeric"
+                                placeholder="ex: 303-555-5555"
+                                id="emergencyContactPhone"
+                                name="emergencyContactPhone"
+                              />
+                              <FormikErrorMessage
+                                name="emergencyContactPhone"
+                                component="div"
+                              />
+                            </div>
+                          </StyledFormField>
+
+                          <div className="form-footer">
+                            <button
+                              type="submit"
+                              disabled={
+                                !formikProps.dirty ||
+                                !formikProps.isValid ||
+                                formikProps.isSubmitting ||
+                                mutationLoading
+                              }
+                            >
+                              Submit
+                            </button>
+                            <Loading loading={mutationLoading} />
+                            <ErrorMessage error={mutationError} />
+                            {mutationData &&
+                              mutationData.updateUserProfileSettings.message}
+                          </div>
+                        </form>
+                      </StyledForm>
+                    )}
+                  />
+                )}
               </Mutation>
             </>
           );
