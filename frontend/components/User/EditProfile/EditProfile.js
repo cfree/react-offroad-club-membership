@@ -1,9 +1,9 @@
 import ProfileForm from '../ProfileForm';
 
-const EditProfile = () => {
+const EditProfile = ({ member }) => {
   return (
     <div>
-      <ProfileForm />
+      <ProfileForm member={member} />
     </div>
   );
 };

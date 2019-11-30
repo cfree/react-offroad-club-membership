@@ -7,7 +7,8 @@ const port = process.env.PORT;
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-app.prepare()
+app
+  .prepare()
   .then(() => {
     const server = express();
 
@@ -17,9 +18,21 @@ app.prepare()
       app.render(req, res, actualPage, queryParams);
     });
 
+    server.get('/admin-profile/:id', (req, res) => {
+      const actualPage = '/admin-profile';
+      const queryParams = { user: req.params.id };
+      app.render(req, res, actualPage, queryParams);
+    });
+
     server.get('/events/:type', (req, res) => {
       const actualPage = '/events';
       const queryParams = { type: req.params.type };
+      app.render(req, res, actualPage, queryParams);
+    });
+
+    server.get('/event/:id/edit', (req, res) => {
+      const actualPage = '/admin-event';
+      const queryParams = { id: req.params.id };
       app.render(req, res, actualPage, queryParams);
     });
 
@@ -38,7 +51,9 @@ app.prepare()
     server.get('*', (req, res) => handle(req, res));
 
     server.listen(port, err => {
-      if (err) { throw err; }
+      if (err) {
+        throw err;
+      }
       console.log(`'> Ready on http://localhost:${port}`);
     });
   })

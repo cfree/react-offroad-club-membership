@@ -5,14 +5,14 @@ import get from 'lodash/get';
 import Link from 'next/link';
 
 import {
-  SETUP_EXISTING_EVENT_QUERY,
-  EDIT_EVENT_MUTATION,
-} from './editEvent.gql';
+  SETUP_NEW_EVENT_QUERY,
+  CREATE_EVENT_MUTATION,
+} from './createEvent.gql';
 
 import EventForm from '../EventForm';
 import ErrorMessage from '../../utility/ErrorMessage/ErrorMessage';
 
-class EditEvent extends Component {
+class CreateEvent extends Component {
   state = {
     startDate: format(new Date(), 'YYYY-MM-DD'),
     startTime: '10:00',
@@ -22,13 +22,8 @@ class EditEvent extends Component {
   };
 
   render() {
-    const { event: existingEventId } = this.props;
-
     return (
-      <Query
-        query={SETUP_EXISTING_EVENT_QUERY}
-        variables={{ eventId: existingEventId }}
-      >
+      <Query query={SETUP_NEW_EVENT_QUERY}>
         {({ loading: queryLoading, error: queryError, data: queryData }) => {
           if (queryLoading) {
             return <div>Loading...</div>;
@@ -37,35 +32,32 @@ class EditEvent extends Component {
             return <ErrorMessage error={queryError} />;
           }
 
-          const { event } = queryData;
-          const rallyDate = format(event.startTime, 'YYYY-MM-DD');
           const initialValues = {
-            id: existingEventId,
-            startDate: format(event.startTime, 'YYYY-MM-DD'),
-            startTime: format(event.startTime, 'HH:mm'),
-            endDate: format(event.endTime, 'YYYY-MM-DD'),
-            endTime: format(event.endTime, 'HH:mm'),
-            title: event.title,
-            description: event.description,
-            address: event.address,
-            trailDifficulty: event.trailDifficulty,
-            trailNotes: event.trailNotes,
-            rallyAddress: event.rallyAddress,
-            rallyTime: format(`${rallyDate} ${event.rallyTime}`, 'hh:mm'),
-            membersOnly: event.membersOnly,
-            host: event.host.username,
-            trail: (event.trail && event.trail.id) || '0',
+            title: '',
+            description: '',
+            startDate: format(new Date(), 'YYYY-MM-DD'),
+            startTime: '10:00',
+            endDate: format(new Date(), 'YYYY-MM-DD'),
+            endTime: '15:00',
+            address: '',
+            trailDifficulty: 'UNKNOWN',
+            trailNotes: '',
+            rallyAddress: '',
+            rallyTime: '09:45',
+            membersOnly: false,
+            host: queryData.runLeaders[0].username,
+            trail: '0',
           };
 
           return (
             <>
-              <h3>Edit Event</h3>
+              <h3>Create New Event</h3>
               <Mutation
-                mutation={EDIT_EVENT_MUTATION}
+                mutation={CREATE_EVENT_MUTATION}
                 variables={this.state.eventForm}
               >
                 {(
-                  updateEvent,
+                  createEvent,
                   {
                     error: mutationError,
                     loading: mutationLoading,
@@ -74,7 +66,7 @@ class EditEvent extends Component {
                 ) => {
                   const successMessage = get(
                     mutationData,
-                    'updateEvent.message',
+                    'createEvent.message',
                   );
 
                   return (
@@ -82,7 +74,7 @@ class EditEvent extends Component {
                       <EventForm
                         initialValues={initialValues}
                         onSubmit={(values, setSubmitting) =>
-                          this.handleSubmit(values, setSubmitting, updateEvent)
+                          this.handleSubmit(values, setSubmitting, createEvent)
                         }
                         runLeaders={queryData.runLeaders}
                         trails={queryData.trails}
@@ -90,13 +82,13 @@ class EditEvent extends Component {
                         error={mutationError}
                         startDate={this.state.startDate}
                         onDataChange={this.handleDataChange}
-                        submitLabel="Edit Event"
+                        submitLabel="Create Event"
                       />
                       {successMessage && (
                         <p>
                           {successMessage}.{' '}
-                          <Link href={`/event/${existingEventId}`}>
-                            <a>View event</a>
+                          <Link href="/events/">
+                            <a>View events</a>
                           </Link>
                           .
                         </p>
@@ -113,13 +105,13 @@ class EditEvent extends Component {
   }
 
   handleDataChange = newState => {
-    this.setState(newState);
+    this.setState(newState, () => {});
   };
 
   handleSubmit = (
     { startDate, endDate, ...filteredValues },
     setSubmitting,
-    updateEvent,
+    createEvent,
   ) => {
     setSubmitting(true);
     this.setState(
@@ -131,11 +123,11 @@ class EditEvent extends Component {
         },
       }),
       () => {
-        updateEvent();
+        createEvent();
         setSubmitting(false);
       },
     );
   };
 }
 
-export default EditEvent;
+export default CreateEvent;

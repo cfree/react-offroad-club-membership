@@ -166,7 +166,7 @@ type Event {
   trailDifficulty: TrailDifficulty
   trailNotes: String
   rallyAddress: String
-  rallyTime: DateTime
+  rallyTime: String
   trail: Trail @relation(name: "EventTrail")
   bandaids: [Bandaid] @relation(name: "EventBandaid")
   runReports: [RunReport] @relation(name: "EventRunReport")

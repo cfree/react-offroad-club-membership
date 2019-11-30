@@ -11,6 +11,8 @@ import { trailDifficulties, trailConditions } from '../../../lib/constants';
 import Calendar from '../Calendar';
 import Rsvp from '../Rsvp';
 import { StyledEventHeader, StyledDetails } from './eventDetails.styles';
+import Filter from '../../Login/Filter';
+import { isAtLeastRunMaster } from '../../../lib/utils';
 
 const EVENT_QUERY = gql`
   query EVENT_QUERY($eventId: ID!) {
@@ -64,8 +66,10 @@ export default class EventDetails extends Component {
   };
 
   render() {
+    const { id: eventId } = this.props;
+
     return (
-      <Query query={EVENT_QUERY} variables={{ eventId: this.props.id }}>
+      <Query query={EVENT_QUERY} variables={{ eventId }}>
         {({ loading, error, data }) => {
           if (loading) {
             return <div>Loading...</div>;
@@ -102,6 +106,13 @@ export default class EventDetails extends Component {
 
           return (
             <>
+              {!isPastEvent && (
+                <Filter roleCheck={isAtLeastRunMaster}>
+                  <Link href={`/event/${eventId}/edit`}>
+                    <a>Edit</a>
+                  </Link>
+                </Filter>
+              )}
               <StyledEventHeader>
                 <div className="event__calendar">
                   <Calendar date={event.startTime} />

@@ -1,6 +1,12 @@
 import styled from 'styled-components';
 import Link from 'next/link';
-import { getMemberType, getPhoneNumber } from '../../../lib/utils';
+import {
+  getMemberType,
+  getPhoneNumber,
+  isAtMostRunmaster,
+  isAtLeastBoardMember,
+} from '../../../lib/utils';
+import Filter from '../../Login/Filter';
 
 const StyledRosterCard = styled.div`
   padding: 5px 10px;
@@ -24,6 +30,8 @@ const StyledRosterCard = styled.div`
 `;
 
 const RosterCard = ({ user }) => {
+  const { phone } = user.contactInfo || { phone: '' };
+
   return (
     <StyledRosterCard>
       <img
@@ -35,7 +43,7 @@ const RosterCard = ({ user }) => {
         {user.firstName} {user.lastName}
       </span>
       <span>{getMemberType(user.accountType)}</span>
-      <span>{getPhoneNumber(user.contactInfo.phone)}</span>
+      {phone !== null && <span>{getPhoneNumber(phone)}</span>}
       <Link
         href={{
           pathname: 'message',
@@ -47,6 +55,11 @@ const RosterCard = ({ user }) => {
       <Link href={`/profile/${user.username}`}>
         <a>View</a>
       </Link>
+      <Filter roleCheck={isAtLeastBoardMember}>
+        <Link href={`/admin-profile/${user.username}`}>
+          <a>Edit</a>
+        </Link>
+      </Filter>
     </StyledRosterCard>
   );
 };

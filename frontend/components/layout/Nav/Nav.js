@@ -5,7 +5,8 @@ import { clearFix } from 'polished';
 
 import User from '../../User/User';
 import Logout from '../../Login/Logout';
-import { isAtLeastBoardMember } from '../../../lib/utils';
+import { isActive, isMember, isAtLeastBoardMember } from '../../../lib/utils';
+import Filter from '../../Login/Filter';
 
 const StyledList = styled.ul`
   ${clearFix()}
@@ -38,23 +39,29 @@ const Nav = () => (
                     <a>Dashboard</a>
                   </Link>
                 </li>
-                <li>
-                  <Link href="/roster">
-                    <a>Roster</a>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/events">
-                    <a>Events</a>
-                  </Link>
-                </li>
-                {isAtLeastBoardMember(myself.role) && (
+                {isActive(myself.accountStatus) &&
+                  isMember(myself.accountType) && (
+                    <li>
+                      <Link href="/roster">
+                        <a>Roster</a>
+                      </Link>
+                    </li>
+                  )}
+                {isActive(myself.accountStatus) && (
                   <li>
-                    <Link href="/admin">
-                      <a>Admin</a>
+                    <Link href="/events">
+                      <a>Events</a>
                     </Link>
                   </li>
                 )}
+                {isActive(myself.accountStatus) &&
+                  isAtLeastBoardMember(myself.role) && (
+                    <li>
+                      <Link href="/admin">
+                        <a>Admin</a>
+                      </Link>
+                    </li>
+                  )}
                 <li>
                   <Link href="/profile">
                     <a>Your Profile</a>

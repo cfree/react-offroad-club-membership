@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import EventList from '../components/events/EventList';
 import Gate from '../components/Login/Gate';
 import { isAtLeastGuestMember, isNotLocked } from '../lib/utils';
-import EventForm from '../components/events/EventForm';
+import CreateEvent from '../components/events/CreateEvent';
 
 const StyledEventsPage = styled.div`
   display: grid;
@@ -43,7 +43,9 @@ const EventsPage = ({ query, router }) => {
             Create Event
           </button>
         </div>
-        <div>{isNew ? <EventForm /> : <EventList upcoming={isUpcoming} />}</div>
+        <div>
+          {isNew ? <CreateEvent /> : <EventList upcoming={isUpcoming} />}
+        </div>
       </StyledEventsPage>
     </Gate>
   );

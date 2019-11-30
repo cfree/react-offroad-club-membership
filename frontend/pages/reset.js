@@ -1,5 +1,8 @@
 import ResetPassword from '../components/Login/ResetPassword';
 
-const ResetPage = props => <ResetPassword token={props.query.token} />;
+const ResetPage = ({ query }) => {
+  const { token } = query;
+  return token ? <ResetPassword token={token} /> : <p>No token present</p>;
+};
 
 export default ResetPage;

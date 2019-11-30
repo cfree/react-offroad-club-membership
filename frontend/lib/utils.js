@@ -6,12 +6,13 @@ export const getMemberType = type => {
 
 export const getPhoneNumber = phoneNo => {
   const phoneString = phoneNo.toString();
+
   return phoneString.length === 10
     ? `(${phoneString.substring(0, 3)}) ${phoneString.substring(
         3,
         6,
       )}-${phoneString.substring(6)}`
-    : null;
+    : '';
 };
 
 export const formatFilterSelect = obj => {
@@ -60,18 +61,25 @@ export const isAtLeastRunMaster = role => {
   return ['RUN_MASTER', 'OFFICER', 'ADMIN'].includes(role);
 };
 
+export const isAtMostRunmaster = role => {
+  return ['RUN_MASTER', 'RUN_LEADER', 'USER'].includes(role);
+};
+
 export const isAtLeastRunLeader = role => {
   return ['RUN_LEADER', 'RUN_MASTER', 'OFFICER', 'ADMIN'].includes(role);
 };
 
 // Types
 export const isFullMember = type => type === 'FULL';
+export const isNotFullMember = type => type !== 'FULL';
 
 export const isAssociateMember = type => type === 'ASSOCIATE';
 
 export const isAtLeastAssociateMember = type => {
   return ['ASSOCIATE', 'FULL'].includes(type);
 };
+
+export const isMember = type => ['EMERITUS', 'FULL'].includes(type);
 
 export const isEmeritusMember = type => type === 'EMERITUS';
 

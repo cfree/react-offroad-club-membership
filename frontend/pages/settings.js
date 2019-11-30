@@ -1,22 +1,26 @@
+import Link from 'next/link';
+
 import Gate from '../components/Login/Gate';
 import EditProfile from '../components/User/EditProfile';
 import EditGarage from '../components/vehicles/EditGarage';
 import EditAccount from '../components/User/EditAccount';
 
 const SettingsPage = ({ query }) => {
-  const page = (settings) => {
+  const { settings, member = 'self' } = query;
+
+  const page = settings => {
     let component;
     let title;
 
     switch (settings) {
       case 'profile':
-        component = <EditProfile />;
+        component = <EditProfile member="self" />;
         title = 'Profile';
         break;
-      case 'garage':
-        component = <EditGarage />;
-        title = 'Garage';
-        break;
+      // case 'garage':
+      //   component = <EditGarage />;
+      //   title = 'Garage';
+      //   break;
       case 'account':
       default:
         component = <EditAccount />;
@@ -26,10 +30,27 @@ const SettingsPage = ({ query }) => {
     return { component, title };
   };
 
-  const { component, title } = page(query.settings);
+  const { component, title } = page(settings);
 
   return (
     <Gate redirect="/settings">
+      <ul>
+        <li>
+          <Link href="/settings/profile">
+            <a>Edit Profile</a>
+          </Link>
+        </li>
+        {/* <li>
+          <Link href="/settings/garage">
+            <a>Edit Garage</a>
+          </Link>
+        </li> */}
+        <li>
+          <Link href="/settings/account">
+            <a>Edit Account</a>
+          </Link>
+        </li>
+      </ul>
       <h2>{title} Settings</h2>
       {component}
     </Gate>

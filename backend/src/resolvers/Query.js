@@ -1,6 +1,6 @@
-const { addFragmentToInfo } = require('graphql-binding');
-const { hasRole, hasAccountType, hasAccountStatus } = require('../utils');
-const config = require('../config');
+const { addFragmentToInfo } = require("graphql-binding");
+const { hasRole, hasAccountType, hasAccountStatus } = require("../utils");
+const config = require("../config");
 
 const Query = {
   myself(parent, args, ctx, info) {
@@ -11,7 +11,7 @@ const Query = {
 
     return ctx.db.query.user(
       {
-        where: { id: ctx.request.userId },
+        where: { id: ctx.request.userId }
       },
       info
     );
@@ -19,47 +19,47 @@ const Query = {
   async users(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {
-      throw new Error('You must be logged in');
+      throw new Error("You must be logged in");
     }
     // Requesting user has proper account type?
-    hasAccountType(ctx.request.user, ['FULL', 'ASSOCIATE', 'EMERITUS']);
+    hasAccountType(ctx.request.user, ["FULL", "ASSOCIATE", "EMERITUS"]);
 
     // Requesting user has proper account status?
-    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
 
     // If they do, query all the users
     const query = {
-      orderBy: 'firstName_ASC',
-      where: {},
+      orderBy: "firstName_ASC",
+      where: {}
     };
 
     if (args.role && args.role.length) {
       query.where = {
-        role_in: args.role,
+        role_in: args.role
       };
     }
     if (args.accountStatus && args.accountStatus.length) {
       query.where = {
         ...query.where,
-        accountStatus_in: args.accountStatus,
+        accountStatus_in: args.accountStatus
       };
     }
     if (args.accountType && args.accountType.length) {
       query.where = {
         ...query.where,
-        accountType_in: args.accountType,
+        accountType_in: args.accountType
       };
     }
     if (args.office && args.office.length) {
       query.where = {
         ...query.where,
-        office_in: args.office,
+        office_in: args.office
       };
     }
     if (args.title && args.title.length) {
       query.where = {
         ...query.where,
-        title_in: args.title,
+        title_in: args.title
       };
       // query.where = {
       //   AND: [
@@ -84,21 +84,25 @@ const Query = {
   async user(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {
-      throw new Error('You must be logged in');
+      throw new Error("You must be logged in");
     }
-    // Requesting user has proper account type?
-    hasAccountType(ctx.request.user, ['FULL', 'ASSOCIATE', 'EMERITUS']);
+    console.log("user", ctx.request.user);
+    console.log("username", args);
+    if (args.username && args.username !== ctx.request.user.username) {
+      // Requesting user has proper account type?
+      hasAccountType(ctx.request.user, ["FULL", "ASSOCIATE", "EMERITUS"]);
 
-    // Requesting user has proper account status?
-    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+      // Requesting user has proper account status?
+      hasAccountStatus(ctx.request.user, ["ACTIVE"]);
+    }
 
     // If they do, query the user
     if (args.username) {
       const user = await ctx.db.query.user(
         {
           where: {
-            username: args.username,
-          },
+            username: args.username
+          }
         },
         info
       );
@@ -106,15 +110,15 @@ const Query = {
       if (user) {
         return user;
       } else {
-        throw new Error('User cannot be found');
+        throw new Error("User cannot be found");
       }
     }
 
     return ctx.db.query.user(
       {
         where: {
-          id: ctx.request.user.id,
-        },
+          id: ctx.request.user.id
+        }
       },
       info
     );
@@ -122,20 +126,20 @@ const Query = {
   async getOfficer(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {
-      throw new Error('You must be logged in');
+      throw new Error("You must be logged in");
     }
     // Requesting user has proper account type?
-    hasAccountType(ctx.request.user, ['FULL', 'ASSOCIATE', 'EMERITUS']);
+    hasAccountType(ctx.request.user, ["FULL", "ASSOCIATE", "EMERITUS"]);
 
     // // Requesting user has proper account status?
-    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
 
     // If they do, query the officer
     const results = await ctx.db.query.users(
       {
         where: {
-          office: args.office,
-        },
+          office: args.office
+        }
       },
       info
     );
@@ -145,25 +149,25 @@ const Query = {
   async getMembers(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {
-      throw new Error('You must be logged in');
+      throw new Error("You must be logged in");
     }
     // Requesting user has proper account type?
-    hasAccountType(ctx.request.user, ['FULL', 'ASSOCIATE', 'EMERITUS']);
+    hasAccountType(ctx.request.user, ["FULL", "ASSOCIATE", "EMERITUS"]);
 
     // Requesting user has proper account status?
-    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
 
     // If they do, query all the members
     const results = await ctx.db.query.users(
       {
         where: {
           AND: [
-            { accountStatus: 'ACTIVE' },
+            { accountStatus: "ACTIVE" },
             { accountType_in: args.accountTypes },
-            { office: null }, // No officers
-          ],
+            { office: null } // No officers
+          ]
         },
-        orderBy: 'firstName_ASC',
+        orderBy: "firstName_ASC"
       },
       info
     );
@@ -176,28 +180,28 @@ const Query = {
   async getRunLeaders(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {
-      throw new Error('You must be logged in');
+      throw new Error("You must be logged in");
     }
     // Requesting user has proper role?
-    hasRole(ctx.request.user, ['ADMIN', 'OFFICER', 'RUN_MASTER']);
+    hasRole(ctx.request.user, ["ADMIN", "OFFICER", "RUN_MASTER"]);
 
     // Requesting user has proper account type?
-    hasAccountType(ctx.request.user, ['FULL']);
+    hasAccountType(ctx.request.user, ["FULL"]);
 
     // Requesting user has proper account status?
-    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
 
     // Return all run leaders
     const results = await ctx.db.query.users(
       {
         where: {
           AND: [
-            { accountStatus: 'ACTIVE' },
-            { accountType: 'FULL' },
-            { role_in: ['ADMIN', 'OFFICER', 'RUN_MASTER', 'RUN_LEADER'] },
-          ],
+            { accountStatus: "ACTIVE" },
+            { accountType: "FULL" },
+            { role_in: ["ADMIN", "OFFICER", "RUN_MASTER", "RUN_LEADER"] }
+          ]
         },
-        orderBy: 'firstName_ASC',
+        orderBy: "firstName_ASC"
       },
       info
     );
@@ -210,25 +214,25 @@ const Query = {
   async getMessageRecipients(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {
-      throw new Error('You must be logged in');
+      throw new Error("You must be logged in");
     }
 
     const { user } = ctx.request;
-    const members = ['FULL', 'ASSOCIATE', 'EMERITUS'];
+    const members = ["FULL", "ASSOCIATE", "EMERITUS"];
     const query = {
       where: {},
-      orderBy: 'firstName_ASC',
+      orderBy: "firstName_ASC"
     };
 
-    if (!hasAccountStatus(user, ['ACTIVE'], false)) {
+    if (!hasAccountStatus(user, ["ACTIVE"], false)) {
       return [];
     }
 
-    if (hasRole(user, ['ADMIN', 'OFFICER'], false)) {
+    if (hasRole(user, ["ADMIN", "OFFICER"], false)) {
       query.where = { accountType_in: config.accountType };
     } else if (hasAccountType(user, members, false)) {
       query.where = {
-        AND: [{ accountStatus: 'ACTIVE' }, { accountType_in: members }],
+        AND: [{ accountStatus: "ACTIVE" }, { accountType_in: members }]
       };
     } else {
       return [];
@@ -244,19 +248,19 @@ const Query = {
   async getUpcomingEvents(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {
-      throw new Error('You must be logged in');
+      throw new Error("You must be logged in");
     }
 
     // Requesting user has proper account status?
-    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
 
     // If they do, query all the users
     return ctx.db.query.events(
       {
         where: {
-          startTime_gte: new Date().toISOString(),
+          startTime_gte: new Date().toISOString()
         },
-        orderBy: 'startTime_ASC',
+        orderBy: "startTime_ASC"
       },
       info
     );
@@ -264,19 +268,19 @@ const Query = {
   async getPastEvents(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {
-      throw new Error('You must be logged in');
+      throw new Error("You must be logged in");
     }
 
     // Requesting user has proper account status?
-    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
 
     // If they do, query all the users
     return ctx.db.query.events(
       {
         where: {
-          startTime_lte: new Date().toISOString(),
+          startTime_lte: new Date().toISOString()
         },
-        orderBy: 'startTime_DESC',
+        orderBy: "startTime_DESC"
       },
       info
     );
@@ -284,30 +288,34 @@ const Query = {
   async getEvent(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {
-      throw new Error('You must be logged in');
+      throw new Error("You must be logged in");
     }
 
     // Requesting user has proper account status?
-    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
+
+    console.log("EVENT ID", args.eventId);
 
     // If they do, query all the users
-    return ctx.db.query.event(
+    const result = await ctx.db.query.event(
       {
-        where: { id: args.eventId },
+        where: { id: args.eventId }
       },
       info
     );
+    console.log("RESULT", result);
+    return result;
   },
   async getTrails(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {
-      throw new Error('You must be logged in');
+      throw new Error("You must be logged in");
     }
 
     // Requesting user has proper account status?
-    hasRole(ctx.request.user, ['ADMIN', 'OFFICER', 'RUN_MASTER', 'RUN_LEADER']);
-    hasAccountStatus(ctx.request.user, ['ACTIVE']);
-    hasAccountType(ctx.request.user, ['FULL']);
+    hasRole(ctx.request.user, ["ADMIN", "OFFICER", "RUN_MASTER", "RUN_LEADER"]);
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
+    hasAccountType(ctx.request.user, ["FULL"]);
 
     // If they do, query all the users
     return ctx.db.query.trails({}, info);
@@ -315,22 +323,22 @@ const Query = {
   async electionCandidates(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {
-      throw new Error('You must be logged in');
+      throw new Error("You must be logged in");
     }
 
     // Requesting user has proper role?
-    hasRole(ctx.request.user, ['ADMIN', 'OFFICER']);
+    hasRole(ctx.request.user, ["ADMIN", "OFFICER"]);
 
     // Requesting user has proper account status?
-    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
 
     // If they do, query all the users
     return ctx.db.query.users(
       {
         where: {
           role_in: args.roles,
-          accountStatus: args.accountStatus,
-        },
+          accountStatus: args.accountStatus
+        }
       },
       info
     );
@@ -338,24 +346,24 @@ const Query = {
   getActiveElections(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {
-      throw new Error('You must be logged in');
+      throw new Error("You must be logged in");
     }
 
     // Requesting user has proper account type?
-    hasAccountType(ctx.request.user, ['FULL']);
+    hasAccountType(ctx.request.user, ["FULL"]);
 
     // Requesting user has proper account status?
-    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
 
     return ctx.db.query.elections(
       {
         where: {
           AND: [
             { startTime_lte: new Date().toISOString() },
-            { endTime_gt: new Date().toISOString() },
-          ],
+            { endTime_gt: new Date().toISOString() }
+          ]
         },
-        orderBy: 'endTime_ASC',
+        orderBy: "endTime_ASC"
       },
       info
     );
@@ -363,24 +371,24 @@ const Query = {
   getActiveElectionsWithResults(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {
-      throw new Error('You must be logged in');
+      throw new Error("You must be logged in");
     }
 
     // Requesting user has proper role?
-    hasRole(ctx.request.user, ['ADMIN', 'OFFICER']);
+    hasRole(ctx.request.user, ["ADMIN", "OFFICER"]);
 
     // Requesting user has proper account status?
-    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
 
     return ctx.db.query.elections(
       {
         where: {
           AND: [
             { startTime_lte: new Date().toISOString() },
-            { endTime_gt: new Date().toISOString() },
-          ],
+            { endTime_gt: new Date().toISOString() }
+          ]
         },
-        orderBy: 'endTime_ASC',
+        orderBy: "endTime_ASC"
       },
       info
     );
@@ -388,20 +396,20 @@ const Query = {
   getElection(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {
-      throw new Error('You must be logged in');
+      throw new Error("You must be logged in");
     }
 
     // Requesting user has proper account type?
-    hasAccountType(ctx.request.user, ['FULL']);
+    hasAccountType(ctx.request.user, ["FULL"]);
 
     // Requesting user has proper account status?
-    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
 
     return ctx.db.query.election(
       {
         where: {
-          id: args.id,
-        },
+          id: args.id
+        }
       },
       info
     );
@@ -409,24 +417,24 @@ const Query = {
   async getUserVote(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {
-      throw new Error('You must be logged in');
+      throw new Error("You must be logged in");
     }
 
     // Requesting user has proper account type?
-    hasAccountType(ctx.request.user, ['FULL']);
+    hasAccountType(ctx.request.user, ["FULL"]);
 
     // Requesting user has proper account status?
-    hasAccountStatus(ctx.request.user, ['ACTIVE']);
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
 
     const votes = await ctx.db.query.votes(
       {
         where: {
           AND: [
             { ballot: { id: args.ballot } },
-            { voter: { id: ctx.request.userId } },
-          ],
+            { voter: { id: ctx.request.userId } }
+          ]
         },
-        first: true,
+        first: true
       },
       info
     );
@@ -434,7 +442,7 @@ const Query = {
     // console.log('VOTEs', votes);
 
     return votes;
-  },
+  }
 };
 
 module.exports = Query;

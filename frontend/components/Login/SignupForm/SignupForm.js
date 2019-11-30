@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
+import Router from 'next/router';
 import gql from 'graphql-tag';
 import styled from 'styled-components';
 import * as yup from 'yup';
@@ -121,9 +122,10 @@ export default class SignupForm extends Component {
                 initialValues={this.state}
                 validationSchema={userSchema}
                 onSubmit={(values, { setSubmitting }) => {
-                  this.setState(values, () => {
+                  this.setState(values, async () => {
                     setSubmitting(true);
-                    signUp();
+                    await signUp();
+                    Router.push('/settings/profile');
                     setSubmitting(false);
                   });
                 }}

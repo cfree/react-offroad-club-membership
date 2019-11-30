@@ -50,8 +50,37 @@ const StyledFormField = styled.div`
   }
 `;
 
-const PROFILE_QUERY = gql`
-  query PROFILE_QUERY {
+const MEMBER_PROFILE_QUERY = gql`
+  query MEMBER_PROFILE_QUERY($username: String) {
+    user(username: $username) {
+      id
+      firstName
+      lastName
+      username
+      gender
+      birthdate
+      joined
+      contactInfo {
+        id
+        street
+        city
+        state
+        zip
+        phone
+      }
+      preferences {
+        id
+        emergencyContactName
+        emergencyContactPhone
+        photoPermissions
+        showPhoneNumber
+      }
+    }
+  }
+`;
+
+const SELF_PROFILE_QUERY = gql`
+  query SELF_PROFILE_QUERY {
     user {
       id
       firstName
@@ -165,7 +194,7 @@ const userSchema = yup.object().shape({
     .required('Emergency contact phone number is required'),
 });
 
-export class ProfileForm extends Component {
+class ProfileForm extends Component {
   state = {
     avatarImage: '',
     rigImage: '',
@@ -173,10 +202,11 @@ export class ProfileForm extends Component {
   };
 
   render() {
-    const isAdmin = true;
+    const query =
+      this.props.member === 'self' ? SELF_PROFILE_QUERY : MEMBER_PROFILE_QUERY;
 
     return (
-      <Query query={PROFILE_QUERY}>
+      <Query query={query} variables={{ username: this.props.member }}>
         {({ loading: queryLoading, error: queryError, data: queryData }) => {
           if (queryLoading) {
             return <div>Loading...</div>;
@@ -184,6 +214,9 @@ export class ProfileForm extends Component {
           if (queryError) {
             return <ErrorMessage error={queryError} />;
           }
+
+          // TODO
+          const isAdmin = true;
 
           const userFormValues = {
             firstName: queryData.user.firstName || '',

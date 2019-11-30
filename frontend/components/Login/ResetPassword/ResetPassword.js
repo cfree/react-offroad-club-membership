@@ -4,11 +4,19 @@ import gql from 'graphql-tag';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import styled from 'styled-components';
-import { CURRENT_USER_QUERY } from '../..User/User';
+import { CURRENT_USER_QUERY } from '../../User/User';
 // import Form from './styles/Form';
 import Error from '../../utility/ErrorMessage';
 
 const StyledForm = styled.form``;
+
+const TOKEN_QUERY = gql`
+  query TOKEN_QUERY {
+    getResetToken {
+      token
+    }
+  }
+`;
 
 const RESET_MUTATION = gql`
   mutation RESET_MUTATION(
@@ -44,6 +52,7 @@ class ResetPassword extends Component {
   };
 
   render() {
+    // console.log('token', token);
     return (
       <Mutation
         mutation={RESET_MUTATION}

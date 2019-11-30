@@ -21,8 +21,11 @@ type Mutation {
     password: String!
     confirmPassword: String!
   ): User!
+  changePassword(password: String!, confirmPassword: String!): SuccessMessage
+  changeEmail(email: String!): SuccessMessage
   updateRole(role: Role, userId: ID!): User
-  createEvent(event: CreateEventInput!): SuccessMessage
+  createEvent(event: UpsertEventInput!): SuccessMessage
+  updateEvent(id: ID!, event: UpsertEventInput!): SuccessMessage
   setRSVP(rsvp: RSVPInput): SuccessMessage
   sendMessage(
     to: [String!]!
@@ -205,7 +208,7 @@ input UserUpdateInput {
   showPhoneNumber: Boolean!
 }
 
-input CreateEventInput {
+input UpsertEventInput {
   title: String!
   description: String
   startTime: DateTime!
@@ -215,7 +218,7 @@ input CreateEventInput {
   trailNotes: String
   rallyAddress: String
   rallyTime: DateTime
-  membersOnly: Boolean!
+  membersOnly: Boolean
   host: String!
   trail: String
 }

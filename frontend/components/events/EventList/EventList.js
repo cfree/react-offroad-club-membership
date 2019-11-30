@@ -89,6 +89,9 @@ class EventList extends Component {
                                 <a>{event.title}</a>
                               </Link>
                             </h2>
+                            <Link href={`/event/${event.id}/edit`}>
+                              <a>Edit</a>
+                            </Link>
                             <div className="event-location">
                               {event.address}
                             </div>
