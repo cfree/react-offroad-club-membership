@@ -94,7 +94,7 @@ type User {
   contactInfo: ContactInfo @relation(name: "UserContactInfo")
   preferences: Preference @relation(name: "UserPreferences")
   userMeta: UserMeta @relation(name: "UserMeta")
-  avatarSmall: String
+  avatar: CloudinaryImage
   isCharterMember: Boolean @default(value: false)
   vehicle: Vehicle
   title: Title
@@ -299,4 +299,14 @@ type MembershipLogItem {
   message: String!
   user: User! @relation(name: "LogItemMember")
   initiator: User! @relation(name: "LogItemInitiator")
+}
+
+type CloudinaryImage {
+  id: ID! @unique @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  signature: String!
+  publicId: String!
+  url: String!
+  smallUrl: String
 }

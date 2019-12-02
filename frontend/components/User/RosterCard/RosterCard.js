@@ -3,9 +3,9 @@ import Link from 'next/link';
 import {
   getMemberType,
   getPhoneNumber,
-  isAtMostRunmaster,
   isAtLeastBoardMember,
 } from '../../../lib/utils';
+import { DEFAULT_AVATAR_SMALL_SRC } from '../../../lib/constants';
 import Filter from '../../Login/Filter';
 
 const StyledRosterCard = styled.div`
@@ -36,7 +36,7 @@ const RosterCard = ({ user }) => {
     <StyledRosterCard>
       <img
         className="member__img"
-        src="/static/img/default-user.jpg"
+        src={(user.avatar && user.avatar.smallUrl) || DEFAULT_AVATAR_SMALL_SRC}
         alt={user.firstName}
       />
       <span>

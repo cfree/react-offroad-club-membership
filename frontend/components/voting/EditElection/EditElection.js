@@ -19,7 +19,9 @@ const ELECTION_CANDIDATES_QUERY = gql`
           id
           firstName
           lastName
-          avatarSmall
+          avatar {
+            url
+          }
         }
         results {
           candidate {
@@ -33,7 +35,9 @@ const ELECTION_CANDIDATES_QUERY = gql`
       id
       firstName
       lastName
-      avatarSmall
+      avatar {
+        url
+      }
     }
   }
 `;

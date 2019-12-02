@@ -13,7 +13,9 @@ const USER_QUERY = gql`
       id
       firstName
       lastName
-      avatarSmall
+      avatar {
+        smallUrl
+      }
       joined
       role
       username

@@ -7,14 +7,13 @@ import AddOffice from '../AddOffice';
 
 const ELECTION_CANDIDATES_QUERY = gql`
   query ELECTION_CANDIDATES_QUERY {
-    electionCandidates(
-      accountType: FULL
-      accountStatus: ACTIVE
-    ) {
+    electionCandidates(accountType: FULL, accountStatus: ACTIVE) {
       id
       firstName
       lastName
-      avatarSmall
+      avatar {
+        url
+      }
     }
   }
 `;
@@ -65,92 +64,96 @@ class CreateElection extends Component {
 
           const { electionCandidates } = data;
 
-          return (<>
-            <h3>Create New Election</h3>
+          return (
+            <>
+              <h3>Create New Election</h3>
 
-            <p>
-              <label htmlFor="title">
-                Title&nbsp;
-                <input
-                  name="title"
-                  id="title"
-                  value={this.state.title}
-                  onChange={this.updateState}
-                  type="text"
-                />
-              </label>
-            </p>
+              <p>
+                <label htmlFor="title">
+                  Title&nbsp;
+                  <input
+                    name="title"
+                    id="title"
+                    value={this.state.title}
+                    onChange={this.updateState}
+                    type="text"
+                  />
+                </label>
+              </p>
 
-            <p>
-              <label htmlFor="startDate">
-                Start Time&nbsp;
-                <input
-                  name="startDate"
-                  id="startDate"
-                  defaultValue={this.state.startTime}
-                  min={format(Date.now(), 'YYYY-MM-DD')}
-                  onChange={this.updateState}
-                  type="date"
-                  id="startDate"
-                  pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
-                />
-              </label>
+              <p>
+                <label htmlFor="startDate">
+                  Start Time&nbsp;
+                  <input
+                    name="startDate"
+                    id="startDate"
+                    defaultValue={this.state.startTime}
+                    min={format(Date.now(), 'YYYY-MM-DD')}
+                    onChange={this.updateState}
+                    type="date"
+                    id="startDate"
+                    pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
+                  />
+                </label>
 
-              <label htmlFor="endDate">
-                End Date&nbsp;
-                <input
-                  name="endDate"
-                  id="endDate"
-                  defaultValue={this.state.endTime}
-                  onChange={this.updateState}
-                  type="date"
-                  id="endDate"
-                  pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
-                />
-              </label>
-            </p>
+                <label htmlFor="endDate">
+                  End Date&nbsp;
+                  <input
+                    name="endDate"
+                    id="endDate"
+                    defaultValue={this.state.endTime}
+                    onChange={this.updateState}
+                    type="date"
+                    id="endDate"
+                    pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
+                  />
+                </label>
+              </p>
 
-            {this.state.races.map(race => (
-              <div key={race.id}>
-                {race.title}
-                {race.candidates.map(candidate => (
-                  <span key={candidate.id}>{candidate.firstName}</span>
-                ))}
-              </div>
-            ))}
+              {this.state.races.map(race => (
+                <div key={race.id}>
+                  {race.title}
+                  {race.candidates.map(candidate => (
+                    <span key={candidate.id}>{candidate.firstName}</span>
+                  ))}
+                </div>
+              ))}
 
-            <AddOffice
-              candidates={electionCandidates}
-              handleSubmit={this.updateOffices}
-            />
+              <AddOffice
+                candidates={electionCandidates}
+                handleSubmit={this.updateOffices}
+              />
 
-            <button>Cancel</button>
+              <button>Cancel</button>
 
-            <Mutation
-              mutation={SUBMIT_ELECTION_MUTATION}
-              variables={{
-                election: {
-                  electionName: this.state.title,
-                  startTime: this.state.startTime,
-                  endTime: this.state.endTime,
-                  races: this.state.races.map(race => {
-                    delete race.id;
-                    race.candidates = race.candidates.map(candidate => ({ id: candidate.id }));
-                    return race;
-                  }),
-                }
-              }}
-            >
-              {submitElection => (
-                <button
-                  type="button"
-                  onClick={() => this.handleSubmit(submitElection)}
-                >
-                  Create Election
-                </button>
-              )}
-            </Mutation>
-          </>);
+              <Mutation
+                mutation={SUBMIT_ELECTION_MUTATION}
+                variables={{
+                  election: {
+                    electionName: this.state.title,
+                    startTime: this.state.startTime,
+                    endTime: this.state.endTime,
+                    races: this.state.races.map(race => {
+                      delete race.id;
+                      race.candidates = race.candidates.map(candidate => ({
+                        id: candidate.id,
+                      }));
+                      return race;
+                    }),
+                  },
+                }}
+              >
+                {submitElection => (
+                  <button
+                    type="button"
+                    onClick={() => this.handleSubmit(submitElection)}
+                  >
+                    Create Election
+                  </button>
+                )}
+              </Mutation>
+            </>
+          );
         }}
       </Query>
     );

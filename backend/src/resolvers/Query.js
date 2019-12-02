@@ -83,11 +83,10 @@ const Query = {
   },
   async user(parent, args, ctx, info) {
     // Logged in?
-    if (!ctx.request.userId) {
-      throw new Error("You must be logged in");
-    }
-    console.log("user", ctx.request.user);
-    console.log("username", args);
+    // if (!ctx.request.userId) {
+    //   throw new Error("You must be logged in");
+    // }
+
     if (args.username && args.username !== ctx.request.user.username) {
       // Requesting user has proper account type?
       hasAccountType(ctx.request.user, ["FULL", "ASSOCIATE", "EMERITUS"]);
@@ -97,7 +96,7 @@ const Query = {
     }
 
     // If they do, query the user
-    if (args.username) {
+    if (args.username && args.username !== "self") {
       const user = await ctx.db.query.user(
         {
           where: {

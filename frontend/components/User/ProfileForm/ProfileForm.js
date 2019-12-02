@@ -1,21 +1,15 @@
 import { Component } from 'react';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
-import {
-  Formik,
-  Field,
-  ErrorMessage as FormikErrorMessage,
-  Form,
-} from 'formik';
+import { Formik, Field, ErrorMessage as FormikErrorMessage } from 'formik';
 import * as yup from 'yup';
-import { defaultProps } from 'recompose';
 import { format } from 'date-fns';
 import styled from 'styled-components';
 
 import AvatarUploader from '../../common/AvatarUploader';
 import ErrorMessage from '../../utility/ErrorMessage';
 import Loading from '../../utility/Loading';
-import { states } from '../../../lib/constants';
+import { states, DEFAULT_AVATAR_SRC } from '../../../lib/constants';
 import { formatPhone } from '../../../lib/utils';
 import { dateEighteenYearsAgo } from '../../../utilities/dates';
 
@@ -60,6 +54,13 @@ const MEMBER_PROFILE_QUERY = gql`
       gender
       birthdate
       joined
+      avatar {
+        id
+        signature
+        publicId
+        url
+        smallUrl
+      }
       contactInfo {
         id
         street
@@ -89,6 +90,13 @@ const SELF_PROFILE_QUERY = gql`
       gender
       birthdate
       joined
+      avatar {
+        id
+        signature
+        publicId
+        url
+        smallUrl
+      }
       contactInfo {
         id
         street
@@ -196,14 +204,13 @@ const userSchema = yup.object().shape({
 
 class ProfileForm extends Component {
   state = {
-    avatarImage: '',
-    rigImage: '',
     userForm: {},
   };
 
   render() {
-    const query =
-      this.props.member === 'self' ? SELF_PROFILE_QUERY : MEMBER_PROFILE_QUERY;
+    const { member } = this.props;
+    const isSelf = !member || member === 'self';
+    const query = isSelf ? SELF_PROFILE_QUERY : MEMBER_PROFILE_QUERY;
 
     return (
       <Query query={query} variables={{ username: this.props.member }}>
@@ -215,8 +222,7 @@ class ProfileForm extends Component {
             return <ErrorMessage error={queryError} />;
           }
 
-          // TODO
-          const isAdmin = true;
+          const { isAdmin = false } = this.props;
 
           const userFormValues = {
             firstName: queryData.user.firstName || '',
@@ -270,18 +276,19 @@ class ProfileForm extends Component {
 
           return (
             <>
-              <AvatarUploader />
-              <aside>
-                <ul>
-                  <li>Account Created</li>
-                  <li>Title</li>
-                  <li>Is charter member?</li>
-                  <li>Office</li>
-                  <li>Role</li>
-                  <li>Account Type</li>
-                  <li>Account Status</li>
-                </ul>
-              </aside>
+              {isSelf ? (
+                <AvatarUploader image={queryData.user.avatar} />
+              ) : (
+                <img
+                  src={
+                    (queryData.user.avatar && queryData.user.avatar.url) ||
+                    DEFAULT_AVATAR_SRC
+                  }
+                  width="100"
+                  height="100"
+                  alt="Avatar"
+                />
+              )}
 
               <Mutation
                 mutation={USER_UPDATE_PROFILE_MUTATION}
@@ -301,7 +308,7 @@ class ProfileForm extends Component {
                     validationSchema={userSchema}
                     onSubmit={(values, { setSubmitting }) => {
                       this.setState(
-                        {
+                        prevProps => ({
                           userForm: {
                             ...values,
                             id: queryData.user.id,
@@ -313,7 +320,7 @@ class ProfileForm extends Component {
                               .split('-')
                               .join(''),
                           },
-                        },
+                        }),
                         () => {
                           setSubmitting(true);
                           userUpdateProfile();

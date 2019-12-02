@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { randomBytes } = require("crypto");
 const { promisify } = require("util");
+const fetch = require("node-fetch");
 
 const HASH_SECRET = process.env.HASH_SECRET;
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -44,8 +45,7 @@ const Mutations = {
         data: {
           ...args,
           email,
-          password,
-          avatarSmall: "/static/img/default-user.jpg"
+          password
         }
       },
       info
@@ -641,7 +641,7 @@ const Mutations = {
 
     // Requesting user has proper account status?
     hasAccountStatus(ctx.request.user, ["ACTIVE"]);
-    console.log("data", args.data);
+
     // Update user
     const obj = {
       data: {
@@ -689,15 +689,148 @@ const Mutations = {
       where: { id: args.id }
     };
 
-    console.log("OBJ", obj);
     const results = await ctx.db.mutation.updateUser(obj, info);
-
-    console.log("results", results);
 
     if (false) {
       return { message: "Unable to update user profile settings" };
     }
     return { message: "User profile settings updated" };
+  },
+  async updateUserAdminProfileSettings(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error("User must be logged in");
+    }
+
+    // Have proper roles to do this?
+    if (!hasRole(ctx.request.user, ["ADMIN", "OFFICER"], false)) {
+      throw new Error(
+        "User profile can only be updated by an admin or an officer"
+      );
+    }
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
+
+    const { data, id } = args;
+
+    // Update user
+    const obj = {
+      data,
+      where: { id }
+    };
+
+    const results = await ctx.db.mutation.updateUser(obj, info);
+
+    if (false) {
+      return { message: "Unable to update user profile settings" };
+    }
+    return { message: "User profile settings updated" };
+  },
+  async updateAvatar(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error("User must be logged in");
+    }
+
+    const { data } = args;
+    const { oldAvatar, newAvatar } = data;
+
+    if (oldAvatar) {
+      // Delete old image via Cloudinary API
+      const formData = {
+        api_key: process.env.CLOUDINARY_KEY,
+        public_id: oldAvatar.publicId,
+        signature: oldAvatar.signature
+      };
+
+      try {
+        await fetch(
+          "https://api.cloudinary.com/v1_1/fourplayers/image/destroy",
+          {
+            method: "POST",
+            body: formData
+          }
+        );
+      } catch (e) {
+        console.error(e);
+        throw new Error("Unable to remove old avatar");
+      }
+    }
+
+    // Update user
+    const obj = {
+      data: {
+        avatar: {
+          upsert: {
+            create: {
+              id: newAvatar.id,
+              signature: newAvatar.signature,
+              publicId: newAvatar.publicId,
+              url: newAvatar.url,
+              smallUrl: newAvatar.smallUrl
+            },
+            update: {
+              signature: newAvatar.signature,
+              publicId: newAvatar.publicId,
+              url: newAvatar.url,
+              smallUrl: newAvatar.smallUrl
+            }
+          }
+        }
+      },
+      where: { id: ctx.request.userId }
+    };
+
+    const results = await ctx.db.mutation.updateUser(obj, info);
+
+    // TODO error handling
+    if (false) {
+      return { message: "Unable to update avatar" };
+    }
+    return { message: "Avatar updated" };
+  },
+  async deleteAvatar(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error("User must be logged in");
+    }
+
+    const { avatar } = args;
+
+    // Delete old image via Cloudinary API
+    const formData = {
+      api_key: process.env.CLOUDINARY_KEY,
+      public_id: avatar.publicId,
+      signature: avatar.signature
+    };
+
+    try {
+      await fetch("https://api.cloudinary.com/v1_1/fourplayers/image/destroy", {
+        method: "POST",
+        body: formData
+      });
+    } catch (e) {
+      console.error(e);
+      throw new Error("Unable to remove old avatar");
+    }
+
+    // Remove from user
+    const obj = {
+      data: {
+        avatar: {
+          delete: true
+        }
+      },
+      where: { id: ctx.request.userId }
+    };
+
+    const results = await ctx.db.mutation.updateUser(obj, info);
+
+    if (false) {
+      return { message: "Unable to update avatar" };
+    }
+    return { message: "Avatar updated" };
   },
   async submitElection(parent, args, ctx, info) {
     // Logged in?

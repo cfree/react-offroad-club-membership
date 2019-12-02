@@ -33,6 +33,12 @@ type Mutation {
     htmlText: String!
   ): SuccessMessage
   updateUserProfileSettings(data: UserUpdateInput!, id: ID!): SuccessMessage
+  updateUserAdminProfileSettings(
+    data: UserAdminUpdateInput!
+    id: ID!
+  ): SuccessMessage
+  updateAvatar(data: AvatarUpdateInput!): SuccessMessage
+  deleteAvatar(avatar: CloudinaryImageInput!): SuccessMessage
   submitElection(election: ElectionInput!): Election
   submitVote(vote: VoteInput): SuccessMessage
 }
@@ -79,7 +85,8 @@ type User {
   preferences: Preference
   userMeta: UserMeta
   contactInfo: ContactInfo
-  avatarSmall: String
+  avatar: CloudinaryImage
+  isCharterMember: Boolean!
   title: Title
   role: Role!
   accountStatus: AccountStatus
@@ -202,10 +209,21 @@ input UserUpdateInput {
   state: String!
   zip: String!
   phone: String!
+  avatar: CloudinaryImageInput
   preferencesId: ID!
   emergencyContactName: String!
   emergencyContactPhone: String!
   showPhoneNumber: Boolean!
+}
+
+input UserAdminUpdateInput {
+  id: String
+  title: String
+  isCharterMember: Boolean!
+  office: String
+  role: String!
+  accountStatus: String!
+  accountType: String!
 }
 
 input UpsertEventInput {
@@ -260,4 +278,25 @@ type Ballot {
   candidates: [User!]!
   votes: [Vote]
   results: [Result]
+}
+
+input AvatarUpdateInput {
+  oldAvatar: CloudinaryImageInput
+  newAvatar: CloudinaryImageInput!
+}
+
+input CloudinaryImageInput {
+  id: ID
+  signature: String!
+  publicId: String!
+  url: String!
+  smallUrl: String
+}
+
+type CloudinaryImage {
+  id: ID
+  signature: String!
+  publicId: String!
+  url: String!
+  smallUrl: String
 }

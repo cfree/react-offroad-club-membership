@@ -44,7 +44,8 @@ app
 
     server.get('/settings/:setting', (req, res) => {
       const actualPage = '/settings';
-      const queryParams = { settings: req.params.setting };
+      let queryParams = { settings: req.params.setting };
+
       app.render(req, res, actualPage, queryParams);
     });
 

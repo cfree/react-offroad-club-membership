@@ -20,7 +20,9 @@ const EVENT_QUERY = gql`
       id
       firstName
       lastName
-      avatarSmall
+      avatar {
+        smallUrl
+      }
     }
     event: getEvent(eventId: $eventId) {
       title
@@ -29,7 +31,9 @@ const EVENT_QUERY = gql`
         id
         firstName
         lastName
-        avatarSmall
+        avatar {
+          smallUrl
+        }
       }
       startTime
       endTime
@@ -38,7 +42,9 @@ const EVENT_QUERY = gql`
           id
           firstName
           lastName
-          avatarSmall
+          avatar {
+            smallUrl
+          }
         }
         status
       }

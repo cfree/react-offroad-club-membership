@@ -9,7 +9,9 @@ export const SETUP_EXISTING_EVENT_QUERY = gql`
         id
         firstName
         lastName
-        avatarSmall
+        avatar {
+          smallUrl
+        }
         username
       }
       startTime
@@ -19,7 +21,9 @@ export const SETUP_EXISTING_EVENT_QUERY = gql`
           id
           firstName
           lastName
-          avatarSmall
+          avatar {
+            small
+          }
         }
         status
       }

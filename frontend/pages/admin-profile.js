@@ -1,18 +1,24 @@
 import Router from 'next/router';
 import Roles from '../components/Admin/Roles';
 import Gate from '../components/Login/Gate';
-import { isAdmin, isNotLocked } from '../lib/utils';
+import { isAtLeastBoardMember, isActive } from '../lib/utils';
+import AdminProfileForm from '../components/User/AdminProfileForm';
 import ProfileForm from '../components/User/ProfileForm';
 
 const AdminProfilePage = ({ query }) => {
-  const { user } = query;
+  const { user = 'self' } = query;
 
-  return user ? (
-    <Gate statusCheck={isNotLocked} redirect="/admin-profile">
-      <ProfileForm member={user} />
+  return (
+    <Gate
+      roleCheck={isAtLeastBoardMember}
+      statusCheck={isActive}
+      redirect="/admin-profile"
+    >
+      <>
+        <AdminProfileForm member={user} />
+        <ProfileForm member={user} isAdmin={true} />
+      </>
     </Gate>
-  ) : (
-    <div>Nothing to see here</div>
   );
 };
 

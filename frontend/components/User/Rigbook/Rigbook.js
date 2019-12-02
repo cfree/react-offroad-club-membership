@@ -24,7 +24,9 @@ const RIGBOOK_QUERY = gql`
       email
       firstName
       lastName
-      avatarSmall
+      avatar {
+        url
+      }
       joined
       title
       office
@@ -42,7 +44,9 @@ const RIGBOOK_QUERY = gql`
       email
       firstName
       lastName
-      avatarSmall
+      avatar {
+        url
+      }
       joined
       title
       office
@@ -60,7 +64,9 @@ const RIGBOOK_QUERY = gql`
       email
       firstName
       lastName
-      avatarSmall
+      avatar {
+        url
+      }
       joined
       title
       office
@@ -78,7 +84,9 @@ const RIGBOOK_QUERY = gql`
       email
       firstName
       lastName
-      avatarSmall
+      avatar {
+        url
+      }
       joined
       title
       office
@@ -96,7 +104,9 @@ const RIGBOOK_QUERY = gql`
       email
       firstName
       lastName
-      avatarSmall
+      avatar {
+        url
+      }
       joined
       title
       accountType

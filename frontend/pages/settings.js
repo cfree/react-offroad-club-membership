@@ -6,7 +6,7 @@ import EditGarage from '../components/vehicles/EditGarage';
 import EditAccount from '../components/User/EditAccount';
 
 const SettingsPage = ({ query }) => {
-  const { settings, member = 'self' } = query;
+  const { settings } = query;
 
   const page = settings => {
     let component;
@@ -14,7 +14,7 @@ const SettingsPage = ({ query }) => {
 
     switch (settings) {
       case 'profile':
-        component = <EditProfile member="self" />;
+        component = <EditProfile />;
         title = 'Profile';
         break;
       // case 'garage':

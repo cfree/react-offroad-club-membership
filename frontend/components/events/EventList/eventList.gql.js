@@ -6,7 +6,9 @@ export const UPCOMING_EVENTS_QUERY = gql`
       id
       firstName
       lastName
-      avatarSmall
+      avatar {
+        smallUrl
+      }
     }
     events: getUpcomingEvents {
       id
@@ -31,7 +33,9 @@ export const UPCOMING_EVENTS_QUERY = gql`
           id
           firstName
           lastName
-          avatarSmall
+          avatar {
+            smallUrl
+          }
         }
         status
       }
@@ -45,7 +49,9 @@ export const PAST_EVENTS_QUERY = gql`
       id
       firstName
       lastName
-      avatarSmall
+      avatar {
+        smallUrl
+      }
     }
     events: getPastEvents {
       id
@@ -70,7 +76,9 @@ export const PAST_EVENTS_QUERY = gql`
           id
           firstName
           lastName
-          avatarSmall
+          avatar {
+            smallUrl
+          }
         }
         status
       }

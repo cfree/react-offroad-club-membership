@@ -15,22 +15,24 @@ const MEMBERSHIP_QUERY = gql`
   query MEMBERSHIP_QUERY(
     $accountStatus: [AccountStatus]
     $accountType: [AccountType]
-    $role: [Role],
-    $office: [Office],
-    $title: [Title],
+    $role: [Role]
+    $office: [Office]
+    $title: [Title]
   ) {
     users(
-      accountStatus: $accountStatus,
-      accountType: $accountType,
-      role: $role,
-      office: $office,
-      title: $title,
+      accountStatus: $accountStatus
+      accountType: $accountType
+      role: $role
+      office: $office
+      title: $title
     ) {
       username
       id
       firstName
       lastName
-      avatarSmall
+      avatar {
+        smallUrl
+      }
       accountType
       contactInfo {
         phone
@@ -48,16 +50,13 @@ export class Roster extends Component {
       office: [],
       title: [],
     },
-  }
+  };
 
   render() {
     const { filters } = this.props;
 
     return (
-      <Query
-        query={MEMBERSHIP_QUERY}
-        variables={filters}
-      >
+      <Query query={MEMBERSHIP_QUERY} variables={filters}>
         {({ loading, error, data }) => {
           if (loading) {
             return <div>Loading...</div>;
@@ -80,6 +79,6 @@ export class Roster extends Component {
       </Query>
     );
   }
-};
+}
 
 export default Roster;

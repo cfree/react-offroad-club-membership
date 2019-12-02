@@ -126,3 +126,9 @@ export const isNotLimited = status => !isLimited(status);
 
 export const isLocked = status => status === 'LOCKED';
 export const isNotLocked = status => !isLocked(status);
+
+// Cloudinary upload presets
+export const getUploadLocation = appendage =>
+  process.env.NODE_ENV === 'development'
+    ? `dev_${appendage}`
+    : `prod_${appendage}`;

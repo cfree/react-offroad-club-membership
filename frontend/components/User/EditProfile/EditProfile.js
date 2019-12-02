@@ -1,11 +1,7 @@
 import ProfileForm from '../ProfileForm';
 
-const EditProfile = ({ member }) => {
-  return (
-    <div>
-      <ProfileForm member={member} />
-    </div>
-  );
+const EditProfile = () => {
+  return <ProfileForm />;
 };
 
 export default EditProfile;
