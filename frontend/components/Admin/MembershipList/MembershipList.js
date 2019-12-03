@@ -4,8 +4,8 @@ import gql from 'graphql-tag';
 import PropTypes from 'prop-types';
 
 import { roles } from '../../../lib/constants';
-import Filters from '../../User/Filters';
-import Roster from '../../User/Roster';
+import Filters from '../../user/Filters';
+import Roster from '../../user/Roster';
 import ErrorMessage from '../../utility/ErrorMessage';
 import Loading from '../../utility/Loading';
 
@@ -25,13 +25,11 @@ export class MembershipList extends Component {
     this.setState(state => ({
       activeFilters: {
         ...state.activeFilters,
-        [filter]: Object.values(updatedVals).map(
-          obj => obj.value,
-        ),
+        [filter]: Object.values(updatedVals).map(obj => obj.value),
       },
     }));
   };
-  
+
   handleShowAll = () => {
     this.setState({
       activeFilters: {
@@ -42,7 +40,7 @@ export class MembershipList extends Component {
         title: [],
       },
     });
-  }
+  };
 
   handleShowDelinquent = () => {
     this.setState({
@@ -54,7 +52,7 @@ export class MembershipList extends Component {
         title: [],
       },
     });
-  }
+  };
 
   handleShowLapsed = () => {
     this.setState({
@@ -66,7 +64,7 @@ export class MembershipList extends Component {
         title: [],
       },
     });
-  }
+  };
 
   handleShowNewRegs = () => {
     this.setState({
@@ -78,7 +76,7 @@ export class MembershipList extends Component {
         title: [],
       },
     });
-  }
+  };
 
   render() {
     return (
@@ -121,6 +119,6 @@ export class MembershipList extends Component {
       </div>
     );
   }
-};
+}
 
 export default MembershipList;

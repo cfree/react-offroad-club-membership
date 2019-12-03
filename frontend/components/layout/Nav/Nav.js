@@ -3,7 +3,7 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import { clearFix } from 'polished';
 
-import User from '../../User/User';
+import User from '../../user/User';
 import Logout from '../../Login/Logout';
 import { isActive, isMember, isAtLeastBoardMember } from '../../../lib/utils';
 import Filter from '../../Login/Filter';

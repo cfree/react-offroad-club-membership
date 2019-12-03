@@ -1,12 +1,17 @@
 import { Component } from 'react';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Formik, Field, ErrorMessage as FormikErrorMessage } from 'formik';
+import {
+  Formik,
+  Field,
+  ErrorMessage as FormikErrorMessage,
+} from 'formik';
 import * as yup from 'yup';
 import { format } from 'date-fns';
 import styled from 'styled-components';
 
 import AvatarUploader from '../../common/AvatarUploader';
+// import RigUploader from '../../common/RigUploader';
 import ErrorMessage from '../../utility/ErrorMessage';
 import Loading from '../../utility/Loading';
 import { states, DEFAULT_AVATAR_SRC } from '../../../lib/constants';
@@ -289,6 +294,19 @@ class ProfileForm extends Component {
                   alt="Avatar"
                 />
               )}
+
+              {/* {isSelf ? (
+                <RigUploader image={queryData.user.rig} />
+              ) : (
+                <img
+                  src={
+                    (queryData.user.rig && queryData.user.rig.url) ||
+                    DEFAULT_RIG_SRC
+                  }
+                  width="660"
+                  alt="Rig"
+                />
+              )} */}
 
               <Mutation
                 mutation={USER_UPDATE_PROFILE_MUTATION}

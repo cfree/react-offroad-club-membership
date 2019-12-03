@@ -1,23 +1,18 @@
-import {
-  Formik,
-  Field,
-  ErrorMessage,
-  Form,
-} from 'formik';
+import { Formik, Field, ErrorMessage, Form } from 'formik';
 
-const GarageForm = () => {
+const RigForm = () => {
   return (
     <div>
       <Formik
         initialValues={{
-          rigImage: '',
-          rigYear: 0,
-          rigMake: '',
-          rigModel: '',
-          rigTrim: '',
-          rigName: '',
-          rigOutfitLevel: ['MODIFIED', 'STOCK'],
-          rigMods: [],
+          image: '',
+          year: 0,
+          make: '',
+          model: '',
+          trim: '',
+          name: '',
+          outfitLevel: ['MODIFIED', 'STOCK'],
+          mods: [],
         }}
         validate={values => {
           let errors = {};
@@ -39,7 +34,7 @@ const GarageForm = () => {
       >
         {({ isSubmitting }) => (
           <Form>
-            <VehicleImageUploader onUpdate={() => { }} current={'meow'} />
+            {/* <VehicleImageUploader onUpdate={() => { }} current={'meow'} /> */}
 
             <Field type="text" name="rigYear" />
             <ErrorMessage name="rigYear" component="div" />
@@ -74,4 +69,4 @@ const GarageForm = () => {
   );
 };
 
-export default GarageForm;
+export default RigForm;

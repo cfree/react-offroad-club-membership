@@ -6,7 +6,7 @@ import Router from 'next/router';
 import Link from 'next/link';
 import Loading from '../../utility/Loading';
 import ErrorMessage from '../../utility/ErrorMessage';
-import CURRENT_USER_QUERY from '../../User/User';
+import CURRENT_USER_QUERY from '../../user/User';
 import { assertResolveFunctionsPresent } from 'graphql-tools';
 
 const StyledForm = styled.form``;

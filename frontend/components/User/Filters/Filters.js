@@ -56,10 +56,7 @@ const Filters = props => {
       />
       Offices
       <Select
-        defaultValue={formatFilterSelected(
-          props.activeFilters.office,
-          offices,
-        )}
+        defaultValue={formatFilterSelected(props.activeFilters.office, offices)}
         placeholder="Select office"
         isMulti={true}
         options={formatFilterSelect(offices)}

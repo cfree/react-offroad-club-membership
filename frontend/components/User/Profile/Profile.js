@@ -5,7 +5,13 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import get from 'lodash/get';
 import ErrorMessage from '../../utility/ErrorMessage';
-import { accountTypes as types, offices, titles } from '../../../lib/constants';
+import {
+  accountTypes as types,
+  offices,
+  titles,
+  DEFAULT_AVATAR_SRC,
+  DEFAULT_RIG_SRC,
+} from '../../../lib/constants';
 
 const USER_QUERY = gql`
   query USER_QUERY($username: String) {
@@ -14,7 +20,7 @@ const USER_QUERY = gql`
       firstName
       lastName
       avatar {
-        smallUrl
+        url
       }
       joined
       role
@@ -187,14 +193,19 @@ const Profile = ({ username }) => {
                 aria-label={"User's Vehicle"}
                 className="user-vehicle"
                 style={{
-                  backgroundImage: 'url(/static/img/default-vehicle.jpg)',
+                  backgroundImage: `url(${DEFAULT_RIG_SRC})`,
                 }}
               />
 
               {user ? (
                 <div className="user-header">
                   <div className="user-demographics">
-                    <img src="/static/img/default-user.jpg" height="130" />
+                    <img
+                      src={
+                        (user.avatar && user.avatar.url) || DEFAULT_AVATAR_SRC
+                      }
+                      height="130"
+                    />
                     <div className="user-name-info">
                       <div className="user-name">
                         <h2 className="user-full-name">

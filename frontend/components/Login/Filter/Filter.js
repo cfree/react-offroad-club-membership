@@ -1,5 +1,5 @@
 import { Query } from 'react-apollo';
-import { CURRENT_USER_QUERY } from '../../User/User';
+import { CURRENT_USER_QUERY } from '../../user/User';
 
 const Filter = ({
   children,

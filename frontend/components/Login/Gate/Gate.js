@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { Query } from 'react-apollo';
-import { CURRENT_USER_QUERY } from '../../User/User';
+import { CURRENT_USER_QUERY } from '../../user/User';
 import Login from '../Login';
 import Link from 'next/link';
 

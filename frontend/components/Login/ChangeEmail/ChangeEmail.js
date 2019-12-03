@@ -5,7 +5,7 @@ import Loading from '../../utility/Loading';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import styled from 'styled-components';
-import { CURRENT_USER_QUERY } from '../../User/User';
+import { CURRENT_USER_QUERY } from '../../user/User';
 // import Form from './styles/Form';
 import Error from '../../utility/ErrorMessage';
 

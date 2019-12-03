@@ -132,7 +132,13 @@ export default class EventDetails extends Component {
                   <h2 className="event__title">{event.title}</h2>
                   {event.host.firstName && (
                     <div className="event__leader">
-                      <img src="/static/img/default-user.jpg" height="30" />
+                      <img
+                        src={
+                          (event.host.avatar && event.host.avatar.smallUrl) ||
+                          DEFAULT_AVATAR_SMALL_SRC
+                        }
+                        height="30"
+                      />
                       Hosted by {event.host.firstName}
                     </div>
                   )}

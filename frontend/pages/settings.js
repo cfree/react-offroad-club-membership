@@ -1,9 +1,9 @@
 import Link from 'next/link';
 
 import Gate from '../components/Login/Gate';
-import EditProfile from '../components/User/EditProfile';
+import EditProfile from '../components/user/EditProfile';
 import EditGarage from '../components/vehicles/EditGarage';
-import EditAccount from '../components/User/EditAccount';
+import EditAccount from '../components/user/EditAccount';
 
 const SettingsPage = ({ query }) => {
   const { settings } = query;
@@ -17,10 +17,10 @@ const SettingsPage = ({ query }) => {
         component = <EditProfile />;
         title = 'Profile';
         break;
-      // case 'garage':
-      //   component = <EditGarage />;
-      //   title = 'Garage';
-      //   break;
+      case 'garage':
+        component = <EditGarage />;
+        title = 'Garage';
+        break;
       case 'account':
       default:
         component = <EditAccount />;
@@ -40,11 +40,11 @@ const SettingsPage = ({ query }) => {
             <a>Edit Profile</a>
           </Link>
         </li>
-        {/* <li>
+        <li>
           <Link href="/settings/garage">
             <a>Edit Garage</a>
           </Link>
-        </li> */}
+        </li>
         <li>
           <Link href="/settings/account">
             <a>Edit Account</a>
