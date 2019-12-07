@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import get from 'lodash/get';
 
 import { getMemberType } from '../../../lib/utils';
 import {
@@ -18,7 +19,8 @@ import {
 } from './rigbookCard.styles';
 
 const RigbookCard = ({ user }) => {
-  const RIG_SRC = ''; // TODO
+  const RIG_SRC = get(user.rig, 'image.url');
+  const AVATAR_SRC = get(user.avatar, 'url');
 
   return (
     <StyledRigbookCard>
@@ -28,7 +30,7 @@ const RigbookCard = ({ user }) => {
           alt={`${user.firstName}'s Vehicle`}
         />
         <StyledUserImg
-          src={(user.avatar && user.avatar.url) || DEFAULT_AVATAR_SRC}
+          src={AVATAR_SRC || DEFAULT_AVATAR_SRC}
           alt={user.firstName}
         />
       </div>

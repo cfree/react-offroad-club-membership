@@ -27,6 +27,11 @@ const RIGBOOK_QUERY = gql`
       avatar {
         url
       }
+      rig {
+        image {
+          url
+        }
+      }
       joined
       title
       office
@@ -46,6 +51,11 @@ const RIGBOOK_QUERY = gql`
       lastName
       avatar {
         url
+      }
+      rig {
+        image {
+          url
+        }
       }
       joined
       title
@@ -67,6 +77,11 @@ const RIGBOOK_QUERY = gql`
       avatar {
         url
       }
+      rig {
+        image {
+          url
+        }
+      }
       joined
       title
       office
@@ -87,6 +102,11 @@ const RIGBOOK_QUERY = gql`
       avatar {
         url
       }
+      rig {
+        image {
+          url
+        }
+      }
       joined
       title
       office
@@ -106,6 +126,11 @@ const RIGBOOK_QUERY = gql`
       lastName
       avatar {
         url
+      }
+      rig {
+        image {
+          url
+        }
       }
       joined
       title

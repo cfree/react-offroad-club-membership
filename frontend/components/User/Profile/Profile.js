@@ -32,14 +32,16 @@ const USER_QUERY = gql`
       contactInfo {
         phone
       }
+      rig {
+        image {
+          url
+        }
+      }
       vehicle {
         make
         model
         year
         trim
-        image {
-          url
-        }
         name
         mods
       }
@@ -187,6 +189,8 @@ const Profile = ({ username }) => {
 
         const { user } = data;
         const convertedTitles = get(titles, 'user.title') || '';
+        const RIG_SRC = get(user.rig, 'image.url');
+        const AVATAR_SRC = get(user.avatar, 'url');
 
         return (
           <StyledProfile>
@@ -195,19 +199,14 @@ const Profile = ({ username }) => {
                 aria-label={"User's Vehicle"}
                 className="user-vehicle"
                 style={{
-                  backgroundImage: `url(${DEFAULT_RIG_SRC})`,
+                  backgroundImage: `url(${RIG_SRC || DEFAULT_RIG_SRC})`,
                 }}
               />
 
               {user ? (
                 <div className="user-header">
                   <div className="user-demographics">
-                    <img
-                      src={
-                        (user.avatar && user.avatar.url) || DEFAULT_AVATAR_SRC
-                      }
-                      height="130"
-                    />
+                    <img src={AVATAR_SRC || DEFAULT_AVATAR_SRC} height="130" />
                     <div className="user-name-info">
                       <div className="user-name">
                         <h2 className="user-full-name">
