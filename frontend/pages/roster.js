@@ -1,7 +1,7 @@
 import { Component } from 'react';
 
-import Rigbook from '../components/User/Rigbook';
-import Roster from '../components/User/Roster';
+import Rigbook from '../components/user/Rigbook';
+import Roster from '../components/user/Roster';
 import Gate from '../components/Login/Gate';
 import { isAtLeastEmeritusMember, isActive } from '../lib/utils';
 

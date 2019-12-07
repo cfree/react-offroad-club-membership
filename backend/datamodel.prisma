@@ -96,7 +96,8 @@ type User {
   userMeta: UserMeta @relation(name: "UserMeta")
   avatar: CloudinaryImage
   isCharterMember: Boolean @default(value: false)
-  vehicle: Vehicle
+  rig: RigImage
+  vehicle: Vehicle 
   title: Title
   role: Role! @default(value: USER)
   accountStatus: AccountStatus! @default(value: LOCKED)
@@ -277,7 +278,7 @@ type Vehicle {
   model: String!
   name: String
   trim: String
-  image: String
+  image: CloudinaryImage
   mods: [String] @scalarList(strategy: RELATION)
 }
 
@@ -301,12 +302,16 @@ type MembershipLogItem {
   initiator: User! @relation(name: "LogItemInitiator")
 }
 
+type RigImage {
+  id: ID! @unique @id
+  image: CloudinaryImage
+}
+
 type CloudinaryImage {
   id: ID! @unique @id
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  signature: String!
   publicId: String!
-  url: String!
+  url: String
   smallUrl: String
 }

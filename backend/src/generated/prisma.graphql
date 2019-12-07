@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/four-players-co/four-players-co/dev
-# timestamp: Sun Dec 01 2019 20:45:55 GMT-0700 (Mountain Standard Time)
+# timestamp: Sat Dec 07 2019 11:13:22 GMT-0700 (Mountain Standard Time)
 
 enum AccountStatus {
   ACTIVE
@@ -56,6 +56,10 @@ type AggregateMembershipLogItem {
 }
 
 type AggregatePreference {
+  count: Int!
+}
+
+type AggregateRigImage {
   count: Int!
 }
 
@@ -1234,9 +1238,8 @@ type CloudinaryImage implements Node {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  signature: String!
   publicId: String!
-  url: String!
+  url: String
   smallUrl: String
 }
 
@@ -1252,9 +1255,8 @@ type CloudinaryImageConnection {
 
 input CloudinaryImageCreateInput {
   id: ID
-  signature: String!
   publicId: String!
-  url: String!
+  url: String
   smallUrl: String
 }
 
@@ -1279,8 +1281,6 @@ enum CloudinaryImageOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
-  signature_ASC
-  signature_DESC
   publicId_ASC
   publicId_DESC
   url_ASC
@@ -1293,9 +1293,8 @@ type CloudinaryImagePreviousValues {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  signature: String!
   publicId: String!
-  url: String!
+  url: String
   smallUrl: String
 }
 
@@ -1337,21 +1336,18 @@ input CloudinaryImageSubscriptionWhereInput {
 }
 
 input CloudinaryImageUpdateDataInput {
-  signature: String
   publicId: String
   url: String
   smallUrl: String
 }
 
 input CloudinaryImageUpdateInput {
-  signature: String
   publicId: String
   url: String
   smallUrl: String
 }
 
 input CloudinaryImageUpdateManyMutationInput {
-  signature: String
   publicId: String
   url: String
   smallUrl: String
@@ -1464,46 +1460,6 @@ input CloudinaryImageWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
-  signature: String
-
-  """All values that are not equal to given value."""
-  signature_not: String
-
-  """All values that are contained in given list."""
-  signature_in: [String!]
-
-  """All values that are not contained in given list."""
-  signature_not_in: [String!]
-
-  """All values less than the given value."""
-  signature_lt: String
-
-  """All values less than or equal the given value."""
-  signature_lte: String
-
-  """All values greater than the given value."""
-  signature_gt: String
-
-  """All values greater than or equal the given value."""
-  signature_gte: String
-
-  """All values containing the given string."""
-  signature_contains: String
-
-  """All values not containing the given string."""
-  signature_not_contains: String
-
-  """All values starting with the given string."""
-  signature_starts_with: String
-
-  """All values not starting with the given string."""
-  signature_not_starts_with: String
-
-  """All values ending with the given string."""
-  signature_ends_with: String
-
-  """All values not ending with the given string."""
-  signature_not_ends_with: String
   publicId: String
 
   """All values that are not equal to given value."""
@@ -5095,8 +5051,9 @@ type Mutation {
   createLogItem(data: LogItemCreateInput!): LogItem!
   createMembershipLogItem(data: MembershipLogItemCreateInput!): MembershipLogItem!
   createEvent(data: EventCreateInput!): Event!
-  createCloudinaryImage(data: CloudinaryImageCreateInput!): CloudinaryImage!
   createVehicle(data: VehicleCreateInput!): Vehicle!
+  createRigImage(data: RigImageCreateInput!): RigImage!
+  createCloudinaryImage(data: CloudinaryImageCreateInput!): CloudinaryImage!
   createBallot(data: BallotCreateInput!): Ballot!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateContactInfo(data: ContactInfoUpdateInput!, where: ContactInfoWhereUniqueInput!): ContactInfo
@@ -5112,8 +5069,9 @@ type Mutation {
   updateLogItem(data: LogItemUpdateInput!, where: LogItemWhereUniqueInput!): LogItem
   updateMembershipLogItem(data: MembershipLogItemUpdateInput!, where: MembershipLogItemWhereUniqueInput!): MembershipLogItem
   updateEvent(data: EventUpdateInput!, where: EventWhereUniqueInput!): Event
-  updateCloudinaryImage(data: CloudinaryImageUpdateInput!, where: CloudinaryImageWhereUniqueInput!): CloudinaryImage
   updateVehicle(data: VehicleUpdateInput!, where: VehicleWhereUniqueInput!): Vehicle
+  updateRigImage(data: RigImageUpdateInput!, where: RigImageWhereUniqueInput!): RigImage
+  updateCloudinaryImage(data: CloudinaryImageUpdateInput!, where: CloudinaryImageWhereUniqueInput!): CloudinaryImage
   updateBallot(data: BallotUpdateInput!, where: BallotWhereUniqueInput!): Ballot
   deleteUser(where: UserWhereUniqueInput!): User
   deleteContactInfo(where: ContactInfoWhereUniqueInput!): ContactInfo
@@ -5129,8 +5087,9 @@ type Mutation {
   deleteLogItem(where: LogItemWhereUniqueInput!): LogItem
   deleteMembershipLogItem(where: MembershipLogItemWhereUniqueInput!): MembershipLogItem
   deleteEvent(where: EventWhereUniqueInput!): Event
-  deleteCloudinaryImage(where: CloudinaryImageWhereUniqueInput!): CloudinaryImage
   deleteVehicle(where: VehicleWhereUniqueInput!): Vehicle
+  deleteRigImage(where: RigImageWhereUniqueInput!): RigImage
+  deleteCloudinaryImage(where: CloudinaryImageWhereUniqueInput!): CloudinaryImage
   deleteBallot(where: BallotWhereUniqueInput!): Ballot
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertContactInfo(where: ContactInfoWhereUniqueInput!, create: ContactInfoCreateInput!, update: ContactInfoUpdateInput!): ContactInfo!
@@ -5146,8 +5105,9 @@ type Mutation {
   upsertLogItem(where: LogItemWhereUniqueInput!, create: LogItemCreateInput!, update: LogItemUpdateInput!): LogItem!
   upsertMembershipLogItem(where: MembershipLogItemWhereUniqueInput!, create: MembershipLogItemCreateInput!, update: MembershipLogItemUpdateInput!): MembershipLogItem!
   upsertEvent(where: EventWhereUniqueInput!, create: EventCreateInput!, update: EventUpdateInput!): Event!
-  upsertCloudinaryImage(where: CloudinaryImageWhereUniqueInput!, create: CloudinaryImageCreateInput!, update: CloudinaryImageUpdateInput!): CloudinaryImage!
   upsertVehicle(where: VehicleWhereUniqueInput!, create: VehicleCreateInput!, update: VehicleUpdateInput!): Vehicle!
+  upsertRigImage(where: RigImageWhereUniqueInput!, create: RigImageCreateInput!, update: RigImageUpdateInput!): RigImage!
+  upsertCloudinaryImage(where: CloudinaryImageWhereUniqueInput!, create: CloudinaryImageCreateInput!, update: CloudinaryImageUpdateInput!): CloudinaryImage!
   upsertBallot(where: BallotWhereUniqueInput!, create: BallotCreateInput!, update: BallotUpdateInput!): Ballot!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyContactInfoes(data: ContactInfoUpdateManyMutationInput!, where: ContactInfoWhereInput): BatchPayload!
@@ -5162,8 +5122,8 @@ type Mutation {
   updateManyLogItems(data: LogItemUpdateManyMutationInput!, where: LogItemWhereInput): BatchPayload!
   updateManyMembershipLogItems(data: MembershipLogItemUpdateManyMutationInput!, where: MembershipLogItemWhereInput): BatchPayload!
   updateManyEvents(data: EventUpdateManyMutationInput!, where: EventWhereInput): BatchPayload!
-  updateManyCloudinaryImages(data: CloudinaryImageUpdateManyMutationInput!, where: CloudinaryImageWhereInput): BatchPayload!
   updateManyVehicles(data: VehicleUpdateManyMutationInput!, where: VehicleWhereInput): BatchPayload!
+  updateManyCloudinaryImages(data: CloudinaryImageUpdateManyMutationInput!, where: CloudinaryImageWhereInput): BatchPayload!
   updateManyBallots(data: BallotUpdateManyMutationInput!, where: BallotWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyContactInfoes(where: ContactInfoWhereInput): BatchPayload!
@@ -5179,8 +5139,9 @@ type Mutation {
   deleteManyLogItems(where: LogItemWhereInput): BatchPayload!
   deleteManyMembershipLogItems(where: MembershipLogItemWhereInput): BatchPayload!
   deleteManyEvents(where: EventWhereInput): BatchPayload!
-  deleteManyCloudinaryImages(where: CloudinaryImageWhereInput): BatchPayload!
   deleteManyVehicles(where: VehicleWhereInput): BatchPayload!
+  deleteManyRigImages(where: RigImageWhereInput): BatchPayload!
+  deleteManyCloudinaryImages(where: CloudinaryImageWhereInput): BatchPayload!
   deleteManyBallots(where: BallotWhereInput): BatchPayload!
 }
 
@@ -5573,8 +5534,9 @@ type Query {
   logItems(where: LogItemWhereInput, orderBy: LogItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [LogItem]!
   membershipLogItems(where: MembershipLogItemWhereInput, orderBy: MembershipLogItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [MembershipLogItem]!
   events(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Event]!
-  cloudinaryImages(where: CloudinaryImageWhereInput, orderBy: CloudinaryImageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CloudinaryImage]!
   vehicles(where: VehicleWhereInput, orderBy: VehicleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vehicle]!
+  rigImages(where: RigImageWhereInput, orderBy: RigImageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [RigImage]!
+  cloudinaryImages(where: CloudinaryImageWhereInput, orderBy: CloudinaryImageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CloudinaryImage]!
   ballots(where: BallotWhereInput, orderBy: BallotOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Ballot]!
   user(where: UserWhereUniqueInput!): User
   contactInfo(where: ContactInfoWhereUniqueInput!): ContactInfo
@@ -5590,8 +5552,9 @@ type Query {
   logItem(where: LogItemWhereUniqueInput!): LogItem
   membershipLogItem(where: MembershipLogItemWhereUniqueInput!): MembershipLogItem
   event(where: EventWhereUniqueInput!): Event
-  cloudinaryImage(where: CloudinaryImageWhereUniqueInput!): CloudinaryImage
   vehicle(where: VehicleWhereUniqueInput!): Vehicle
+  rigImage(where: RigImageWhereUniqueInput!): RigImage
+  cloudinaryImage(where: CloudinaryImageWhereUniqueInput!): CloudinaryImage
   ballot(where: BallotWhereUniqueInput!): Ballot
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   contactInfoesConnection(where: ContactInfoWhereInput, orderBy: ContactInfoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ContactInfoConnection!
@@ -5607,8 +5570,9 @@ type Query {
   logItemsConnection(where: LogItemWhereInput, orderBy: LogItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LogItemConnection!
   membershipLogItemsConnection(where: MembershipLogItemWhereInput, orderBy: MembershipLogItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MembershipLogItemConnection!
   eventsConnection(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EventConnection!
-  cloudinaryImagesConnection(where: CloudinaryImageWhereInput, orderBy: CloudinaryImageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CloudinaryImageConnection!
   vehiclesConnection(where: VehicleWhereInput, orderBy: VehicleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): VehicleConnection!
+  rigImagesConnection(where: RigImageWhereInput, orderBy: RigImageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RigImageConnection!
+  cloudinaryImagesConnection(where: CloudinaryImageWhereInput, orderBy: CloudinaryImageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CloudinaryImageConnection!
   ballotsConnection(where: BallotWhereInput, orderBy: BallotOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BallotConnection!
 
   """Fetches an object given its ID"""
@@ -5616,6 +5580,164 @@ type Query {
     """The ID of an object"""
     id: ID!
   ): Node
+}
+
+type RigImage implements Node {
+  id: ID!
+  image: CloudinaryImage
+}
+
+"""A connection to a list of items."""
+type RigImageConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [RigImageEdge]!
+  aggregate: AggregateRigImage!
+}
+
+input RigImageCreateInput {
+  id: ID
+  image: CloudinaryImageCreateOneInput
+}
+
+input RigImageCreateOneInput {
+  create: RigImageCreateInput
+  connect: RigImageWhereUniqueInput
+}
+
+"""An edge in a connection."""
+type RigImageEdge {
+  """The item at the end of the edge."""
+  node: RigImage!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum RigImageOrderByInput {
+  id_ASC
+  id_DESC
+}
+
+type RigImagePreviousValues {
+  id: ID!
+}
+
+type RigImageSubscriptionPayload {
+  mutation: MutationType!
+  node: RigImage
+  updatedFields: [String!]
+  previousValues: RigImagePreviousValues
+}
+
+input RigImageSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [RigImageSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [RigImageSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [RigImageSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: RigImageWhereInput
+}
+
+input RigImageUpdateDataInput {
+  image: CloudinaryImageUpdateOneInput
+}
+
+input RigImageUpdateInput {
+  image: CloudinaryImageUpdateOneInput
+}
+
+input RigImageUpdateOneInput {
+  create: RigImageCreateInput
+  connect: RigImageWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: RigImageUpdateDataInput
+  upsert: RigImageUpsertNestedInput
+}
+
+input RigImageUpsertNestedInput {
+  update: RigImageUpdateDataInput!
+  create: RigImageCreateInput!
+}
+
+input RigImageWhereInput {
+  """Logical AND on all given filters."""
+  AND: [RigImageWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [RigImageWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [RigImageWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  image: CloudinaryImageWhereInput
+}
+
+input RigImageWhereUniqueInput {
+  id: ID
 }
 
 enum Role {
@@ -7097,8 +7219,9 @@ type Subscription {
   logItem(where: LogItemSubscriptionWhereInput): LogItemSubscriptionPayload
   membershipLogItem(where: MembershipLogItemSubscriptionWhereInput): MembershipLogItemSubscriptionPayload
   event(where: EventSubscriptionWhereInput): EventSubscriptionPayload
-  cloudinaryImage(where: CloudinaryImageSubscriptionWhereInput): CloudinaryImageSubscriptionPayload
   vehicle(where: VehicleSubscriptionWhereInput): VehicleSubscriptionPayload
+  rigImage(where: RigImageSubscriptionWhereInput): RigImageSubscriptionPayload
+  cloudinaryImage(where: CloudinaryImageSubscriptionWhereInput): CloudinaryImageSubscriptionPayload
   ballot(where: BallotSubscriptionWhereInput): BallotSubscriptionPayload
 }
 
@@ -8316,6 +8439,7 @@ type User implements Node {
   userMeta: UserMeta
   avatar: CloudinaryImage
   isCharterMember: Boolean
+  rig: RigImage
   vehicle: Vehicle
   title: Title
   role: Role!
@@ -8370,6 +8494,7 @@ input UserCreateInput {
   preferences: PreferenceCreateOneWithoutUserInput
   userMeta: UserMetaCreateOneWithoutUserInput
   avatar: CloudinaryImageCreateOneInput
+  rig: RigImageCreateOneInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -8483,6 +8608,7 @@ input UserCreateWithoutBandaidsInput {
   preferences: PreferenceCreateOneWithoutUserInput
   userMeta: UserMetaCreateOneWithoutUserInput
   avatar: CloudinaryImageCreateOneInput
+  rig: RigImageCreateOneInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -8520,6 +8646,7 @@ input UserCreateWithoutCandidateForInput {
   preferences: PreferenceCreateOneWithoutUserInput
   userMeta: UserMetaCreateOneWithoutUserInput
   avatar: CloudinaryImageCreateOneInput
+  rig: RigImageCreateOneInput
   vehicle: VehicleCreateOneInput
   votesReceived: VoteCreateManyWithoutCandidateInput
   votedFor: VoteCreateManyWithoutVoterInput
@@ -8556,6 +8683,7 @@ input UserCreateWithoutContactInfoInput {
   preferences: PreferenceCreateOneWithoutUserInput
   userMeta: UserMetaCreateOneWithoutUserInput
   avatar: CloudinaryImageCreateOneInput
+  rig: RigImageCreateOneInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -8594,6 +8722,7 @@ input UserCreateWithoutEventsCreatedInput {
   preferences: PreferenceCreateOneWithoutUserInput
   userMeta: UserMetaCreateOneWithoutUserInput
   avatar: CloudinaryImageCreateOneInput
+  rig: RigImageCreateOneInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -8631,6 +8760,7 @@ input UserCreateWithoutEventsHostedInput {
   preferences: PreferenceCreateOneWithoutUserInput
   userMeta: UserMetaCreateOneWithoutUserInput
   avatar: CloudinaryImageCreateOneInput
+  rig: RigImageCreateOneInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -8668,6 +8798,7 @@ input UserCreateWithoutEventsRSVPdInput {
   preferences: PreferenceCreateOneWithoutUserInput
   userMeta: UserMetaCreateOneWithoutUserInput
   avatar: CloudinaryImageCreateOneInput
+  rig: RigImageCreateOneInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -8705,6 +8836,7 @@ input UserCreateWithoutLogInput {
   preferences: PreferenceCreateOneWithoutUserInput
   userMeta: UserMetaCreateOneWithoutUserInput
   avatar: CloudinaryImageCreateOneInput
+  rig: RigImageCreateOneInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -8742,6 +8874,7 @@ input UserCreateWithoutMembershipLogContributionsInput {
   preferences: PreferenceCreateOneWithoutUserInput
   userMeta: UserMetaCreateOneWithoutUserInput
   avatar: CloudinaryImageCreateOneInput
+  rig: RigImageCreateOneInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -8779,6 +8912,7 @@ input UserCreateWithoutMembershipLogInput {
   preferences: PreferenceCreateOneWithoutUserInput
   userMeta: UserMetaCreateOneWithoutUserInput
   avatar: CloudinaryImageCreateOneInput
+  rig: RigImageCreateOneInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -8815,6 +8949,7 @@ input UserCreateWithoutPreferencesInput {
   contactInfo: ContactInfoCreateOneWithoutUserInput
   userMeta: UserMetaCreateOneWithoutUserInput
   avatar: CloudinaryImageCreateOneInput
+  rig: RigImageCreateOneInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -8853,6 +8988,7 @@ input UserCreateWithoutRunReportsLoggedInput {
   preferences: PreferenceCreateOneWithoutUserInput
   userMeta: UserMetaCreateOneWithoutUserInput
   avatar: CloudinaryImageCreateOneInput
+  rig: RigImageCreateOneInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -8890,6 +9026,7 @@ input UserCreateWithoutTrailsVisitedInput {
   preferences: PreferenceCreateOneWithoutUserInput
   userMeta: UserMetaCreateOneWithoutUserInput
   avatar: CloudinaryImageCreateOneInput
+  rig: RigImageCreateOneInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -8926,6 +9063,7 @@ input UserCreateWithoutUserMetaInput {
   contactInfo: ContactInfoCreateOneWithoutUserInput
   preferences: PreferenceCreateOneWithoutUserInput
   avatar: CloudinaryImageCreateOneInput
+  rig: RigImageCreateOneInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -8964,6 +9102,7 @@ input UserCreateWithoutVotedForInput {
   preferences: PreferenceCreateOneWithoutUserInput
   userMeta: UserMetaCreateOneWithoutUserInput
   avatar: CloudinaryImageCreateOneInput
+  rig: RigImageCreateOneInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votesReceived: VoteCreateManyWithoutCandidateInput
@@ -9001,6 +9140,7 @@ input UserCreateWithoutVotesReceivedInput {
   preferences: PreferenceCreateOneWithoutUserInput
   userMeta: UserMetaCreateOneWithoutUserInput
   avatar: CloudinaryImageCreateOneInput
+  rig: RigImageCreateOneInput
   vehicle: VehicleCreateOneInput
   candidateFor: BallotCreateManyWithoutCandidatesInput
   votedFor: VoteCreateManyWithoutVoterInput
@@ -9896,6 +10036,7 @@ input UserUpdateInput {
   preferences: PreferenceUpdateOneWithoutUserInput
   userMeta: UserMetaUpdateOneWithoutUserInput
   avatar: CloudinaryImageUpdateOneInput
+  rig: RigImageUpdateOneInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -10105,6 +10246,7 @@ input UserUpdateWithoutBandaidsDataInput {
   preferences: PreferenceUpdateOneWithoutUserInput
   userMeta: UserMetaUpdateOneWithoutUserInput
   avatar: CloudinaryImageUpdateOneInput
+  rig: RigImageUpdateOneInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -10141,6 +10283,7 @@ input UserUpdateWithoutCandidateForDataInput {
   preferences: PreferenceUpdateOneWithoutUserInput
   userMeta: UserMetaUpdateOneWithoutUserInput
   avatar: CloudinaryImageUpdateOneInput
+  rig: RigImageUpdateOneInput
   vehicle: VehicleUpdateOneInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
   votedFor: VoteUpdateManyWithoutVoterInput
@@ -10176,6 +10319,7 @@ input UserUpdateWithoutContactInfoDataInput {
   preferences: PreferenceUpdateOneWithoutUserInput
   userMeta: UserMetaUpdateOneWithoutUserInput
   avatar: CloudinaryImageUpdateOneInput
+  rig: RigImageUpdateOneInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -10213,6 +10357,7 @@ input UserUpdateWithoutEventsCreatedDataInput {
   preferences: PreferenceUpdateOneWithoutUserInput
   userMeta: UserMetaUpdateOneWithoutUserInput
   avatar: CloudinaryImageUpdateOneInput
+  rig: RigImageUpdateOneInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -10249,6 +10394,7 @@ input UserUpdateWithoutEventsHostedDataInput {
   preferences: PreferenceUpdateOneWithoutUserInput
   userMeta: UserMetaUpdateOneWithoutUserInput
   avatar: CloudinaryImageUpdateOneInput
+  rig: RigImageUpdateOneInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -10285,6 +10431,7 @@ input UserUpdateWithoutEventsRSVPdDataInput {
   preferences: PreferenceUpdateOneWithoutUserInput
   userMeta: UserMetaUpdateOneWithoutUserInput
   avatar: CloudinaryImageUpdateOneInput
+  rig: RigImageUpdateOneInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -10321,6 +10468,7 @@ input UserUpdateWithoutLogDataInput {
   preferences: PreferenceUpdateOneWithoutUserInput
   userMeta: UserMetaUpdateOneWithoutUserInput
   avatar: CloudinaryImageUpdateOneInput
+  rig: RigImageUpdateOneInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -10357,6 +10505,7 @@ input UserUpdateWithoutMembershipLogContributionsDataInput {
   preferences: PreferenceUpdateOneWithoutUserInput
   userMeta: UserMetaUpdateOneWithoutUserInput
   avatar: CloudinaryImageUpdateOneInput
+  rig: RigImageUpdateOneInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -10393,6 +10542,7 @@ input UserUpdateWithoutMembershipLogDataInput {
   preferences: PreferenceUpdateOneWithoutUserInput
   userMeta: UserMetaUpdateOneWithoutUserInput
   avatar: CloudinaryImageUpdateOneInput
+  rig: RigImageUpdateOneInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -10428,6 +10578,7 @@ input UserUpdateWithoutPreferencesDataInput {
   contactInfo: ContactInfoUpdateOneWithoutUserInput
   userMeta: UserMetaUpdateOneWithoutUserInput
   avatar: CloudinaryImageUpdateOneInput
+  rig: RigImageUpdateOneInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -10465,6 +10616,7 @@ input UserUpdateWithoutRunReportsLoggedDataInput {
   preferences: PreferenceUpdateOneWithoutUserInput
   userMeta: UserMetaUpdateOneWithoutUserInput
   avatar: CloudinaryImageUpdateOneInput
+  rig: RigImageUpdateOneInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -10501,6 +10653,7 @@ input UserUpdateWithoutTrailsVisitedDataInput {
   preferences: PreferenceUpdateOneWithoutUserInput
   userMeta: UserMetaUpdateOneWithoutUserInput
   avatar: CloudinaryImageUpdateOneInput
+  rig: RigImageUpdateOneInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -10536,6 +10689,7 @@ input UserUpdateWithoutUserMetaDataInput {
   contactInfo: ContactInfoUpdateOneWithoutUserInput
   preferences: PreferenceUpdateOneWithoutUserInput
   avatar: CloudinaryImageUpdateOneInput
+  rig: RigImageUpdateOneInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -10573,6 +10727,7 @@ input UserUpdateWithoutVotedForDataInput {
   preferences: PreferenceUpdateOneWithoutUserInput
   userMeta: UserMetaUpdateOneWithoutUserInput
   avatar: CloudinaryImageUpdateOneInput
+  rig: RigImageUpdateOneInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votesReceived: VoteUpdateManyWithoutCandidateInput
@@ -10609,6 +10764,7 @@ input UserUpdateWithoutVotesReceivedDataInput {
   preferences: PreferenceUpdateOneWithoutUserInput
   userMeta: UserMetaUpdateOneWithoutUserInput
   avatar: CloudinaryImageUpdateOneInput
+  rig: RigImageUpdateOneInput
   vehicle: VehicleUpdateOneInput
   candidateFor: BallotUpdateManyWithoutCandidatesInput
   votedFor: VoteUpdateManyWithoutVoterInput
@@ -11217,6 +11373,7 @@ input UserWhereInput {
   preferences: PreferenceWhereInput
   userMeta: UserMetaWhereInput
   avatar: CloudinaryImageWhereInput
+  rig: RigImageWhereInput
   vehicle: VehicleWhereInput
   candidateFor_every: BallotWhereInput
   candidateFor_some: BallotWhereInput
@@ -11272,7 +11429,7 @@ type Vehicle implements Node {
   model: String!
   name: String
   trim: String
-  image: String
+  image: CloudinaryImage
   mods: [String!]!
 }
 
@@ -11293,8 +11450,8 @@ input VehicleCreateInput {
   model: String!
   name: String
   trim: String
-  image: String
   mods: VehicleCreatemodsInput
+  image: CloudinaryImageCreateOneInput
 }
 
 input VehicleCreatemodsInput {
@@ -11332,8 +11489,6 @@ enum VehicleOrderByInput {
   name_DESC
   trim_ASC
   trim_DESC
-  image_ASC
-  image_DESC
 }
 
 type VehiclePreviousValues {
@@ -11345,7 +11500,6 @@ type VehiclePreviousValues {
   model: String!
   name: String
   trim: String
-  image: String
   mods: [String!]!
 }
 
@@ -11392,8 +11546,8 @@ input VehicleUpdateDataInput {
   model: String
   name: String
   trim: String
-  image: String
   mods: VehicleUpdatemodsInput
+  image: CloudinaryImageUpdateOneInput
 }
 
 input VehicleUpdateInput {
@@ -11402,8 +11556,8 @@ input VehicleUpdateInput {
   model: String
   name: String
   trim: String
-  image: String
   mods: VehicleUpdatemodsInput
+  image: CloudinaryImageUpdateOneInput
 }
 
 input VehicleUpdateManyMutationInput {
@@ -11412,7 +11566,6 @@ input VehicleUpdateManyMutationInput {
   model: String
   name: String
   trim: String
-  image: String
   mods: VehicleUpdatemodsInput
 }
 
@@ -11709,46 +11862,7 @@ input VehicleWhereInput {
 
   """All values not ending with the given string."""
   trim_not_ends_with: String
-  image: String
-
-  """All values that are not equal to given value."""
-  image_not: String
-
-  """All values that are contained in given list."""
-  image_in: [String!]
-
-  """All values that are not contained in given list."""
-  image_not_in: [String!]
-
-  """All values less than the given value."""
-  image_lt: String
-
-  """All values less than or equal the given value."""
-  image_lte: String
-
-  """All values greater than the given value."""
-  image_gt: String
-
-  """All values greater than or equal the given value."""
-  image_gte: String
-
-  """All values containing the given string."""
-  image_contains: String
-
-  """All values not containing the given string."""
-  image_not_contains: String
-
-  """All values starting with the given string."""
-  image_starts_with: String
-
-  """All values not starting with the given string."""
-  image_not_starts_with: String
-
-  """All values ending with the given string."""
-  image_ends_with: String
-
-  """All values not ending with the given string."""
-  image_not_ends_with: String
+  image: CloudinaryImageWhereInput
 }
 
 input VehicleWhereUniqueInput {

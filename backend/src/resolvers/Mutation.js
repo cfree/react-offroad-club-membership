@@ -3,6 +3,15 @@ const jwt = require("jsonwebtoken");
 const { randomBytes } = require("crypto");
 const { promisify } = require("util");
 const fetch = require("node-fetch");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUNDINARY_NAME,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET
+});
+
+const promisifiedDestroy = promisify(cloudinary.uploader.destroy);
 
 const HASH_SECRET = process.env.HASH_SECRET;
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -734,14 +743,13 @@ const Mutations = {
     }
 
     const { data } = args;
-    const { oldAvatar, newAvatar } = data;
+    const { old: oldAvatar, new: newAvatar } = data;
 
     if (oldAvatar) {
       // Delete old image via Cloudinary API
       const formData = {
         api_key: process.env.CLOUDINARY_KEY,
-        public_id: oldAvatar.publicId,
-        signature: oldAvatar.signature
+        public_id: oldAvatar.publicId
       };
 
       try {
@@ -764,14 +772,11 @@ const Mutations = {
         avatar: {
           upsert: {
             create: {
-              id: newAvatar.id,
-              signature: newAvatar.signature,
               publicId: newAvatar.publicId,
               url: newAvatar.url,
               smallUrl: newAvatar.smallUrl
             },
             update: {
-              signature: newAvatar.signature,
               publicId: newAvatar.publicId,
               url: newAvatar.url,
               smallUrl: newAvatar.smallUrl
@@ -798,21 +803,16 @@ const Mutations = {
 
     const { avatar } = args;
 
-    // Delete old image via Cloudinary API
-    const formData = {
-      api_key: process.env.CLOUDINARY_KEY,
-      public_id: avatar.publicId,
-      signature: avatar.signature
-    };
-
+    // Remove from Cloudinary
     try {
-      await fetch("https://api.cloudinary.com/v1_1/fourplayers/image/destroy", {
-        method: "POST",
-        body: formData
-      });
+      const cloudinaryResults = await promisifiedDestroy(avatar.publicId);
+
+      if (cloudinaryResults && cloudinaryResults.result !== "ok") {
+        throw new Error(cloudinaryResults);
+      }
     } catch (e) {
       console.error(e);
-      throw new Error("Unable to remove old avatar");
+      throw new Error("Unable to delete old rig image");
     }
 
     // Remove from user
@@ -828,9 +828,115 @@ const Mutations = {
     const results = await ctx.db.mutation.updateUser(obj, info);
 
     if (false) {
-      return { message: "Unable to update avatar" };
+      return { message: "Unable to delete avatar" };
     }
-    return { message: "Avatar updated" };
+    return { message: "Avatar deleted" };
+  },
+  async updateRig(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error("User must be logged in");
+    }
+
+    const { data } = args;
+    const { old, new: newRig } = data;
+
+    // Remove from Cloudinary
+    if (old) {
+      try {
+        const cloudinaryResults = await promisifiedDestroy(rig.public_id);
+        const json = await cloudinaryResults.json();
+
+        if (json.error) {
+          console.log("delete result", json);
+          throw new Error(json.error);
+        }
+      } catch (e) {
+        console.error(e);
+        throw new Error("Unable to delete old rig image");
+      }
+    }
+
+    // Update user
+    const obj = {
+      data: {
+        rig: {
+          upsert: {
+            create: {
+              image: {
+                create: {
+                  publicId: newRig.publicId,
+                  url: newRig.url,
+                  smallUrl: newRig.smallUrl
+                }
+              }
+            },
+            update: {
+              image: {
+                upsert: {
+                  create: {
+                    publicId: newRig.publicId,
+                    url: newRig.url,
+                    smallUrl: newRig.smallUrl
+                  },
+                  update: {
+                    publicId: newRig.publicId,
+                    url: newRig.url,
+                    smallUrl: newRig.smallUrl
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      where: { id: ctx.request.userId }
+    };
+
+    const results = await ctx.db.mutation.updateUser(obj, info);
+
+    // TODO error handling
+    if (false) {
+      return { message: "Unable to update rig image" };
+    }
+    return { message: "Rig image updated" };
+  },
+  async deleteRig(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error("User must be logged in");
+    }
+
+    const { rig } = args;
+
+    // Remove from Cloudinary
+    try {
+      const cloudinaryResults = await promisifiedDestroy(rig.publicId);
+
+      if (cloudinaryResults && cloudinaryResults.result !== "ok") {
+        throw new Error(cloudinaryResults);
+      }
+    } catch (e) {
+      console.error(e);
+      throw new Error("Unable to delete old rig image");
+    }
+
+    // Remove from user
+    const obj = {
+      data: {
+        rig: {
+          delete: true
+        }
+      },
+      where: { id: ctx.request.userId }
+    };
+
+    const results = await ctx.db.mutation.updateUser(obj, info);
+
+    if (false) {
+      return { message: "Unable to update rig image" };
+    }
+    return { message: "Rig image deleted" };
   },
   async submitElection(parent, args, ctx, info) {
     // Logged in?

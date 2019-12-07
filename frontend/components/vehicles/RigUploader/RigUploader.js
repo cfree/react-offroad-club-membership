@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 
@@ -7,7 +8,7 @@ import Loading from '../../utility/Loading';
 import { getUploadLocation } from '../../../lib/utils';
 
 const UPDATE_RIG = gql`
-  mutation UPDATE_RIG($data: RigUpdateInput!) {
+  mutation UPDATE_RIG($data: ImageUpdateInput!) {
     updateRig(data: $data) {
       message
     }
@@ -15,7 +16,7 @@ const UPDATE_RIG = gql`
 `;
 
 const DELETE_RIG = gql`
-  mutation DELETE_RIG($avatar: CloudinaryImageInput!) {
+  mutation DELETE_RIG($rig: CloudinaryImageInput!) {
     deleteRig(rig: $rig) {
       message
     }
@@ -25,7 +26,7 @@ const DELETE_RIG = gql`
 const uploadImage = async file => {
   const data = new FormData();
   data.append('file', file);
-  data.append('upload_preset', getUploadLocation('avatars'));
+  data.append('upload_preset', getUploadLocation('rigs'));
 
   const res = await fetch(
     'https://api.cloudinary.com/v1_1/fourplayers/image/upload',
@@ -40,19 +41,17 @@ const uploadImage = async file => {
 
 const defaultRig = {
   id: null,
-  signature: null,
   publicId: null,
   url: null,
   smallUrl: null,
 };
 
-const RigUploader = ({ rig }) => {
+const RigUploader = ({ image }) => {
   const initialImage = {
-    id: (image && image.id) || defaultImage.id,
-    signature: (image && image.signature) || defaultImage.signature,
-    publicId: (image && image.publicId) || defaultImage.publicId,
-    url: (image && image.url) || defaultImage.url,
-    smallUrl: (image && image.smallUrl) || defaultImage.smallUrl,
+    id: (image && image.id) || defaultRig.id,
+    publicId: (image && image.publicId) || defaultRig.publicId,
+    url: (image && image.url) || defaultRig.url,
+    smallUrl: (image && image.smallUrl) || defaultRig.smallUrl,
   };
   const [rig, setRig] = useState(initialImage);
   const [oldRig, setOldRig] = useState(image ? initialImage : null);
@@ -61,24 +60,27 @@ const RigUploader = ({ rig }) => {
     async (e, callback) => {
       const files = e.target.files;
       const uploadResults = await uploadImage(files[0]);
-      const newAvatar = {
-        signature: uploadResults.signature,
+      console.log('uploadResults', uploadResults);
+      const newRig = {
         publicId: uploadResults.public_id,
         url: uploadResults.secure_url,
         smallUrl: uploadResults.eager[0].secure_url,
       };
 
+      console.log('old', oldRig);
+      console.log('new', newRig);
+
       callback({
         variables: {
           data: {
-            oldAvatar,
-            newAvatar,
+            old: oldRig,
+            new: newRig,
           },
         },
       });
 
-      setAvatar(newAvatar);
-      setOldAvatar(newAvatar);
+      setRig(newRig);
+      setOldRig(newRig);
     },
     [rig, oldRig, setRig, setOldRig],
   );
@@ -87,21 +89,21 @@ const RigUploader = ({ rig }) => {
     async callback => {
       callback({
         variables: {
-          image: oldRig,
+          rig: oldRig,
         },
       });
 
-      setRig(defaultImage);
+      setRig(defaultRig);
       setOldRig();
     },
-    [oldRig, setRig, setOldRig, defaultImage],
+    [oldRig, setRig, setOldRig, defaultRig],
   );
 
   return (
     <>
-      Upload avatar
+      Upload rig photo (cropped to 660 x 440)
       <Mutation mutation={UPDATE_RIG}>
-        {(updateAvatar, { error, loading, data }) => {
+        {(updateRig, { error, loading, data }) => {
           return (
             <>
               <input
@@ -110,13 +112,13 @@ const RigUploader = ({ rig }) => {
                 name="file"
                 placeholder="Upload an image"
                 required
-                onChange={e => uploadFile(e, updateAvatar)}
+                onChange={e => uploadFile(e, updateRig)}
                 key={Date.now()}
               />
               {loading && <Loading loading={loading} />}
               {error && <ErrorMessage error={error} />}
-              {avatar.url && data && data.updateAvatar.message}
-              {avatar.url && <img width="100" src={avatar.url} alt="Avatar" />}
+              {rig.url && data && data.updateRig.message}
+              {rig.url && <img width="660" src={rig.url} alt="Rig" />}
             </>
           );
         }}
@@ -143,4 +145,13 @@ const RigUploader = ({ rig }) => {
   );
 };
 
-export default AvatarUploader;
+RigUploader.propTypes = {
+  image: PropTypes.shape({
+    id: PropTypes.string.required,
+    publicId: PropTypes.string.required,
+    url: PropTypes.string.required,
+    smallUrl: PropTypes.string,
+  }),
+};
+
+export default RigUploader;

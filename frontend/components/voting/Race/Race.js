@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
-import RigbookCard from '../../User/RigbookCard';
+import RigbookCard from '../../user/RigbookCard';
 import {
   StyledRace,
   StyledFieldset,
   StyledBallotList,
   StyledCandidate,
   StyledVoteButton,
-  StyledAbstainButton
+  StyledAbstainButton,
 } from './race.styles';
 
 const SUBMIT_VOTE_MUTATION = gql`
@@ -88,7 +88,9 @@ class Race extends Component {
                 onSubmit={e => this.castBallot(e, submitVote)}
                 method="post"
               >
-                {data && data.submitVote.message && <h3>{data.submitVote.message}</h3>}
+                {data && data.submitVote.message && (
+                  <h3>{data.submitVote.message}</h3>
+                )}
                 <StyledFieldset
                   disabled={this.state.isDisabled}
                   aria-busy={this.state.isDisabled}
@@ -96,7 +98,7 @@ class Race extends Component {
                   <StyledBallotList>
                     {this.props.candidates.map(candidate => {
                       const id = `${this.props.pollId}_${candidate.id}`;
-                      
+
                       return (
                         <li key={candidate.id}>
                           <StyledCandidate>

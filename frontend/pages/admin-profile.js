@@ -2,8 +2,8 @@ import Router from 'next/router';
 import Roles from '../components/Admin/Roles';
 import Gate from '../components/Login/Gate';
 import { isAtLeastBoardMember, isActive } from '../lib/utils';
-import AdminProfileForm from '../components/User/AdminProfileForm';
-import ProfileForm from '../components/User/ProfileForm';
+import AdminProfileForm from '../components/user/AdminProfileForm';
+import ProfileForm from '../components/user/ProfileForm';
 
 const AdminProfilePage = ({ query }) => {
   const { user = 'self' } = query;

@@ -1,11 +1,7 @@
 import { Component } from 'react';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
-import {
-  Formik,
-  Field,
-  ErrorMessage as FormikErrorMessage,
-} from 'formik';
+import { Formik, Field, ErrorMessage as FormikErrorMessage } from 'formik';
 import * as yup from 'yup';
 import { format } from 'date-fns';
 import styled from 'styled-components';
@@ -61,7 +57,6 @@ const MEMBER_PROFILE_QUERY = gql`
       joined
       avatar {
         id
-        signature
         publicId
         url
         smallUrl
@@ -97,7 +92,6 @@ const SELF_PROFILE_QUERY = gql`
       joined
       avatar {
         id
-        signature
         publicId
         url
         smallUrl

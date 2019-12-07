@@ -7,7 +7,7 @@ import Loading from '../../utility/Loading';
 import { getUploadLocation } from '../../../lib/utils';
 
 const UPDATE_AVATAR = gql`
-  mutation UPDATE_AVATAR($data: AvatarUpdateInput!) {
+  mutation UPDATE_AVATAR($data: ImageUpdateInput!) {
     updateAvatar(data: $data) {
       message
     }
@@ -40,7 +40,6 @@ const uploadImage = async file => {
 
 const defaultImage = {
   id: null,
-  signature: null,
   publicId: null,
   url: null,
   smallUrl: null,
@@ -49,7 +48,6 @@ const defaultImage = {
 const AvatarUploader = ({ image }) => {
   const initialImage = {
     id: (image && image.id) || defaultImage.id,
-    signature: (image && image.signature) || defaultImage.signature,
     publicId: (image && image.publicId) || defaultImage.publicId,
     url: (image && image.url) || defaultImage.url,
     smallUrl: (image && image.smallUrl) || defaultImage.smallUrl,
@@ -62,7 +60,6 @@ const AvatarUploader = ({ image }) => {
       const files = e.target.files;
       const uploadResults = await uploadImage(files[0]);
       const newAvatar = {
-        signature: uploadResults.signature,
         publicId: uploadResults.public_id,
         url: uploadResults.secure_url,
         smallUrl: uploadResults.eager[0].secure_url,
@@ -71,8 +68,8 @@ const AvatarUploader = ({ image }) => {
       callback({
         variables: {
           data: {
-            oldAvatar,
-            newAvatar,
+            old: oldAvatar,
+            new: newAvatar,
           },
         },
       });

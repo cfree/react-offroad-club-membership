@@ -37,7 +37,9 @@ const USER_QUERY = gql`
         model
         year
         trim
-        image
+        image {
+          url
+        }
         name
         mods
       }

@@ -37,8 +37,10 @@ type Mutation {
     data: UserAdminUpdateInput!
     id: ID!
   ): SuccessMessage
-  updateAvatar(data: AvatarUpdateInput!): SuccessMessage
+  updateAvatar(data: ImageUpdateInput!): SuccessMessage
   deleteAvatar(avatar: CloudinaryImageInput!): SuccessMessage
+  updateRig(data: ImageUpdateInput!): SuccessMessage
+  deleteRig(rig: CloudinaryImageInput!): SuccessMessage
   submitElection(election: ElectionInput!): Election
   submitVote(vote: VoteInput): SuccessMessage
 }
@@ -92,6 +94,8 @@ type User {
   accountStatus: AccountStatus
   accountType: AccountType
   office: Office
+  rig: RigImage
+  # vehicles: [Vehicle]
   vehicle: Vehicle
   comfortLevel: String
   log: [LogItem]
@@ -280,14 +284,13 @@ type Ballot {
   results: [Result]
 }
 
-input AvatarUpdateInput {
-  oldAvatar: CloudinaryImageInput
-  newAvatar: CloudinaryImageInput!
+input ImageUpdateInput {
+  old: CloudinaryImageInput
+  new: CloudinaryImageInput!
 }
 
 input CloudinaryImageInput {
   id: ID
-  signature: String!
   publicId: String!
   url: String!
   smallUrl: String
@@ -295,7 +298,6 @@ input CloudinaryImageInput {
 
 type CloudinaryImage {
   id: ID
-  signature: String!
   publicId: String!
   url: String!
   smallUrl: String

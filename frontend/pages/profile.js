@@ -1,5 +1,5 @@
 import Gate from '../components/Login/Gate';
-import Profile from '../components/User/Profile';
+import Profile from '../components/user/Profile';
 
 const ProfilePage = ({ query }) => {
   return (
