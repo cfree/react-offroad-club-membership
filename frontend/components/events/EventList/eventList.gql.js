@@ -14,6 +14,9 @@ export const UPCOMING_EVENTS_QUERY = gql`
       id
       title
       description
+      featuredImage {
+        smallUrl
+      }
       startTime
       endTime
       host {
@@ -57,6 +60,9 @@ export const PAST_EVENTS_QUERY = gql`
       id
       title
       description
+      featuredImage {
+        smallUrl
+      }
       startTime
       endTime
       host {

@@ -6,16 +6,16 @@ import ErrorMessage from '../../utility/ErrorMessage';
 import Loading from '../../utility/Loading';
 import { getUploadLocation } from '../../../lib/utils';
 
-const UPDATE_AVATAR = gql`
-  mutation UPDATE_AVATAR($data: ImageUpdateInput!) {
+const UPDATE_EVENT_IMAGE = gql`
+  mutation UPDATE_EVENT_IMAGE($data: ImageUpdateInput!) {
     updateAvatar(data: $data) {
       message
     }
   }
 `;
 
-const DELETE_AVATAR = gql`
-  mutation DELETE_AVATAR($avatar: CloudinaryImageInput!) {
+const DELETE_EVENT_IMAGE = gql`
+  mutation DELETE_EVENT_IMAGE($avatar: CloudinaryImageInput!) {
     deleteAvatar(avatar: $avatar) {
       message
     }
@@ -25,7 +25,7 @@ const DELETE_AVATAR = gql`
 const uploadImage = async file => {
   const data = new FormData();
   data.append('file', file);
-  data.append('upload_preset', getUploadLocation('avatars'));
+  data.append('upload_preset', getUploadLocation('events'));
 
   const res = await fetch(
     'https://api.cloudinary.com/v1_1/fourplayers/image/upload',
@@ -45,21 +45,23 @@ const defaultImage = {
   smallUrl: null,
 };
 
-const AvatarUploader = ({ image }) => {
+const EventImageUploader = ({ image }) => {
   const initialImage = {
     id: (image && image.id) || defaultImage.id,
     publicId: (image && image.publicId) || defaultImage.publicId,
     url: (image && image.url) || defaultImage.url,
     smallUrl: (image && image.smallUrl) || defaultImage.smallUrl,
   };
-  const [avatar, setAvatar] = useState(initialImage);
-  const [oldAvatar, setOldAvatar] = useState(image ? initialImage : null);
+  const [eventImage, setEventImage] = useState(initialImage);
+  const [oldEventImage, setOldEventImage] = useState(
+    image ? initialImage : null,
+  );
 
   const uploadFile = useCallback(
     async (e, callback) => {
       const files = e.target.files;
       const uploadResults = await uploadImage(files[0]);
-      const newAvatar = {
+      const newEventImage = {
         publicId: uploadResults.public_id,
         url: uploadResults.secure_url,
         smallUrl: uploadResults.eager[0].secure_url,
@@ -68,37 +70,37 @@ const AvatarUploader = ({ image }) => {
       callback({
         variables: {
           data: {
-            old: oldAvatar,
-            new: newAvatar,
+            old: oldEventImage,
+            new: newEventImage,
           },
         },
       });
 
-      setAvatar(newAvatar);
-      setOldAvatar(newAvatar);
+      setEventImage(newEventImage);
+      setOldEventImage(newEventImage);
     },
-    [uploadImage, oldAvatar, setAvatar, setOldAvatar],
+    [uploadImage, oldEventImage, setEventImage, setOldEventImage],
   );
 
   const deleteFile = useCallback(
     async callback => {
       callback({
         variables: {
-          avatar: oldAvatar,
+          eventImage: oldEventImage,
         },
       });
 
       setAvatar(defaultImage);
-      setOldAvatar();
+      setOldEventImage();
     },
-    [oldAvatar, setAvatar, setOldAvatar, defaultImage],
+    [oldEventImage, setEventImage, setOldEventImage, defaultImage],
   );
 
   return (
     <>
-      Upload avatar (cropped to 200 x 200)
-      <Mutation mutation={UPDATE_AVATAR}>
-        {(updateAvatar, { error, loading, data }) => {
+      Upload event image (cropped to 1400 x 800)
+      <Mutation mutation={UPDATE_EVENT_IMAGE}>
+        {(updateEventImage, { error, loading, data }) => {
           return (
             <>
               <input
@@ -107,25 +109,27 @@ const AvatarUploader = ({ image }) => {
                 name="file"
                 placeholder="Upload an image"
                 required
-                onChange={e => uploadFile(e, updateAvatar)}
+                onChange={e => uploadFile(e, updateEventImage)}
                 key={Date.now()}
               />
               {loading && <Loading loading={loading} />}
               {error && <ErrorMessage error={error} />}
-              {avatar.url && data && data.updateAvatar.message}
-              {avatar.url && <img width="100" src={avatar.url} alt="Avatar" />}
+              {eventImage.url && data && data.updateEventImage.message}
+              {eventImage.url && (
+                <img width="200" src={eventImage.url} alt="Event Image" />
+              )}
             </>
           );
         }}
       </Mutation>
-      {avatar.url && (
-        <Mutation mutation={DELETE_AVATAR}>
-          {(deleteAvatar, { error, loading, data }) => {
+      {eventImage.url && (
+        <Mutation mutation={DELETE_EVENT_IMAGE}>
+          {(deleteEventImage, { error, loading, data }) => {
             return (
               <>
                 <button
                   disabled={loading}
-                  onClick={() => deleteFile(deleteAvatar)}
+                  onClick={() => deleteFile(deleteEventImage)}
                 >
                   Delete image
                 </button>
@@ -140,4 +144,4 @@ const AvatarUploader = ({ image }) => {
   );
 };
 
-export default AvatarUploader;
+export default EventImageUploader;

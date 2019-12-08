@@ -159,6 +159,7 @@ type Event {
   title: String!
   creator: User! @relation(name: "EventCreator")
   description: String
+  featuredImage: CloudinaryImage
   startTime: DateTime
   endTime: DateTime
   host: User @relation(name: "EventHost")
@@ -190,6 +191,7 @@ type Trail {
   slug: String!
   name: String
   description: String
+  featuredImage: CloudinaryImage
   trailheadCoords: String
   address: String
   avgDifficulty: TrailDifficulty #computed

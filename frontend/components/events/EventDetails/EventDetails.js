@@ -4,10 +4,16 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import { format, getTime, distanceInWordsToNow } from 'date-fns';
 import parse from 'html-react-parser';
+import get from 'lodash/get';
 import getConfig from 'next/config';
 const { publicRuntimeConfig } = getConfig();
 
-import { trailDifficulties, trailConditions } from '../../../lib/constants';
+import {
+  trailDifficulties,
+  trailConditions,
+  DEFAULT_EVENT_SRC,
+  DEFAULT_AVATAR_SMALL_SRC,
+} from '../../../lib/constants';
 import Calendar from '../Calendar';
 import Rsvp from '../Rsvp';
 import { StyledEventHeader, StyledDetails } from './eventDetails.styles';
@@ -27,6 +33,9 @@ const EVENT_QUERY = gql`
     event: getEvent(eventId: $eventId) {
       title
       description
+      featuredImage {
+        url
+      }
       host {
         id
         firstName
@@ -59,6 +68,9 @@ const EVENT_QUERY = gql`
         currentConditions
         conditionsLastReported
         favoriteCount
+        featuredImage {
+          url
+        }
       }
       rallyAddress
       rallyTime
@@ -110,6 +122,12 @@ export default class EventDetails extends Component {
             event.address || 'Colorado',
           );
 
+          const EVENT_IMAGE = get(
+            event,
+            'featuredImage.url',
+            DEFAULT_EVENT_SRC,
+          );
+
           return (
             <>
               {!isPastEvent && (
@@ -156,10 +174,7 @@ export default class EventDetails extends Component {
               <StyledDetails>
                 <div className="event__columns">
                   <section className="event__section">
-                    <img
-                      src="https://s3.us-west-2.amazonaws.com/images-prod.trailsoffroad.com/trails/299/highlights/resized_2017-08-11_12.30.25-2_3.jpg"
-                      alt={event.title}
-                    />
+                    <img src={EVENT_IMAGE} alt={event.title} />
                   </section>
                   <section className="event__section" aria-label="Description">
                     {parse(event.description)}

@@ -60,15 +60,11 @@ const RigUploader = ({ image }) => {
     async (e, callback) => {
       const files = e.target.files;
       const uploadResults = await uploadImage(files[0]);
-      console.log('uploadResults', uploadResults);
       const newRig = {
         publicId: uploadResults.public_id,
         url: uploadResults.secure_url,
         smallUrl: uploadResults.eager[0].secure_url,
       };
-
-      console.log('old', oldRig);
-      console.log('new', newRig);
 
       callback({
         variables: {
@@ -101,7 +97,7 @@ const RigUploader = ({ image }) => {
 
   return (
     <>
-      Upload rig photo (cropped to 660 x 440)
+      Upload rig photo (cropped to 1320 x 880)
       <Mutation mutation={UPDATE_RIG}>
         {(updateRig, { error, loading, data }) => {
           return (

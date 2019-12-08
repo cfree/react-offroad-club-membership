@@ -9,7 +9,7 @@ const Admin = () => (
       <ul>
         <Filter roleCheck={isAdmin} statusCheck={isNotLocked}>
           <li>
-            <Link href="/admin-roles">
+            <Link href="/admin-permissions">
               <a>Roles</a>
             </Link>
           </li>

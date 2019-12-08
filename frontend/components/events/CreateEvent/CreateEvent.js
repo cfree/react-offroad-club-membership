@@ -47,6 +47,8 @@ class CreateEvent extends Component {
             membersOnly: false,
             host: queryData.runLeaders[0].username,
             trail: '0',
+            image: null,
+            newImage: null,
           };
 
           return (
@@ -109,7 +111,7 @@ class CreateEvent extends Component {
   };
 
   handleSubmit = (
-    { startDate, endDate, ...filteredValues },
+    { startDate, endDate, newImage, ...filteredValues },
     setSubmitting,
     createEvent,
   ) => {
@@ -120,6 +122,8 @@ class CreateEvent extends Component {
           ...filteredValues,
           startTime: new Date(`${prevState.startDate} ${prevState.startTime}`),
           endTime: new Date(`${prevState.endDate} ${prevState.endTime}`),
+          featuredImage: null,
+          newFeaturedImage: newImage,
         },
       }),
       () => {

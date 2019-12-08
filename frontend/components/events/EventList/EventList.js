@@ -3,6 +3,7 @@ import { Query } from 'react-apollo';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import parse from 'html-react-parser';
+import get from 'lodash/get';
 
 import { UPCOMING_EVENTS_QUERY, PAST_EVENTS_QUERY } from './eventList.gql.js';
 import {
@@ -11,6 +12,7 @@ import {
   StyledEvent,
 } from './eventList.styles';
 import AttendeeStatus from '../AttendeeStatus';
+import { DEFAULT_EVENT_SMALL_SRC } from '../../../lib/constants';
 
 class EventList extends Component {
   state = {
@@ -63,13 +65,19 @@ class EventList extends Component {
                       }));
                     }
 
+                    const EVENT_IMAGE = get(
+                      event,
+                      'featuredImage.smallUrl',
+                      DEFAULT_EVENT_SMALL_SRC,
+                    );
+
                     return (
                       <StyledEvent key={event.id}>
                         <div className="event">
                           <img
                             className="event-image"
-                            src="https://placekitten.com/150/100"
-                            alt="Default"
+                            src={EVENT_IMAGE}
+                            alt="Image"
                             height="100"
                             width="150"
                           />

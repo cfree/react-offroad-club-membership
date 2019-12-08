@@ -132,3 +132,31 @@ export const getUploadLocation = appendage =>
   process.env.NODE_ENV === 'development'
     ? `dev_${appendage}`
     : `prod_${appendage}`;
+
+export const uploadImage = async (file, location) => {
+  const data = new FormData();
+  data.append('file', file);
+  data.append('upload_preset', getUploadLocation(location));
+
+  try {
+    const res = await fetch(
+      'https://api.cloudinary.com/v1_1/fourplayers/image/upload',
+      {
+        method: 'POST',
+        body: data,
+      },
+    );
+
+    const jsonResults = await res.json();
+
+    if (jsonResults) {
+      return {
+        publicId: jsonResults.public_id,
+        url: jsonResults.secure_url,
+        smallUrl: jsonResults.eager[0].secure_url,
+      };
+    }
+  } catch (e) {
+    return null;
+  }
+};

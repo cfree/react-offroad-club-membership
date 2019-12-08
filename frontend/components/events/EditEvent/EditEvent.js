@@ -11,6 +11,8 @@ import {
 
 import EventForm from '../EventForm';
 import ErrorMessage from '../../utility/ErrorMessage/ErrorMessage';
+import { uploadImage } from '../../../lib/utils';
+import UploadImagePreview from '../../common/UploadImagePreview';
 
 class EditEvent extends Component {
   state = {
@@ -55,6 +57,9 @@ class EditEvent extends Component {
             membersOnly: event.membersOnly,
             host: event.host.username,
             trail: (event.trail && event.trail.id) || '0',
+            image: get(event, 'featuredImage.url', null),
+            imagePublicId: get(event, 'featuredImage.publicId', null),
+            newImage: null,
           };
 
           return (
@@ -116,25 +121,52 @@ class EditEvent extends Component {
     this.setState(newState);
   };
 
-  handleSubmit = (
-    { startDate, endDate, ...filteredValues },
+  handleSubmit = async (
+    { startDate, endDate, image, imagePublicId, newImage, ...filteredValues },
     setSubmitting,
     updateEvent,
   ) => {
     setSubmitting(true);
-    this.setState(
-      prevState => ({
-        eventForm: {
-          ...filteredValues,
-          startTime: new Date(`${prevState.startDate} ${prevState.startTime}`),
-          endTime: new Date(`${prevState.endDate} ${prevState.endTime}`),
+
+    if (newImage) {
+      const cloudinaryResults = await uploadImage(newImage, 'events');
+
+      this.setState(
+        prevState => ({
+          eventForm: {
+            ...filteredValues,
+            startTime: new Date(
+              `${prevState.startDate} ${prevState.startTime}`,
+            ),
+            endTime: new Date(`${prevState.endDate} ${prevState.endTime}`),
+            featuredImage: imagePublicId,
+            newFeaturedImage: cloudinaryResults,
+          },
+        }),
+        () => {
+          updateEvent();
+          setSubmitting(false);
         },
-      }),
-      () => {
-        updateEvent();
-        setSubmitting(false);
-      },
-    );
+      );
+    } else {
+      this.setState(
+        prevState => ({
+          eventForm: {
+            ...filteredValues,
+            startTime: new Date(
+              `${prevState.startDate} ${prevState.startTime}`,
+            ),
+            endTime: new Date(`${prevState.endDate} ${prevState.endTime}`),
+            featuredImage: imagePublicId,
+            newFeaturedImage: null,
+          },
+        }),
+        () => {
+          updateEvent();
+          setSubmitting(false);
+        },
+      );
+    }
   };
 }
 

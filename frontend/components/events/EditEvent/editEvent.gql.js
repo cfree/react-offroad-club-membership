@@ -5,6 +5,10 @@ export const SETUP_EXISTING_EVENT_QUERY = gql`
     event: getEvent(eventId: $eventId) {
       title
       description
+      featuredImage {
+        url
+        publicId
+      }
       host {
         id
         firstName
@@ -22,7 +26,7 @@ export const SETUP_EXISTING_EVENT_QUERY = gql`
           firstName
           lastName
           avatar {
-            small
+            smallUrl
           }
         }
         status
@@ -71,6 +75,8 @@ export const EDIT_EVENT_MUTATION = gql`
     $membersOnly: Boolean
     $host: String!
     $trail: String
+    $featuredImage: String #publicId
+    $newFeaturedImage: CloudinaryImageInput
   ) {
     updateEvent(
       id: $id
@@ -87,6 +93,8 @@ export const EDIT_EVENT_MUTATION = gql`
         membersOnly: $membersOnly
         host: $host
         trail: $trail
+        featuredImage: $featuredImage #publicId
+        newFeaturedImage: $newFeaturedImage
       }
     ) {
       message

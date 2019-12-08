@@ -11,6 +11,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET
 });
 
+const promisifiedUpload = promisify(cloudinary.uploader.unsigned_upload);
 const promisifiedDestroy = promisify(cloudinary.uploader.destroy);
 
 const HASH_SECRET = process.env.HASH_SECRET;
@@ -22,7 +23,8 @@ const {
   hasRole,
   hasAccountStatus,
   hasAccountType,
-  isSelf
+  isSelf,
+  getUploadLocation
 } = require("../utils");
 const { roles, emailGroups } = require("../config");
 
@@ -266,6 +268,56 @@ const Mutations = {
       info
     );
   },
+  async updateAccountType(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error("User must be logged in");
+    }
+
+    // Have proper roles to do this?
+    hasRole(ctx.request.user, ["ADMIN"]);
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
+
+    // Update role
+    return ctx.db.mutation.updateUser(
+      {
+        data: {
+          accountType: args.accountType
+        },
+        where: {
+          id: args.userId
+        }
+      },
+      info
+    );
+  },
+  async updateAccountStatus(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error("User must be logged in");
+    }
+
+    // Have proper roles to do this?
+    hasRole(ctx.request.user, ["ADMIN"]);
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
+
+    // Update role
+    return ctx.db.mutation.updateUser(
+      {
+        data: {
+          accountStatus: args.accountStatus
+        },
+        where: {
+          id: args.userId
+        }
+      },
+      info
+    );
+  },
   async createEvent(parent, args, ctx, info) {
     // Logged in?
     // if (!ctx.request.userId) {
@@ -331,17 +383,27 @@ const Mutations = {
   },
   async updateEvent(parent, args, ctx, info) {
     // Logged in?
-    // if (!ctx.request.userId) {
-    //   throw new Error('User must be logged in');
-    // }
+    if (!ctx.request.userId) {
+      throw new Error("User must be logged in");
+    }
 
     // Have proper roles to do this?
-    // hasRole(ctx.request.user, ['ADMIN', 'OFFICER', 'RUN_MASTER']);
+    hasRole(ctx.request.user, ["ADMIN", "OFFICER", "RUN_MASTER"]);
 
     // Requesting user has proper account status?
-    // hasAccountStatus(ctx.request.user, ['ACTIVE']);
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
 
     const { event, id: eventId } = args;
+
+    // Get current event for later comparison
+    const existingEvent = await ctx.db.query.event(
+      {
+        where: {
+          id: eventId
+        }
+      },
+      info
+    );
 
     const data = {
       title: event.title,
@@ -364,11 +426,40 @@ const Mutations = {
       }
     };
 
-    if (event.trail !== "0") {
+    if (event.trail && event.trail !== "0") {
+      // New trail submitted
       data.trail = {
         connect: {
           id: event.trail
         }
+      };
+    } else if (existingEvent.trail && existingEvent.trail.id && !event.trail) {
+      // Remove old trail
+      data.trail = {
+        disconnect: true
+      };
+    }
+
+    if (event.newFeaturedImage) {
+      // New featured image submitted
+      data.featuredImage = {
+        upsert: {
+          create: {
+            ...event.newFeaturedImage
+          },
+          update: {
+            ...event.newFeaturedImage
+          }
+        }
+      };
+    } else if (
+      existingEvent.featuredImage &&
+      existingEvent.featuredImage.publicId &&
+      !event.newFeaturedImage
+    ) {
+      // Remove old featured image
+      data.featuredImage = {
+        delete: true
       };
     }
 

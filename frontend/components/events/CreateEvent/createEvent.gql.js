@@ -28,6 +28,8 @@ export const CREATE_EVENT_MUTATION = gql`
     $membersOnly: Boolean
     $host: String!
     $trail: String
+    $featuredImage: String #publicId
+    $newFeaturedImage: CloudinaryImageInput
   ) {
     createEvent(
       event: {
@@ -43,6 +45,8 @@ export const CREATE_EVENT_MUTATION = gql`
         membersOnly: $membersOnly
         host: $host
         trail: $trail
+        featuredImage: $featuredImage #publicId
+        newFeaturedImage: $newFeaturedImage
       }
     ) {
       message

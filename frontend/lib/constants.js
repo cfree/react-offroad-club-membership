@@ -80,3 +80,6 @@ export const pastRsvpStatuses = {
 export const DEFAULT_AVATAR_SRC = '/static/img/default-user.jpg';
 export const DEFAULT_AVATAR_SMALL_SRC = '/static/img/default-user.jpg';
 export const DEFAULT_RIG_SRC = '/static/img/default-vehicle.jpg';
+export const DEFAULT_EVENT_SRC =
+  'https://s3.us-west-2.amazonaws.com/images-prod.trailsoffroad.com/trails/299/highlights/resized_2017-08-11_12.30.25-2_3.jpg';
+export const DEFAULT_EVENT_SMALL_SRC = 'https://placekitten.com/150/100';

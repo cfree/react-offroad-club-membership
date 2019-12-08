@@ -24,6 +24,8 @@ type Mutation {
   changePassword(password: String!, confirmPassword: String!): SuccessMessage
   changeEmail(email: String!): SuccessMessage
   updateRole(role: Role, userId: ID!): User
+  updateAccountType(accountType: AccountType, userId: ID!): User
+  updateAccountStatus(accountStatus: AccountStatus, userId: ID!): User
   createEvent(event: UpsertEventInput!): SuccessMessage
   updateEvent(id: ID!, event: UpsertEventInput!): SuccessMessage
   setRSVP(rsvp: RSVPInput): SuccessMessage
@@ -129,6 +131,7 @@ type Event {
   title: String!
   creator: User!
   description: String
+  featuredImage: CloudinaryImage
   startTime: DateTime
   endTime: DateTime
   host: User
@@ -155,6 +158,7 @@ type Trail {
   slug: String!
   name: String
   description: String
+  featuredImage: CloudinaryImage
   trailheadCoords: String
   # coords: Coords
   address: String
@@ -243,6 +247,8 @@ input UpsertEventInput {
   membersOnly: Boolean
   host: String!
   trail: String
+  featuredImage: String
+  newFeaturedImage: CloudinaryImageInput
 }
 
 input ElectionInput {

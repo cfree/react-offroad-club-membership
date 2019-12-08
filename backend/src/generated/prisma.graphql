@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/four-players-co/four-players-co/dev
-# timestamp: Sat Dec 07 2019 11:13:22 GMT-0700 (Mountain Standard Time)
+# timestamp: Sat Dec 07 2019 12:42:48 GMT-0700 (Mountain Standard Time)
 
 enum AccountStatus {
   ACTIVE
@@ -2637,6 +2637,7 @@ type Event implements Node {
   title: String!
   creator: User!
   description: String
+  featuredImage: CloudinaryImage
   startTime: DateTime
   endTime: DateTime
   host: User
@@ -2675,6 +2676,7 @@ input EventCreateInput {
   rallyTime: String
   membersOnly: Boolean
   creator: UserCreateOneWithoutEventsCreatedInput!
+  featuredImage: CloudinaryImageCreateOneInput
   host: UserCreateOneWithoutEventsHostedInput
   rsvps: RSVPCreateManyWithoutEventInput
   trail: TrailCreateOneWithoutPastEventsInput
@@ -2730,6 +2732,7 @@ input EventCreateWithoutBandaidsInput {
   rallyTime: String
   membersOnly: Boolean
   creator: UserCreateOneWithoutEventsCreatedInput!
+  featuredImage: CloudinaryImageCreateOneInput
   host: UserCreateOneWithoutEventsHostedInput
   rsvps: RSVPCreateManyWithoutEventInput
   trail: TrailCreateOneWithoutPastEventsInput
@@ -2748,6 +2751,7 @@ input EventCreateWithoutCreatorInput {
   rallyAddress: String
   rallyTime: String
   membersOnly: Boolean
+  featuredImage: CloudinaryImageCreateOneInput
   host: UserCreateOneWithoutEventsHostedInput
   rsvps: RSVPCreateManyWithoutEventInput
   trail: TrailCreateOneWithoutPastEventsInput
@@ -2768,6 +2772,7 @@ input EventCreateWithoutHostInput {
   rallyTime: String
   membersOnly: Boolean
   creator: UserCreateOneWithoutEventsCreatedInput!
+  featuredImage: CloudinaryImageCreateOneInput
   rsvps: RSVPCreateManyWithoutEventInput
   trail: TrailCreateOneWithoutPastEventsInput
   bandaids: BandaidCreateManyWithoutEventInput
@@ -2787,6 +2792,7 @@ input EventCreateWithoutRsvpsInput {
   rallyTime: String
   membersOnly: Boolean
   creator: UserCreateOneWithoutEventsCreatedInput!
+  featuredImage: CloudinaryImageCreateOneInput
   host: UserCreateOneWithoutEventsHostedInput
   trail: TrailCreateOneWithoutPastEventsInput
   bandaids: BandaidCreateManyWithoutEventInput
@@ -2806,6 +2812,7 @@ input EventCreateWithoutRunReportsInput {
   rallyTime: String
   membersOnly: Boolean
   creator: UserCreateOneWithoutEventsCreatedInput!
+  featuredImage: CloudinaryImageCreateOneInput
   host: UserCreateOneWithoutEventsHostedInput
   rsvps: RSVPCreateManyWithoutEventInput
   trail: TrailCreateOneWithoutPastEventsInput
@@ -2825,6 +2832,7 @@ input EventCreateWithoutTrailInput {
   rallyTime: String
   membersOnly: Boolean
   creator: UserCreateOneWithoutEventsCreatedInput!
+  featuredImage: CloudinaryImageCreateOneInput
   host: UserCreateOneWithoutEventsHostedInput
   rsvps: RSVPCreateManyWithoutEventInput
   bandaids: BandaidCreateManyWithoutEventInput
@@ -3327,6 +3335,7 @@ input EventUpdateDataInput {
   rallyTime: String
   membersOnly: Boolean
   creator: UserUpdateOneRequiredWithoutEventsCreatedInput
+  featuredImage: CloudinaryImageUpdateOneInput
   host: UserUpdateOneWithoutEventsHostedInput
   rsvps: RSVPUpdateManyWithoutEventInput
   trail: TrailUpdateOneWithoutPastEventsInput
@@ -3346,6 +3355,7 @@ input EventUpdateInput {
   rallyTime: String
   membersOnly: Boolean
   creator: UserUpdateOneRequiredWithoutEventsCreatedInput
+  featuredImage: CloudinaryImageUpdateOneInput
   host: UserUpdateOneWithoutEventsHostedInput
   rsvps: RSVPUpdateManyWithoutEventInput
   trail: TrailUpdateOneWithoutPastEventsInput
@@ -3466,6 +3476,7 @@ input EventUpdateWithoutBandaidsDataInput {
   rallyTime: String
   membersOnly: Boolean
   creator: UserUpdateOneRequiredWithoutEventsCreatedInput
+  featuredImage: CloudinaryImageUpdateOneInput
   host: UserUpdateOneWithoutEventsHostedInput
   rsvps: RSVPUpdateManyWithoutEventInput
   trail: TrailUpdateOneWithoutPastEventsInput
@@ -3483,6 +3494,7 @@ input EventUpdateWithoutCreatorDataInput {
   rallyAddress: String
   rallyTime: String
   membersOnly: Boolean
+  featuredImage: CloudinaryImageUpdateOneInput
   host: UserUpdateOneWithoutEventsHostedInput
   rsvps: RSVPUpdateManyWithoutEventInput
   trail: TrailUpdateOneWithoutPastEventsInput
@@ -3502,6 +3514,7 @@ input EventUpdateWithoutHostDataInput {
   rallyTime: String
   membersOnly: Boolean
   creator: UserUpdateOneRequiredWithoutEventsCreatedInput
+  featuredImage: CloudinaryImageUpdateOneInput
   rsvps: RSVPUpdateManyWithoutEventInput
   trail: TrailUpdateOneWithoutPastEventsInput
   bandaids: BandaidUpdateManyWithoutEventInput
@@ -3520,6 +3533,7 @@ input EventUpdateWithoutRsvpsDataInput {
   rallyTime: String
   membersOnly: Boolean
   creator: UserUpdateOneRequiredWithoutEventsCreatedInput
+  featuredImage: CloudinaryImageUpdateOneInput
   host: UserUpdateOneWithoutEventsHostedInput
   trail: TrailUpdateOneWithoutPastEventsInput
   bandaids: BandaidUpdateManyWithoutEventInput
@@ -3538,6 +3552,7 @@ input EventUpdateWithoutRunReportsDataInput {
   rallyTime: String
   membersOnly: Boolean
   creator: UserUpdateOneRequiredWithoutEventsCreatedInput
+  featuredImage: CloudinaryImageUpdateOneInput
   host: UserUpdateOneWithoutEventsHostedInput
   rsvps: RSVPUpdateManyWithoutEventInput
   trail: TrailUpdateOneWithoutPastEventsInput
@@ -3556,6 +3571,7 @@ input EventUpdateWithoutTrailDataInput {
   rallyTime: String
   membersOnly: Boolean
   creator: UserUpdateOneRequiredWithoutEventsCreatedInput
+  featuredImage: CloudinaryImageUpdateOneInput
   host: UserUpdateOneWithoutEventsHostedInput
   rsvps: RSVPUpdateManyWithoutEventInput
   bandaids: BandaidUpdateManyWithoutEventInput
@@ -4007,6 +4023,7 @@ input EventWhereInput {
   """All values that are not equal to given value."""
   membersOnly_not: Boolean
   creator: UserWhereInput
+  featuredImage: CloudinaryImageWhereInput
   host: UserWhereInput
   rsvps_every: RSVPWhereInput
   rsvps_some: RSVPWhereInput
@@ -7237,6 +7254,7 @@ type Trail implements Node {
   slug: String!
   name: String
   description: String
+  featuredImage: CloudinaryImage
   trailheadCoords: String
   address: String
   avgDifficulty: TrailDifficulty
@@ -7278,6 +7296,7 @@ input TrailCreateInput {
   currentConditions: String
   conditionsLastReported: DateTime
   favoriteCount: Int
+  featuredImage: CloudinaryImageCreateOneInput
   pastEvents: EventCreateManyWithoutTrailInput
   visitors: UserCreateManyWithoutTrailsVisitedInput
   runReports: RunReportCreateManyWithoutTrailInput
@@ -7310,6 +7329,7 @@ input TrailCreateWithoutPastEventsInput {
   currentConditions: String
   conditionsLastReported: DateTime
   favoriteCount: Int
+  featuredImage: CloudinaryImageCreateOneInput
   visitors: UserCreateManyWithoutTrailsVisitedInput
   runReports: RunReportCreateManyWithoutTrailInput
 }
@@ -7326,6 +7346,7 @@ input TrailCreateWithoutRunReportsInput {
   currentConditions: String
   conditionsLastReported: DateTime
   favoriteCount: Int
+  featuredImage: CloudinaryImageCreateOneInput
   pastEvents: EventCreateManyWithoutTrailInput
   visitors: UserCreateManyWithoutTrailsVisitedInput
 }
@@ -7342,6 +7363,7 @@ input TrailCreateWithoutVisitorsInput {
   currentConditions: String
   conditionsLastReported: DateTime
   favoriteCount: Int
+  featuredImage: CloudinaryImageCreateOneInput
   pastEvents: EventCreateManyWithoutTrailInput
   runReports: RunReportCreateManyWithoutTrailInput
 }
@@ -7866,6 +7888,7 @@ input TrailUpdateInput {
   currentConditions: String
   conditionsLastReported: DateTime
   favoriteCount: Int
+  featuredImage: CloudinaryImageUpdateOneInput
   pastEvents: EventUpdateManyWithoutTrailInput
   visitors: UserUpdateManyWithoutTrailsVisitedInput
   runReports: RunReportUpdateManyWithoutTrailInput
@@ -7941,6 +7964,7 @@ input TrailUpdateWithoutPastEventsDataInput {
   currentConditions: String
   conditionsLastReported: DateTime
   favoriteCount: Int
+  featuredImage: CloudinaryImageUpdateOneInput
   visitors: UserUpdateManyWithoutTrailsVisitedInput
   runReports: RunReportUpdateManyWithoutTrailInput
 }
@@ -7956,6 +7980,7 @@ input TrailUpdateWithoutRunReportsDataInput {
   currentConditions: String
   conditionsLastReported: DateTime
   favoriteCount: Int
+  featuredImage: CloudinaryImageUpdateOneInput
   pastEvents: EventUpdateManyWithoutTrailInput
   visitors: UserUpdateManyWithoutTrailsVisitedInput
 }
@@ -7971,6 +7996,7 @@ input TrailUpdateWithoutVisitorsDataInput {
   currentConditions: String
   conditionsLastReported: DateTime
   favoriteCount: Int
+  featuredImage: CloudinaryImageUpdateOneInput
   pastEvents: EventUpdateManyWithoutTrailInput
   runReports: RunReportUpdateManyWithoutTrailInput
 }
@@ -8405,6 +8431,7 @@ input TrailWhereInput {
 
   """All values greater than or equal the given value."""
   favoriteCount_gte: Int
+  featuredImage: CloudinaryImageWhereInput
   pastEvents_every: EventWhereInput
   pastEvents_some: EventWhereInput
   pastEvents_none: EventWhereInput
