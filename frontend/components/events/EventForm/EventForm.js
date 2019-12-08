@@ -21,8 +21,6 @@ const EventForm = ({
   trails = [],
   loading = '',
   error,
-  startDate,
-  onDataChange,
   submitLabel = 'Submit',
 }) => {
   return (
@@ -36,7 +34,6 @@ const EventForm = ({
         }}
       >
         {formikProps => {
-          console.log('FORMIK PROPS', formikProps);
           return (
             <StyledForm className="profile-form--user">
               <form onSubmit={formikProps.handleSubmit}>
@@ -58,6 +55,7 @@ const EventForm = ({
                     <Field id="description" name="description">
                       {({ field }) => (
                         <RichTextArea
+                          defaultText={formikProps.initialValues.description}
                           value={field.value}
                           onChange={field.onChange(field.name)}
                         />
@@ -78,25 +76,13 @@ const EventForm = ({
                       name="startDate"
                       min={format(new Date(), 'YYYY-MM-DD')}
                       onChange={e => {
-                        onDataChange({
-                          startDate: e.target.value,
-                        });
+                        formikProps.setFieldValue('endDate', e.target.value);
                         formikProps.handleChange(e);
                       }}
                     />
                     <FormikErrorMessage name="startDate" component="div" />
 
-                    <Field
-                      type="time"
-                      id="startTime"
-                      name="startTime"
-                      onChange={e => {
-                        onDataChange({
-                          startTime: e.target.value,
-                        });
-                        formikProps.handleChange(e);
-                      }}
-                    />
+                    <Field type="time" id="startTime" name="startTime" />
                     <FormikErrorMessage name="startTime" component="div" />
                   </div>
                 </StyledFormField>
@@ -110,27 +96,11 @@ const EventForm = ({
                       type="date"
                       id="endDate"
                       name="endDate"
-                      min={startDate}
-                      onChange={e => {
-                        onDataChange({
-                          endDate: e.target.value,
-                        });
-                        formikProps.handleChange(e);
-                      }}
+                      min={formikProps.values.startDate}
                     />
                     <FormikErrorMessage name="endDate" component="div" />
 
-                    <Field
-                      type="time"
-                      id="endTime"
-                      name="endTime"
-                      onChange={e => {
-                        onDataChange({
-                          endTime: e.target.value,
-                        });
-                        formikProps.handleChange(e);
-                      }}
-                    />
+                    <Field type="time" id="endTime" name="endTime" />
                     <FormikErrorMessage name="endTime" component="div" />
                   </div>
                 </StyledFormField>
@@ -176,25 +146,25 @@ const EventForm = ({
                 </StyledFormField>
 
                 {/* <StyledFormField>
-                                <label
-                                  className="profile-form-label"
-                                  htmlFor="trailNotes"
-                                >
-                                  Trail Notes
-                                </label>
-                                <div className="profile-form-field">
-                                  <Field
-                                    type="text"
-                                    onChange={formikProps.handleChange}
-                                    id="trailNotes"
-                                    name="trailNotes"
-                                  />
-                                  <FormikErrorMessage
-                                    name="trailNotes"
-                                    component="div"
-                                  />
-                                </div>
-                              </StyledFormField> */}
+                  <label
+                    className="profile-form-label"
+                    htmlFor="trailNotes"
+                  >
+                    Trail Notes
+                  </label>
+                  <div className="profile-form-field">
+                    <Field
+                      type="text"
+                      onChange={formikProps.handleChange}
+                      id="trailNotes"
+                      name="trailNotes"
+                    />
+                    <FormikErrorMessage
+                      name="trailNotes"
+                      component="div"
+                    />
+                  </div>
+                </StyledFormField> */}
 
                 <StyledFormField>
                   <label className="profile-form-label" htmlFor="rallyAddress">

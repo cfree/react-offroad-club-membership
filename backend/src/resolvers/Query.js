@@ -312,12 +312,31 @@ const Query = {
     }
 
     // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
+
+    // If they do, query all the users
+    return ctx.db.query.trails({}, info);
+  },
+  async getTrail(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error("You must be logged in");
+    }
+
+    // Requesting user has proper account status?
     hasRole(ctx.request.user, ["ADMIN", "OFFICER", "RUN_MASTER", "RUN_LEADER"]);
     hasAccountStatus(ctx.request.user, ["ACTIVE"]);
     hasAccountType(ctx.request.user, ["FULL"]);
 
     // If they do, query all the users
-    return ctx.db.query.trails({}, info);
+    return ctx.db.query.trail(
+      {
+        where: {
+          slug: args.slug
+        }
+      },
+      info
+    );
   },
   async electionCandidates(parent, args, ctx, info) {
     // Logged in?

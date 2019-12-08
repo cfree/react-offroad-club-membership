@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/four-players-co/four-players-co/dev
-# timestamp: Sat Dec 07 2019 12:42:48 GMT-0700 (Mountain Standard Time)
+# timestamp: Sat Dec 07 2019 23:03:43 GMT-0700 (Mountain Standard Time)
 
 enum AccountStatus {
   ACTIVE
@@ -8445,6 +8445,7 @@ input TrailWhereInput {
 
 input TrailWhereUniqueInput {
   id: ID
+  slug: String
 }
 
 type User implements Node {

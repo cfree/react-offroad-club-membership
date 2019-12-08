@@ -13,6 +13,7 @@ import {
   trailConditions,
   DEFAULT_EVENT_SRC,
   DEFAULT_AVATAR_SMALL_SRC,
+  DEFAULT_TRAIL_SRC,
 } from '../../../lib/constants';
 import Calendar from '../Calendar';
 import Rsvp from '../Rsvp';
@@ -60,7 +61,7 @@ const EVENT_QUERY = gql`
       address
       trail {
         id
-        slug
+        description
         name
         address
         avgDifficulty
@@ -128,6 +129,8 @@ export default class EventDetails extends Component {
             DEFAULT_EVENT_SRC,
           );
 
+          const TRAIL_IMAGE = get(event, 'trail.featuredImage.url');
+
           return (
             <>
               {!isPastEvent && (
@@ -174,7 +177,12 @@ export default class EventDetails extends Component {
               <StyledDetails>
                 <div className="event__columns">
                   <section className="event__section">
-                    <img src={EVENT_IMAGE} alt={event.title} />
+                    {TRAIL_IMAGE && (
+                      <img src={TRAIL_IMAGE} alt={event.trail.name} />
+                    )}
+                    {EVENT_IMAGE && !TRAIL_IMAGE && (
+                      <img src={EVENT_IMAGE} alt={event.title} />
+                    )}
                   </section>
                   <section className="event__section" aria-label="Description">
                     {parse(event.description)}
@@ -182,12 +190,12 @@ export default class EventDetails extends Component {
                   {event.trail ? (
                     <section>
                       <h3>Trail Information</h3>
-                      <p>
-                        <strong>{event.trail.name}</strong>
-                        {/* <button id={event.trail.id}>
+                      <h5>{event.trail.name}</h5>
+                      {parse(event.trail.description)}
+
+                      {/* <button id={event.trail.id}>
                       {event.trail.name}
                       </button> */}
-                      </p>
                       {(event.trailDifficulty || event.trailNotes) && (
                         <>
                           <h4>Run Leader Notes</h4>

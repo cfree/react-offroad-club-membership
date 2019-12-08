@@ -11,16 +11,9 @@ import {
 
 import EventForm from '../EventForm';
 import ErrorMessage from '../../utility/ErrorMessage/ErrorMessage';
+import { uploadImage } from '../../../lib/utils';
 
 class CreateEvent extends Component {
-  state = {
-    startDate: format(new Date(), 'YYYY-MM-DD'),
-    startTime: '10:00',
-    endDate: format(new Date(), 'YYYY-MM-DD'),
-    endTime: '15:00',
-    eventForm: {},
-  };
-
   render() {
     return (
       <Query query={SETUP_NEW_EVENT_QUERY}>
@@ -54,10 +47,7 @@ class CreateEvent extends Component {
           return (
             <>
               <h3>Create New Event</h3>
-              <Mutation
-                mutation={CREATE_EVENT_MUTATION}
-                variables={this.state.eventForm}
-              >
+              <Mutation mutation={CREATE_EVENT_MUTATION}>
                 {(
                   createEvent,
                   {
@@ -82,14 +72,12 @@ class CreateEvent extends Component {
                         trails={queryData.trails}
                         loading={mutationLoading}
                         error={mutationError}
-                        startDate={this.state.startDate}
-                        onDataChange={this.handleDataChange}
                         submitLabel="Create Event"
                       />
                       {successMessage && (
                         <p>
                           {successMessage}.{' '}
-                          <Link href="/events/">
+                          <Link href="/events">
                             <a>View events</a>
                           </Link>
                           .
@@ -106,31 +94,29 @@ class CreateEvent extends Component {
     );
   }
 
-  handleDataChange = newState => {
-    this.setState(newState, () => {});
-  };
-
-  handleSubmit = (
-    { startDate, endDate, newImage, ...filteredValues },
+  handleSubmit = async (
+    { startDate, endDate, image, newImage, ...filteredValues },
     setSubmitting,
     createEvent,
   ) => {
-    setSubmitting(true);
-    this.setState(
-      prevState => ({
-        eventForm: {
-          ...filteredValues,
-          startTime: new Date(`${prevState.startDate} ${prevState.startTime}`),
-          endTime: new Date(`${prevState.endDate} ${prevState.endTime}`),
-          featuredImage: null,
-          newFeaturedImage: newImage,
-        },
-      }),
-      () => {
-        createEvent();
-        setSubmitting(false);
-      },
-    );
+    let eventValues = {
+      ...filteredValues,
+      startTime: new Date(`${startDate} ${filteredValues.startTime}`),
+      endTime: new Date(`${endDate} ${filteredValues.endTime}`),
+      featuredImage: image,
+      newFeaturedImage: null,
+    };
+
+    if (newImage) {
+      const cloudinaryResults = await uploadImage(newImage, 'events');
+      eventValues.newFeaturedImage = cloudinaryResults;
+    }
+
+    createEvent({
+      variables: eventValues,
+    });
+
+    setSubmitting(false);
   };
 }
 

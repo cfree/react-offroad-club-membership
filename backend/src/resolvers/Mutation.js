@@ -318,21 +318,69 @@ const Mutations = {
       info
     );
   },
-  async createEvent(parent, args, ctx, info) {
+  async updateOffice(parent, args, ctx, info) {
     // Logged in?
-    // if (!ctx.request.userId) {
-    //   throw new Error('User must be logged in');
-    // }
+    if (!ctx.request.userId) {
+      throw new Error("User must be logged in");
+    }
 
     // Have proper roles to do this?
-    // hasRole(ctx.request.user, ['ADMIN', 'OFFICER', 'RUN_MASTER']);
+    hasRole(ctx.request.user, ["ADMIN"]);
 
     // Requesting user has proper account status?
-    // hasAccountStatus(ctx.request.user, ['ACTIVE']);
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
+
+    // Update role
+    return ctx.db.mutation.updateUser(
+      {
+        data: {
+          office: args.office
+        },
+        where: {
+          id: args.userId
+        }
+      },
+      info
+    );
+  },
+  async updateTitle(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error("User must be logged in");
+    }
+
+    // Have proper roles to do this?
+    hasRole(ctx.request.user, ["ADMIN"]);
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
+
+    // Update role
+    return ctx.db.mutation.updateUser(
+      {
+        data: {
+          title: args.title
+        },
+        where: {
+          id: args.userId
+        }
+      },
+      info
+    );
+  },
+  async createEvent(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error("User must be logged in");
+    }
+
+    // Have proper roles to do this?
+    hasRole(ctx.request.user, ["ADMIN", "OFFICER", "RUN_MASTER"]);
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
 
     const { event } = args;
-
-    console.log("EVENT", event);
 
     const attendees = [
       {
@@ -1118,6 +1166,98 @@ const Mutations = {
     await ctx.db.mutation.createVote({ data });
 
     return { message: "Thank you for voting" };
+  },
+  async createTrail(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error("User must be logged in");
+    }
+
+    // Have proper roles to do this?
+    hasRole(ctx.request.user, ["ADMIN", "OFFICER", "RUN_MASTER"]);
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
+
+    const { trail } = args;
+    const { featuredImage, newFeaturedImage, ...filteredTrail } = trail;
+
+    let data = { ...filteredTrail };
+
+    if (newFeaturedImage) {
+      // New featured image submitted
+      data.featuredImage = {
+        create: {
+          ...newFeaturedImage
+        }
+      };
+    }
+
+    const results = await ctx.db.mutation.createTrail({ data }, info);
+
+    return { message: "Your trail has been created" };
+  },
+  async updateTrail(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error("User must be logged in");
+    }
+
+    // Have proper roles to do this?
+    hasRole(ctx.request.user, ["ADMIN", "OFFICER", "RUN_MASTER"]);
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
+
+    const { trail, id: trailId } = args;
+    const { newFeaturedImage, featuredImage, ...filteredTrail } = trail;
+
+    // Get current trail for later comparison
+    const existingTrail = await ctx.db.query.trail(
+      {
+        where: {
+          id: trailId
+        }
+      },
+      info
+    );
+
+    let data = { ...filteredTrail };
+
+    if (newFeaturedImage) {
+      // New featured image submitted
+      data.featuredImage = {
+        upsert: {
+          create: {
+            ...newFeaturedImage
+          },
+          update: {
+            ...newFeaturedImage
+          }
+        }
+      };
+    } else if (
+      existingTrail.featuredImage &&
+      existingTrail.featuredImage.publicId &&
+      !newFeaturedImage
+    ) {
+      // Remove old featured image
+      data.featuredImage = {
+        delete: true
+      };
+    }
+
+    const results = await ctx.db.mutation.updateTrail(
+      {
+        data,
+        where: {
+          id: trailId
+        }
+      },
+      info
+    );
+
+    return { message: "Your trail has been updated" };
   }
 };
 

@@ -26,6 +26,8 @@ type Mutation {
   updateRole(role: Role, userId: ID!): User
   updateAccountType(accountType: AccountType, userId: ID!): User
   updateAccountStatus(accountStatus: AccountStatus, userId: ID!): User
+  updateOffice(office: Office, userId: ID!): User
+  updateTitle(title: Title, userId: ID!): User
   createEvent(event: UpsertEventInput!): SuccessMessage
   updateEvent(id: ID!, event: UpsertEventInput!): SuccessMessage
   setRSVP(rsvp: RSVPInput): SuccessMessage
@@ -45,6 +47,8 @@ type Mutation {
   deleteRig(rig: CloudinaryImageInput!): SuccessMessage
   submitElection(election: ElectionInput!): Election
   submitVote(vote: VoteInput): SuccessMessage
+  createTrail(trail: TrailInput): SuccessMessage
+  updateTrail(trail: TrailInput!, id: ID!): SuccessMessage
 }
 
 type Query {
@@ -66,6 +70,7 @@ type Query {
   getPastEvents: [Event]!
   getEvent(eventId: ID!): Event!
   getTrails: [Trail]!
+  getTrail(slug: String!): Trail
   electionCandidates(
     accountType: AccountType!
     accountStatus: AccountStatus!
@@ -307,4 +312,14 @@ type CloudinaryImage {
   publicId: String!
   url: String!
   smallUrl: String
+}
+
+input TrailInput {
+  name: String!
+  slug: String!
+  description: String
+  featuredImage: String
+  newFeaturedImage: CloudinaryImageInput
+  trailheadCoords: String
+  address: String
 }

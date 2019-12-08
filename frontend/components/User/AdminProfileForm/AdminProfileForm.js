@@ -87,9 +87,9 @@ const USER_ADMIN_UPDATE_PROFILE_MUTATION = gql`
 `;
 
 const userSchema = yup.object().shape({
-  title: yup.string(),
+  title: yup.string().nullable(),
   isCharterMember: yup.string().required(),
-  office: yup.string(),
+  office: yup.string().nullable(),
   role: yup.string().required(),
   accountType: yup.string().required(),
   accountStatus: yup.string().required(),
@@ -149,6 +149,8 @@ class AdminProfileForm extends Component {
                           id: user.id,
                           ...values,
                           isCharterMember: values.isCharterMember === 'yes',
+                          office:
+                            values.office === 'None' ? null : values.office,
                         },
                       },
                       () => {
@@ -233,7 +235,7 @@ class AdminProfileForm extends Component {
                               id="office"
                               defaultValue={user.office || null}
                             >
-                              <option value={null}>None</option>
+                              <option value={'NONE'}>None</option>
                               {Object.entries(offices).map((office, idx) => (
                                 <option key={idx} value={office[0]}>
                                   {office[1]}

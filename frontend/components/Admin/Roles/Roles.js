@@ -4,7 +4,13 @@ import gql from 'graphql-tag';
 import PropTypes from 'prop-types';
 import debounce from 'lodash/debounce';
 
-import { roles, accountTypes, accountStatuses } from '../../../lib/constants';
+import {
+  roles,
+  accountTypes,
+  accountStatuses,
+  offices,
+  titles,
+} from '../../../lib/constants';
 import ErrorMessage from '../../utility/ErrorMessage';
 import Loading from '../../utility/Loading';
 
@@ -41,6 +47,24 @@ const UPDATE_ACCOUNT_STATUS_MUTATION = gql`
   }
 `;
 
+const UPDATE_OFFICE_MUTATION = gql`
+  mutation UPDATE_OFFICE_MUTATION($office: Office, $userId: ID!) {
+    updateOffice(office: $office, userId: $userId) {
+      id
+      office
+    }
+  }
+`;
+
+const UPDATE_TITLE_MUTATION = gql`
+  mutation UPDATE_TITLE_MUTATION($title: Title, $userId: ID!) {
+    updateTitle(title: $title, userId: $userId) {
+      id
+      title
+    }
+  }
+`;
+
 const ALL_USERS_QUERY = gql`
   query ALL_USERS_QUERY {
     users {
@@ -51,28 +75,37 @@ const ALL_USERS_QUERY = gql`
       role
       accountStatus
       accountType
+      office
+      title
     }
   }
 `;
 
 class UserProperty extends React.Component {
-  static propTypes = {
-    userId: PropTypes.string,
-    userProperty: PropTypes.string,
-    currentProperty: PropTypes.string,
-    properties: PropTypes.object,
-  };
-
   state = {
-    selectedProperty: this.props.currentProperty,
+    selectedProperty: this.props.currentProperty || 'NONE',
   };
 
   handleChange = (e, updateCallback) => {
-    this.setState({ selectedProperty: e.target.value }, updateCallback);
+    this.setState(
+      {
+        selectedProperty:
+          this.props.allowNone && e.target.value === 'NONE'
+            ? null
+            : e.target.value,
+      },
+      updateCallback,
+    );
   };
 
   render() {
-    const { userId, userProperty, currentProperty, properties } = this.props;
+    const {
+      userId,
+      userProperty,
+      currentProperty,
+      properties,
+      allowNone = false,
+    } = this.props;
     let mutation;
 
     switch (userProperty) {
@@ -84,6 +117,12 @@ class UserProperty extends React.Component {
         break;
       case 'accountStatus':
         mutation = UPDATE_ACCOUNT_STATUS_MUTATION;
+        break;
+      case 'office':
+        mutation = UPDATE_OFFICE_MUTATION;
+        break;
+      case 'title':
+        mutation = UPDATE_TITLE_MUTATION;
         break;
     }
 
@@ -105,6 +144,11 @@ class UserProperty extends React.Component {
               }}
               defaultValue={currentProperty}
             >
+              {allowNone && (
+                <option key={0} value="NONE">
+                  None
+                </option>
+              )}
               {Object.entries(properties).map(property => (
                 <option key={property[0]} value={property[0]}>
                   {property[1]}
@@ -138,6 +182,19 @@ const UserAccountStatus = props => (
     userProperty="accountStatus"
     {...props}
   />
+);
+
+const UserOffice = props => (
+  <UserProperty
+    properties={offices}
+    userProperty="office"
+    {...props}
+    allowNone
+  />
+);
+
+const UserTitle = props => (
+  <UserProperty properties={titles} userProperty="title" {...props} allowNone />
 );
 
 const MemberTable = ({ allUsers }) => {
@@ -185,6 +242,8 @@ const MemberTable = ({ allUsers }) => {
             <th>Role</th>
             <th>Account Type</th>
             <th>Account Status</th>
+            <th>Office</th>
+            <th>Title</th>
           </tr>
         </thead>
         <tbody>
@@ -207,6 +266,12 @@ const MemberTable = ({ allUsers }) => {
                   userId={user.id}
                   currentProperty={user.accountStatus}
                 />
+              </td>
+              <td>
+                <UserOffice userId={user.id} currentProperty={user.office} />
+              </td>
+              <td>
+                <UserTitle userId={user.id} currentProperty={user.title} />
               </td>
             </tr>
           ))}

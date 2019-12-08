@@ -12,7 +12,11 @@ import {
   StyledEvent,
 } from './eventList.styles';
 import AttendeeStatus from '../AttendeeStatus';
-import { DEFAULT_EVENT_SMALL_SRC } from '../../../lib/constants';
+import {
+  DEFAULT_EVENT_SMALL_SRC,
+  DEFAULT_AVATAR_SMALL_SRC,
+  DEFAULT_TRAIL_SMALL_SRC,
+} from '../../../lib/constants';
 
 class EventList extends Component {
   state = {
@@ -71,16 +75,32 @@ class EventList extends Component {
                       DEFAULT_EVENT_SMALL_SRC,
                     );
 
+                    const TRAIL_IMAGE = get(
+                      event,
+                      'trail.featuredImage.smallUrl',
+                    );
+
                     return (
                       <StyledEvent key={event.id}>
                         <div className="event">
-                          <img
-                            className="event-image"
-                            src={EVENT_IMAGE}
-                            alt="Image"
-                            height="100"
-                            width="150"
-                          />
+                          {TRAIL_IMAGE && (
+                            <img
+                              className="event-image"
+                              src={TRAIL_IMAGE}
+                              alt={event.trail.name}
+                              height="100"
+                              width="150"
+                            />
+                          )}
+                          {EVENT_IMAGE && !TRAIL_IMAGE && (
+                            <img
+                              className="event-image"
+                              src={EVENT_IMAGE}
+                              alt={event.title}
+                              height="100"
+                              width="150"
+                            />
+                          )}
                           <div className="event-details">
                             <div className="event-date">
                               <Link href={`/event/${event.id}`}>
@@ -112,7 +132,15 @@ class EventList extends Component {
                                       <span className="event-attendees__avatars">
                                         {this.getAttendees(event.id).map(
                                           rsvp => (
-                                            <i key={rsvp.member.id} />
+                                            <img
+                                              src={get(
+                                                rsvp.member,
+                                                'avatar.smallUrl',
+                                                DEFAULT_AVATAR_SMALL_SRC,
+                                              )}
+                                              key={rsvp.member.id}
+                                              width="30"
+                                            />
                                           ),
                                         )}
                                       </span>

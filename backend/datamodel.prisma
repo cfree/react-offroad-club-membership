@@ -188,7 +188,7 @@ type Trail {
   id: ID! @unique @id
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  slug: String!
+  slug: String! @unique
   name: String
   description: String
   featuredImage: CloudinaryImage

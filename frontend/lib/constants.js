@@ -83,3 +83,5 @@ export const DEFAULT_RIG_SRC = '/static/img/default-vehicle.jpg';
 export const DEFAULT_EVENT_SRC =
   'https://s3.us-west-2.amazonaws.com/images-prod.trailsoffroad.com/trails/299/highlights/resized_2017-08-11_12.30.25-2_3.jpg';
 export const DEFAULT_EVENT_SMALL_SRC = 'https://placekitten.com/150/100';
+export const DEFAULT_TRAIL_SRC = 'https://placekitten.com/700/400';
+export const DEFAULT_TRAIL_SMALL_SRC = 'https://placekitten.com/150/100';

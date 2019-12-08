@@ -58,7 +58,7 @@ export const StyledEvent = styled.li`
   .event-attendees__avatars {
     margin-right: 7px;
 
-    i {
+    img {
       height: 30px;
       width: 30px;
       border-radius: 50%;
@@ -80,7 +80,7 @@ export const StyledEvent = styled.li`
         z-index: 1;
       }
 
-      & + i {
+      & + img {
         margin-left: -15px;
       }
     }

@@ -30,6 +30,9 @@ export const UPCOMING_EVENTS_QUERY = gql`
         id
         name
         avgDifficulty
+        featuredImage {
+          smallUrl
+        }
       }
       rsvps {
         member {
@@ -76,6 +79,9 @@ export const PAST_EVENTS_QUERY = gql`
         id
         name
         avgDifficulty
+        featuredImage {
+          smallUrl
+        }
       }
       rsvps {
         member {

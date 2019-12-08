@@ -45,7 +45,24 @@ app
     server.get('/settings/:setting', (req, res) => {
       const actualPage = '/settings';
       let queryParams = { settings: req.params.setting };
+      app.render(req, res, actualPage, queryParams);
+    });
 
+    server.get('/trail/:slug/edit', (req, res) => {
+      const actualPage = '/admin-trails';
+      const queryParams = { action: 'edit', slug: req.params.slug };
+      app.render(req, res, actualPage, queryParams);
+    });
+
+    server.get('/trail/:slug', (req, res) => {
+      const actualPage = '/trail';
+      const queryParams = { slug: req.params.slug };
+      app.render(req, res, actualPage, queryParams);
+    });
+
+    server.get('/admin-trails/:action', (req, res) => {
+      const actualPage = '/admin-trails';
+      const queryParams = { action: req.params.action };
       app.render(req, res, actualPage, queryParams);
     });
 

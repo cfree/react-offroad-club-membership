@@ -15,13 +15,13 @@ import { uploadImage } from '../../../lib/utils';
 import UploadImagePreview from '../../common/UploadImagePreview';
 
 class EditEvent extends Component {
-  state = {
-    startDate: format(new Date(), 'YYYY-MM-DD'),
-    startTime: '10:00',
-    endDate: format(new Date(), 'YYYY-MM-DD'),
-    endTime: '15:00',
-    eventForm: {},
-  };
+  // state = {
+  //   startDate: format(new Date(), 'YYYY-MM-DD'),
+  //   startTime: '10:00',
+  //   endDate: format(new Date(), 'YYYY-MM-DD'),
+  //   endTime: '15:00',
+  //   eventForm: {},
+  // };
 
   render() {
     const { event: existingEventId } = this.props;
@@ -65,10 +65,7 @@ class EditEvent extends Component {
           return (
             <>
               <h3>Edit Event</h3>
-              <Mutation
-                mutation={EDIT_EVENT_MUTATION}
-                variables={this.state.eventForm}
-              >
+              <Mutation mutation={EDIT_EVENT_MUTATION}>
                 {(
                   updateEvent,
                   {
@@ -93,8 +90,6 @@ class EditEvent extends Component {
                         trails={queryData.trails}
                         loading={mutationLoading}
                         error={mutationError}
-                        startDate={this.state.startDate}
-                        onDataChange={this.handleDataChange}
                         submitLabel="Edit Event"
                       />
                       {successMessage && (
@@ -117,56 +112,31 @@ class EditEvent extends Component {
     );
   }
 
-  handleDataChange = newState => {
-    this.setState(newState);
-  };
-
   handleSubmit = async (
-    { startDate, endDate, image, imagePublicId, newImage, ...filteredValues },
+    { startDate, endDate, image, newImage, ...filteredValues },
     setSubmitting,
     updateEvent,
   ) => {
+    let eventValues = {
+      ...filteredValues,
+      startTime: new Date(`${startDate} ${filteredValues.startTime}`),
+      endTime: new Date(`${endDate} ${filteredValues.endTime}`),
+      featuredImage: image,
+      newFeaturedImage: null,
+    };
+
     setSubmitting(true);
 
     if (newImage) {
       const cloudinaryResults = await uploadImage(newImage, 'events');
-
-      this.setState(
-        prevState => ({
-          eventForm: {
-            ...filteredValues,
-            startTime: new Date(
-              `${prevState.startDate} ${prevState.startTime}`,
-            ),
-            endTime: new Date(`${prevState.endDate} ${prevState.endTime}`),
-            featuredImage: imagePublicId,
-            newFeaturedImage: cloudinaryResults,
-          },
-        }),
-        () => {
-          updateEvent();
-          setSubmitting(false);
-        },
-      );
-    } else {
-      this.setState(
-        prevState => ({
-          eventForm: {
-            ...filteredValues,
-            startTime: new Date(
-              `${prevState.startDate} ${prevState.startTime}`,
-            ),
-            endTime: new Date(`${prevState.endDate} ${prevState.endTime}`),
-            featuredImage: imagePublicId,
-            newFeaturedImage: null,
-          },
-        }),
-        () => {
-          updateEvent();
-          setSubmitting(false);
-        },
-      );
+      eventValues.newFeaturedImage = cloudinaryResults;
     }
+
+    updateEvent({
+      variables: eventValues,
+    });
+
+    setSubmitting(false);
   };
 }
 
