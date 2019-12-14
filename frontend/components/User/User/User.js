@@ -12,6 +12,10 @@ export const CURRENT_USER_QUERY = gql`
       role
       accountStatus
       accountType
+      avatar {
+        url
+        smallUrl
+      }
     }
   }
 `;

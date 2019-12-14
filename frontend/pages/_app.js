@@ -4,6 +4,10 @@ import Page from '../components/layout/Page';
 import { ApolloProvider } from 'react-apollo';
 import withData from '../lib/withData';
 
+// import 'typeface-open-sans';
+// import 'typeface-merriweather';
+// import 'typeface-josefin-sans';
+
 class AppWrapper extends App {
   // Next.js method, runs before first render
   static async getInitialProps({ Component, ctx }) {

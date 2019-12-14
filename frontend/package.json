@@ -47,6 +47,9 @@
     "react-transition-group": "^2.5.0",
     "rebass": "^2.3.4",
     "styled-components": "^3.4.9",
+    "typeface-josefin-sans": "0.0.75",
+    "typeface-merriweather": "0.0.72",
+    "typeface-open-sans": "0.0.75",
     "typeface-roboto": "^0.0.54",
     "victory": "^31.0.1",
     "waait": "^1.0.2",
@@ -56,12 +59,16 @@
     "babel-jest": "^23.6.0",
     "babel-plugin-module-resolver": "^3.1.1",
     "casual": "^1.5.19",
+    "css-loader": "^3.3.2",
     "enzyme-to-json": "^3.3.4",
     "eslint-plugin-prettier": "^3.1.0",
+    "file-loader": "^5.0.2",
     "graphql-tools": "^4.0.0",
     "jest": "^23.6.0",
     "jest-transform-graphql": "^2.1.0",
-    "prettier": "1.18.2"
+    "prettier": "1.18.2",
+    "sass-loader": "^8.0.0",
+    "style-loader": "^1.0.1"
   },
   "jest": {
     "setupTestFrameworkScriptFile": "<rootDir>/jest.setup.js",

@@ -5,12 +5,16 @@ import Gate from '../components/Login/Gate';
 import { isFullMember } from '../lib/utils';
 
 const VotePage = ({ query }) => {
+  {
+    /* <Gate roleCheck={isFullMember} redirect={`/vote?poll=${query.poll}`}>
+<Gate roleCheck={isFullMember} redirect="/vote"> */
+  }
   return query.poll ? (
-    <Gate roleCheck={isFullMember} redirect={`/vote?poll=${query.poll}`}>
+    <Gate redirect="/vote" statusCheck={() => false}>
       <Election id={query.poll} />
     </Gate>
   ) : (
-      <Gate roleCheck={isFullMember} redirect="/vote">
+    <Gate redirect="/vote" statusCheck={() => false}>
       <PollingPlace />
     </Gate>
   );

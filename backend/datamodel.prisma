@@ -149,6 +149,8 @@ type UserMeta {
   updatedAt: DateTime! @updatedAt
   user: User @relation(link: TABLE, name: "UserMeta")
   emailVerified: Boolean @default(value: false)
+  firstLoginComplete: Boolean @default(value: false)
+  accountSetupComplete: Boolean @default(value: false)
   oldSitemigrationComplete: Boolean @default(value: false)
 }
 

@@ -73,7 +73,7 @@ const Admin = () => (
       </ul> */}
       {/* <Results admin /> */}
     </div>
-    <div>
+    {/* <div>
       <h3>At a Glance</h3>
       <ul>
         <li>
@@ -84,13 +84,13 @@ const Admin = () => (
             <li>Whatsherface</li>
             <li>(See all)</li>
           </ul>
-        </li>
-        {/* <li>Newest Members</li> */}
-        {/* <li>Recent Delinquents</li>
+        </li> */}
+    {/* <li>Newest Members</li> */}
+    {/* <li>Recent Delinquents</li>
         <li>Maxed Out Events</li>
         <li>Potential New Members</li> */}
-      </ul>
-    </div>
+    {/* </ul>
+    </div> */}
   </>
 );
 

@@ -13,10 +13,14 @@ const PollManagementPage = ({ query }) => {
   } else if (query.edit) {
     Component = <EditElection election={query.edit} />;
   }
-
-  return <Gate redirect={redirect} statusCheck={isNotLocked} roleCheck={isAtLeastBoardMember}>
-    {Component}
-  </Gate>;
+  {
+    /* <Gate redirect={redirect} statusCheck={isNotLocked} roleCheck={isAtLeastBoardMember}></Gate> */
+  }
+  return (
+    <Gate redirect={redirect} statusCheck={() => false}>
+      {Component}
+    </Gate>
+  );
 };
 
 export default PollManagementPage;
