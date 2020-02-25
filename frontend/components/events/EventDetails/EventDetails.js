@@ -16,8 +16,9 @@ import {
   DEFAULT_TRAIL_SRC,
 } from '../../../lib/constants';
 import Calendar from '../Calendar';
+import RigbookCard from '../../user/RigbookCard';
 import Rsvp from '../Rsvp';
-import { StyledEventHeader, StyledDetails } from './eventDetails.styles';
+import { StyledEvent } from './eventDetails.styles';
 import Filter from '../../Login/Filter';
 import { isAtLeastRunMaster } from '../../../lib/utils';
 
@@ -28,7 +29,7 @@ const EVENT_QUERY = gql`
       firstName
       lastName
       avatar {
-        smallUrl
+        url
       }
     }
     event: getEvent(eventId: $eventId) {
@@ -41,9 +42,17 @@ const EVENT_QUERY = gql`
         id
         firstName
         lastName
+        username
+        accountType
         avatar {
+          url
           smallUrl
         }
+        rig {
+            image {
+              url
+            }
+          }
       }
       startTime
       endTime
@@ -52,8 +61,15 @@ const EVENT_QUERY = gql`
           id
           firstName
           lastName
+          username
+          accountType
           avatar {
-            smallUrl
+            url
+          }
+          rig {
+            image {
+              url
+            }
           }
         }
         status
@@ -130,9 +146,11 @@ export default class EventDetails extends Component {
           );
 
           const TRAIL_IMAGE = get(event, 'trail.featuredImage.url');
+          
+          const HOST_IMAGE = get(event, 'host.avatar.smallUrl', DEFAULT_AVATAR_SMALL_SRC);                
 
           return (
-            <>
+            <StyledEvent>
               {!isPastEvent && (
                 <Filter roleCheck={isAtLeastRunMaster}>
                   <Link href={`/event/${eventId}/edit`}>
@@ -140,9 +158,9 @@ export default class EventDetails extends Component {
                   </Link>
                 </Filter>
               )}
-              <StyledEventHeader>
+              <div className="event__header">
                 <div className="event__calendar">
-                  <Calendar date={event.startTime} />
+                  {event.type || 'Run'}
                 </div>
                 <div className="event__info">
                   <div className="event__date">
@@ -153,13 +171,7 @@ export default class EventDetails extends Component {
                   <h2 className="event__title">{event.title}</h2>
                   {event.host.firstName && (
                     <div className="event__leader">
-                      <img
-                        src={
-                          (event.host.avatar && event.host.avatar.smallUrl) ||
-                          DEFAULT_AVATAR_SMALL_SRC
-                        }
-                        height="30"
-                      />
+                      <img src={HOST_IMAGE} height="30" />
                       Hosted by {event.host.firstName}
                     </div>
                   )}
@@ -173,8 +185,8 @@ export default class EventDetails extends Component {
                     pastEvent={isPastEvent}
                   />
                 </div>
-              </StyledEventHeader>
-              <StyledDetails>
+              </div>
+              <div className="event__details">
                 <div className="event__columns">
                   <section className="event__section">
                     {TRAIL_IMAGE && (
@@ -187,7 +199,7 @@ export default class EventDetails extends Component {
                   <section className="event__section" aria-label="Description">
                     {parse(event.description)}
                   </section>
-                  {event.trail ? (
+                  {event.trail && (
                     <section>
                       <h3>Trail Information</h3>
                       <h5>{event.trail.name}</h5>
@@ -215,7 +227,7 @@ export default class EventDetails extends Component {
                           </p>
                         </>
                       )}
-                      {(event.trail.avgDifficulty ||
+                      {/* {(event.trail.avgDifficulty ||
                         event.trail.avgRatings ||
                         event.trail.favoriteCount ||
                         event.trail.conditionsLastReported) && (
@@ -255,34 +267,28 @@ export default class EventDetails extends Component {
                             </small>
                           </p>
                         </>
-                      )}
+                      )} */}
                     </section>
-                  ) : (
-                    <p>
-                      <strong>Address</strong>: {event.address || 'n/a'}
-                    </p>
                   )}
                   <section className="event__section">
                     <h3>Attendees</h3>
-                    <div className="card">
-                      <strong>{event.host.firstName}</strong>
+                    <div className="event__attendees">
+                      <RigbookCard user={event.host} />
+                      {attendees
+                        .filter(attendee => attendee.member.id !== event.host.id)
+                        .map(attendee => (
+                          <RigbookCard user={attendee.member} />
+                        ))}
                     </div>
-                    {attendees
-                      .filter(attendee => attendee.member.id !== event.host.id)
-                      .map(attendee => (
-                        <div key={attendee.member.id} className="card">
-                          {attendee.member.firstName}
-                        </div>
-                      ))}
                   </section>
-                  {isPastEvent && (
+                  {/* {isPastEvent && (
                     <section className="event__section">
                       <h3>Photos</h3>
                       <form>
                         <input type="file" />
                       </form>
                     </section>
-                  )}
+                  )} */}
                   {event.comments && (
                     <section className="event__section">
                       <h3>Comments</h3>
@@ -306,7 +312,7 @@ export default class EventDetails extends Component {
                       {format(event.endTime, 'M/D/YY h:mm A')}
                     </p>
 
-                    {(event.rallyTime || event.rallyAddress) && (
+                    {(event.rallyTime || event.rallyAddress) ? (
                       <p>
                         {event.rallyTime && (
                           <>
@@ -320,6 +326,10 @@ export default class EventDetails extends Component {
                             <strong>Rally Point</strong>: {event.rallyAddress}
                           </>
                         )}
+                      </p>
+                    ) : (
+                      <p>
+                        <strong>Address</strong>: {event.address || 'n/a'}
                       </p>
                     )}
                     {(event.rallyAddress || event.address) && (
@@ -351,8 +361,8 @@ export default class EventDetails extends Component {
                     )}
                   </div>
                 </aside>
-              </StyledDetails>
-            </>
+              </div>
+            </StyledEvent>
           );
         }}
       </Query>

@@ -30,11 +30,23 @@ export class MembershipList extends Component {
     }));
   };
 
-  handleShowAll = () => {
+  handleClear = () => {
     this.setState({
       activeFilters: {
         accountStatus: [],
         accountType: [],
+        role: [],
+        office: [],
+        title: [],
+      },
+    });
+  };
+
+  handleShowPastDue = () => {
+    this.setState({
+      activeFilters: {
+        accountStatus: ['PAST_DUE'],
+        accountType: ['FULL'],
         role: [],
         office: [],
         title: [],
@@ -54,10 +66,10 @@ export class MembershipList extends Component {
     });
   };
 
-  handleShowLapsed = () => {
+  handleShowInactive = () => {
     this.setState({
       activeFilters: {
-        accountStatus: ['PAST_DUE'],
+        accountStatus: ['INACTIVE'],
         accountType: ['FULL'],
         role: [],
         office: [],
@@ -89,7 +101,12 @@ export class MembershipList extends Component {
           <ul>
             <li>
               <button onClick={this.handleShowNewRegs}>
-                New Registrations
+                Locked New Registrations
+              </button>
+            </li>
+            <li>
+              <button onClick={this.handleShowPastDue}>
+                Past Due Full Members
               </button>
             </li>
             <li>
@@ -98,12 +115,12 @@ export class MembershipList extends Component {
               </button>
             </li>
             <li>
-              <button onClick={this.handleShowLapsed}>
-                Lapsed Full Members
+              <button onClick={this.handleShowInactive}>
+                Inactive Full Members
               </button>
             </li>
             <li>
-              <button onClick={this.handleShowAll}>Everyone</button>
+              <button onClick={this.handleClear}>Clear Filters</button>
             </li>
           </ul>
         </aside>
@@ -113,7 +130,7 @@ export class MembershipList extends Component {
             activeFilters={this.state.activeFilters}
             onFilterUpdate={this.handleFilterUpdate}
           />
-          1-25 of x results
+          {/* 1-25 of x results */}
           <Roster filters={this.state.activeFilters} />
         </section>
       </div>

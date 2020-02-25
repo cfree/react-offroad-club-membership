@@ -4,9 +4,11 @@ import { withRouter } from 'next/router'
 import styled from 'styled-components';
 import { clearFix } from 'polished';
 import cn from 'classnames';
+import get from 'lodash/get';
 
 import User from '../../user/User';
 import Logout from '../../Login/Logout';
+import { DEFAULT_AVATAR_SMALL_SRC } from '../../../lib/constants';
 import { isActive, isMember, isAtLeastBoardMember } from '../../../lib/utils';
 import Filter from '../../Login/Filter';
 
@@ -17,7 +19,7 @@ const StyledList = styled.ul`
 
   & > li {
     list-style: none;
-    margin: 0;
+    margin: 0 1px;
     padding: 0;
     float: left;
 
@@ -27,9 +29,19 @@ const StyledList = styled.ul`
       color: ${({ theme }) => theme.colors.grey_light};
     }
 
+    &:not(.active):not(.user):hover {
+      background: ${({ theme }) => theme.colors.grey_lighter};
+      border-radius: 3px;
+
+      a {
+        color: white;
+      }
+    }
+
     &.active {
       background: ${({ theme }) => theme.colors.grey_light};
       border-radius: 3px;
+
       a {
         color: white;
       }
@@ -47,7 +59,6 @@ const StyledList = styled.ul`
   .user-image {
     border-radius: 50%;
     margin-left: 10px;
-    cursor: pointer;
   }
 
   .dropdown-menu {
@@ -61,12 +72,13 @@ const StyledList = styled.ul`
     padding: 0;
     margin: 0;
     border-radius: 2px;
-    padding: 10px;
+    padding: 10px 0;
     width: 100px;
     transform: opacity 0.3s;
 
     &--open {
       display: block;
+      z-index: 100;
     }
 
     &:before {
@@ -88,10 +100,18 @@ const StyledList = styled.ul`
       margin: 0;
       line-height: 1;
 
+      &:hover {
+        background: ${({ theme }) => theme.colors.grey_lighter};
+
+        a {
+          color: white;
+        }
+      }
+
       a {
         color: ${({ theme }) => theme.colors.grey_light};
-        padding: 5px 0;
-        display: inline-block;
+        padding: 5px 10px;
+        display: block;
       }
     }
   }
@@ -100,21 +120,21 @@ const StyledList = styled.ul`
 const Nav = ({ router, ...props }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleClick = useCallback(() => {
-    if (isOpen) {
-      setIsOpen(false);
-    } else {
-      setIsOpen(true);
-    }
-  }, [isOpen, setIsOpen]);
+  const handleMouseEnter = useCallback(() => {
+    setIsOpen(true);
+  }, [setIsOpen]);
 
-  
+  const handleMouseLeave = useCallback(() => {
+    setIsOpen(false);
+  }, [setIsOpen]);
 
  return (
     <nav>
       <StyledList>
         <User>
           {({ data: { myself } }) => {
+            const AVATAR_SRC = get(myself, 'avatar.smallUrl', DEFAULT_AVATAR_SMALL_SRC);
+
             return (
               myself && (
                 <>
@@ -146,8 +166,8 @@ const Nav = ({ router, ...props }) => {
                         </Link>
                       </li>
                     )}
-                  <li className="user">
-                    <img onClick={handleClick} className="user-image" src={myself.avatar.smallUrl} height="30" alt="Avatar" />
+                  <li onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className="user">
+                    <img className="user-image" src={AVATAR_SRC} height="30" alt="Avatar" />
                     <ul className={cn('dropdown-menu', { 'dropdown-menu--open': isOpen })}>
                       <li className={router.pathname === '/profile' ? 'active' : ''}>
                         <Link href="/profile">

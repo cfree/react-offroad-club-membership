@@ -1,184 +1,33 @@
 import { Query } from 'react-apollo';
-import gql from 'graphql-tag';
-import { format } from 'date-fns';
-import styled from 'styled-components';
+import { format, differenceInYears } from 'date-fns';
 import Link from 'next/link';
 import get from 'lodash/get';
+
 import ErrorMessage from '../../utility/ErrorMessage';
+import Calendar from '../../events/Calendar';
+import Filter from '../../Login/Filter';
 import {
   accountTypes as types,
   offices,
   titles,
+  outfitLevel,
   DEFAULT_AVATAR_SRC,
   DEFAULT_RIG_SRC,
 } from '../../../lib/constants';
-
-const USER_QUERY = gql`
-  query USER_QUERY($username: String) {
-    user(username: $username) {
-      id
-      firstName
-      lastName
-      avatar {
-        url
-      }
-      joined
-      role
-      username
-      title
-      office
-      accountType
-      comfortLevel
-      contactInfo {
-        phone
-      }
-      rig {
-        image {
-          url
-        }
-      }
-      vehicle {
-        make
-        model
-        year
-        trim
-        name
-        mods
-      }
-      log {
-        id
-        time
-        message
-        event {
-          id
-          title
-        }
-      }
-      membershipLog {
-        id
-        startTime
-        endTime
-        message
-      }
-    }
-  }
-`;
-
-const StyledProfile = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-
-  header {
-    margin: 0 auto;
-  }
-
-  .user-header {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .user-vehicle {
-    height: 370px;
-    width: 100%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-    border: 1px solid ${({ theme }) => theme.colors.grey_light};
-  }
-
-  .user-demographics {
-    width: 75%;
-    display: flex;
-
-    img {
-      margin: -30px 20px 15px;
-      border-radius: 50%;
-      border: 5px solid white;
-    }
-  }
-
-  .user-name-info {
-  }
-
-  .user-name {
-    margin: 25px 0 2px;
-  }
-
-  .user-full-name {
-    margin: 0;
-    line-height: 1;
-  }
-
-  .user-info {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    font-size: 1.1rem;
-
-    li {
-      display: inline-block;
-      margin: 0 0 0 5px;
-      padding: 0;
-
-      &:before {
-        margin-right: 5px;
-        content: '\\2022';
-      }
-
-      &:first-child {
-        margin-left: 0;
-
-        &:before {
-          margin-right: 0;
-          content: '';
-        }
-      }
-    }
-  }
-
-  .user-actions {
-    margin: 25px 20px 0 auto;
-    padding: 0;
-    list-style: none;
-
-    li {
-      height: 20px;
-      width: 20px;
-      background: tomato;
-      margin: 0 0 0 10px;
-      padding: 0;
-      display: inline-block;
-      overflow: hidden;
-      text-indent: -9999em;
-
-      &:first-child {
-        margin-left: 0;
-      }
-    }
-  }
-
-  .user-garage {
-    border: 1px solid ${({ theme }) => theme.colors.grey_light};
-    background: ${({ theme }) => theme.colors.grey};
-    padding: 20px;
-  }
-
-  section {
-    padding: 20px;
-  }
-
-  .user-logs {
-    display: grid;
-    grid-column-gap: 20px;
-    grid-template-columns: 1fr 1fr;
-  }
-`;
+import {
+  sortByDateDesc,
+  getPhoneNumber,
+  isAtLeastBoardMember,
+  isAtLeastRunLeader,
+} from '../../../lib/utils';
+import { PROFILE_QUERY } from './profile.gql';
+import { StyledProfile } from './profile.styles';
 
 const Profile = ({ username }) => {
   const isSelf = username === undefined;
 
   return (
-    <Query query={USER_QUERY} variables={{ username }}>
+    <Query query={PROFILE_QUERY} variables={{ username }}>
       {({ loading, error, data }) => {
         if (loading) {
           return <div>Loading...</div>;
@@ -188,9 +37,18 @@ const Profile = ({ username }) => {
         }
 
         const { user } = data;
-        const convertedTitles = get(titles, 'user.title') || '';
-        const RIG_SRC = get(user.rig, 'image.url');
-        const AVATAR_SRC = get(user.avatar, 'url');
+        const convertedTitles = get(titles, 'user.title', []);
+        const RIG_SRC = get(user, 'rig.image.url', DEFAULT_RIG_SRC);
+        const AVATAR_SRC = get(user, 'avatar.url', DEFAULT_AVATAR_SRC);
+        const { vehicle } = user;
+        const vehicleInfo = [
+          get(vehicle, 'year', ''),
+          get(vehicle, 'make', ''),
+          get(vehicle, 'model', ''),
+          get(vehicle, 'trim', ''),
+        ]
+          .filter(detail => !!detail)
+          .join(' ');
 
         return (
           <StyledProfile>
@@ -199,14 +57,14 @@ const Profile = ({ username }) => {
                 aria-label={"User's Vehicle"}
                 className="user-vehicle"
                 style={{
-                  backgroundImage: `url(${RIG_SRC || DEFAULT_RIG_SRC})`,
+                  backgroundImage: `url(${RIG_SRC})`,
                 }}
               />
 
               {user ? (
                 <div className="user-header">
                   <div className="user-demographics">
-                    <img src={AVATAR_SRC || DEFAULT_AVATAR_SRC} height="130" />
+                    <img src={AVATAR_SRC} height="130" />
                     <div className="user-name-info">
                       <div className="user-name">
                         <h2 className="user-full-name">
@@ -218,30 +76,41 @@ const Profile = ({ username }) => {
                         <li>{types[user.accountType]} Member</li>
                         {(user.office || convertedTitles.length > 0) && (
                           <li>
-                            {[offices[user.office] || '', convertedTitles].join(
+                            {[offices[user.office], ...convertedTitles].join(
                               ', ',
                             )}
                           </li>
                         )}
-                        <li>Joined {format(user.joined, 'YYYY')}</li>
+                        <li>Joined {format(user.joined, 'M/D/YYYY')}</li>
                       </ul>
                     </div>
                   </div>
                   <ul className="user-actions">
-                    <li>
-                      <Link
-                        href={{
-                          pathname: 'message',
-                          query: { to: user.username },
-                        }}
-                      >
-                        <a>Send Message</a>
-                      </Link>
-                    </li>
                     {isSelf && (
                       <li>
                         <Link href="/settings/profile">
                           <a>Edit Profile</a>
+                        </Link>
+                      </li>
+                    )}
+                    {!isSelf && (
+                      <Filter role={isAtLeastBoardMember}>
+                        <li>
+                          <Link href={`admin-profile/${user.username}`}>
+                            <a>Edit Profile</a>
+                          </Link>
+                        </li>
+                      </Filter>
+                    )}
+                    {!isSelf && isAtLeastRunLeader(user.role) && (
+                      <li>
+                        <Link
+                          href={{
+                            pathname: 'message',
+                            query: { to: user.username },
+                          }}
+                        >
+                          <a>Send Message</a>
                         </Link>
                       </li>
                     )}
@@ -254,55 +123,253 @@ const Profile = ({ username }) => {
 
             {user && (
               <main>
-                {user.vehicle && (
-                  <div className="user-garage">
-                    <h3>{user.firstName}'s Garage</h3>
-                    <ul>
-                      <li>
-                        {user.vehicle.year} {user.vehicle.make}{' '}
-                        {user.vehicle.model} {user.vehicle.trim}
-                      </li>
-                      {user.vehicle.name && <li>"{user.vehicle.name}"</li>}
-                      {user.comfortLevel && <li>{user.comfortLevel}</li>}
-                      {user.vehicle.mods && <li>{user.vehicle.mods}</li>}
-                    </ul>
+                <div className="user-details">
+                  <div>
+                    <h3>Information</h3>
+
+                    <dl>
+                      {user.firstName && user.lastName && (
+                        <>
+                          <dt>Name</dt>
+                          <dd>
+                            {user.firstName} {user.lastName}
+                          </dd>
+                        </>
+                      )}
+
+                      {user.birthdate && (
+                        <Filter role={isAtLeastBoardMember}>
+                          <dt>Age</dt>
+                          <dd>
+                            {differenceInYears(new Date(), user.birthdate)}
+                          </dd>
+                        </Filter>
+                      )}
+
+                      {user.email && (isSelf || isAtLeastRunLeader(user.role)) && (
+                        <>
+                          <dt>Email</dt>
+                          <dd>
+                            <a href={`mailto:${user.email}`}>{user.email}</a>
+                          </dd>
+                        </>
+                      )}
+
+                      {get(user, 'contactInfo.phone') &&
+                        (get(user, 'contactInfo.showPhoneNumber', true) ||
+                          isSelf ||
+                          isAtLeastRunLeader(user.role)) && (
+                          <>
+                            <dt>Phone</dt>
+                            <dd>{getPhoneNumber(user.contactInfo.phone)}</dd>
+                          </>
+                        )}
+
+                      {get(user, 'contactInfo.street') &&
+                        get(user, 'contactInfo.city') &&
+                        get(user, 'contactInfo.state') &&
+                        get(user, 'contactInfo.zip') &&
+                        (isSelf || isAtLeastBoardMember(user.role)) && (
+                          <>
+                            <dt>Address</dt>
+                            <dd>
+                              <address>
+                                {user.contactInfo.street}
+                                <br />
+                                {user.contactInfo.city},{' '}
+                                {user.contactInfo.state} {user.contactInfo.zip}
+                              </address>
+                            </dd>
+                          </>
+                        )}
+
+                      {get(user, 'preferences.emergencyContactName') &&
+                        get(user, 'preferences.emergencyContactPhone') &&
+                        (isSelf || isAtLeastRunLeader(user.role)) && (
+                          <>
+                            <dt>Emergency Contact</dt>
+                            <dd>
+                              {user.preferences.emergencyContactName}{' '}
+                              <small>
+                                {getPhoneNumber(
+                                  user.preferences.emergencyContactPhone,
+                                )}
+                              </small>
+                            </dd>
+                          </>
+                        )}
+                    </dl>
+                  </div>
+
+                  {vehicle ? (
+                    <div className="user-garage">
+                      <h3>{user.firstName}'s Garage</h3>
+                      <dl>
+                        {vehicleInfo && (
+                          <>
+                            <dt>Vehicle</dt>
+                            <dd>{vehicleInfo}</dd>
+                          </>
+                        )}
+
+                        {vehicle.name && (
+                          <>
+                            <dt>Name</dt>
+                            <dd>{vehicle.name}</dd>
+                          </>
+                        )}
+
+                        {vehicle.outfitLevel && (
+                          <>
+                            <dt>Outfit Level</dt>
+                            <dd>{outfitLevel[vehicle.outfitLevel]}</dd>
+                          </>
+                        )}
+
+                        {vehicle.mods && (
+                          <>
+                            <dt>Mods</dt>
+                            <dd>{vehicle.mods.join(', ')}</dd>
+                          </>
+                        )}
+                      </dl>
+                    </div>
+                  ) : (
+                    <div>No vehicle found. Add something to your garage.</div>
+                  )}
+                </div>
+
+                {(user.comfortLevel ||
+                  get(user, 'preferences.photoPermissions')) && (
+                  <div>
+                    <h3>Preferences</h3>
+                    <dl>
+                      {user.comfortLevel && (
+                        <>
+                          <dt>Comfort Level</dt>
+                          <dd>{user.comfortLevel}</dd>
+                        </>
+                      )}
+
+                      {get(user, 'preferences.photoPermissions') &&
+                        (isSelf || isAtLeastRunLeader(user.role)) && (
+                          <>
+                            <dt>Okay to be in photos?</dt>
+                            <dd>
+                              {user.preferences.photoPermissions ? 'Yes' : 'No'}
+                            </dd>
+                          </>
+                        )}
+                    </dl>
                   </div>
                 )}
 
-                <section>
-                  <h3>Logs</h3>
-                  <div className="user-logs">
-                    <div className="membership-log">
-                      <h4>Membership History</h4>
-                      {user.membershipLog.length > 0 ? (
+                {(get(user, 'eventsRSVPd', []).length > 0 ||
+                  get(user, 'trailsVisited', []).length > 0 ||
+                  get(user, 'bandaids', []).length > 0 ||
+                  get(user, 'runReportsLogged', []).length > 0) && (
+                  <div className="user-data">
+                    <div className="user-data__section">
+                      <h3>Events Attended</h3>
+                      {get(user, 'eventsRSVPd', []).length > 0 ? (
                         <ul>
-                          {user.membershipLog.map(logItem => (
-                            <li key={logItem.id}>
-                              {logItem.message}: {logItem.startTime}-
-                              {logItem.endTime || 'present'}
+                          {user.eventsRSVPd
+                            .filter(event => event.status === 'GOING')
+                            .map(rsvp => (
+                              <li key={rsvp.event.id}>
+                                {format(rsvp.event.startTime, 'M/D/YYYY')}
+                                {' - '}
+                                <Link href={`/event/${rsvp.event.id}`}>
+                                  <a>{rsvp.event.title}</a>
+                                </Link>
+                              </li>
+                            ))}
+                        </ul>
+                      ) : (
+                        <span>No events found...</span>
+                      )}
+                    </div>
+
+                    <div className="user-data__section">
+                      <h3>Trails Visited</h3>
+                      {get(user, 'trailsVisited', []).length > 0 ? (
+                        <ul>
+                          {user.trailsVisited.map(trail => (
+                            <li key={trail.id}>{trail.name}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <span>No trails found...</span>
+                      )}
+                    </div>
+
+                    {/* <div className="user-data__section">
+                      <h3>Bandaids</h3>
+                      {get(user, 'bandaids', []).length > 0 ? (
+                        <ul>
+                          {user.bandaids.map(bandaid => (
+                            <li key={bandaid.id}>
+                              {format(bandaid.occurred, 'M/D/YYYY')}
+                              {' '}
+                              {bandaid.name}
                             </li>
                           ))}
                         </ul>
                       ) : (
-                        <span>No items found...</span>
+                        <span>No bandaids found...</span>
                       )}
                     </div>
-                    <div className="activity-log">
-                      <h4>Activity Log</h4>
-                      {user.log.length > 0 ? (
+                    
+                    <div className="user-data__section">
+                      <h3>Run Reports</h3>
+                      {get(user, 'runReportsLogged', []).length > 0 ? (
                         <ul>
-                          {user.log.map(logItem => (
-                            <li key={logItem.id}>
-                              {logItem.time} - {logItem.message}
+                          {user.runReportsLogged.map(report => (
+                            <li key={report.id}>
+                              {format(report.reportFiled, 'M/D/YYYY')}
+                              {' '}
+                              {report.title}
                             </li>
                           ))}
                         </ul>
                       ) : (
-                        <span>No items found...</span>
+                        <span>No run reports found...</span>
                       )}
-                    </div>
+                    </div> */}
                   </div>
-                </section>
+                )}
+
+                {(isSelf || isAtLeastBoardMember(user.role)) && (
+                  <>
+                    <h3>Activity Log</h3>
+                    <section>
+                      <div className="user-logs">
+                        <div className="activity-log">
+                          {user.activityLog && user.activityLog.length > 0 ? (
+                            <ul>
+                              {user.activityLog
+                                .sort(sortByDateDesc('time'))
+                                .map(entry => (
+                                  <li key={entry.id}>
+                                    <Calendar date={entry.time} />
+                                    {entry.message}
+
+                                    {entry.link && (
+                                      <Link href={entry.link}>
+                                        <a>></a>
+                                      </Link>
+                                    )}
+                                  </li>
+                                ))}
+                            </ul>
+                          ) : (
+                            <span>No items found...</span>
+                          )}
+                        </div>
+                      </div>
+                    </section>
+                  </>
+                )}
               </main>
             )}
           </StyledProfile>

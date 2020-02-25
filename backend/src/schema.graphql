@@ -3,6 +3,10 @@ type SuccessMessage {
   message: String
 }
 
+type SuccessTime {
+  time: DateTime
+}
+
 type Mutation {
   signUp(
     email: String!
@@ -45,6 +49,7 @@ type Mutation {
   deleteAvatar(avatar: CloudinaryImageInput!): SuccessMessage
   updateRig(data: ImageUpdateInput!): SuccessMessage
   deleteRig(rig: CloudinaryImageInput!): SuccessMessage
+  updateVehicle(id: ID, vehicle: VehicleInput!): SuccessMessage
   submitElection(election: ElectionInput!): Election
   submitVote(vote: VoteInput): SuccessMessage
   createTrail(trail: TrailInput): SuccessMessage
@@ -62,13 +67,18 @@ type Query {
     orderBy: [String]
   ): [User]!
   user(username: String): User!
+  getDuesLastReceived(username: String!): SuccessTime
   getOfficer(office: Office!): User!
   getMembers(accountTypes: [AccountType]): [User]!
   getRunLeaders: [User]!
   getMessageRecipients: [User]!
-  getUpcomingEvents: [Event]!
+  getUpcomingEvents(count: Int): [Event]!
+  # getMyUpcomingEvents: [Event]!
+  getUserEvents(username: String!, eventType: EventType): [Event]!
   getPastEvents: [Event]!
   getEvent(eventId: ID!): Event!
+  getNextEvent: Event
+  # getMyNextEvent: Event
   getTrails: [Trail]!
   getTrail(slug: String!): Trail
   electionCandidates(
@@ -84,7 +94,9 @@ type Query {
 
 type User {
   id: ID
+  createdAt: DateTime!
   joined: DateTime
+  lastLogin: DateTime
   firstName: String
   lastName: String
   email: String
@@ -105,7 +117,7 @@ type User {
   # vehicles: [Vehicle]
   vehicle: Vehicle
   comfortLevel: String
-  log: [LogItem]
+  activityLog: [ActivityLogItem]
   membershipLog: [MembershipLogItem]
   eventsRSVPd: [RSVP]
   eventsLead: [Event]
@@ -114,25 +126,27 @@ type User {
   runReportsLogged: [RunReport]
 }
 
-type LogItem {
+type ActivityLogItem {
   id: ID!
-  time: DateTime
+  time: DateTime!
   message: String!
+  messageCode: ActivityMessageCode!
   user: User!
   event: Event
 }
 
 type MembershipLogItem {
   id: ID!
-  startTime: DateTime!
-  endTime: DateTime
+  time: DateTime!
   message: String!
+  messageCode: MembershipMessageCode!
   user: User!
-  initiator: User!
+  logger: User
 }
 
 type Event {
   id: ID!
+  type: EventType!
   title: String!
   creator: User!
   description: String
@@ -322,4 +336,14 @@ input TrailInput {
   newFeaturedImage: CloudinaryImageInput
   trailheadCoords: String
   address: String
+}
+
+input VehicleInput {
+  year: Int
+  make: String!
+  model: String!
+  trim: String
+  name: String
+  outfitLevel: OutfitLevel
+  mods: [String]
 }

@@ -75,6 +75,47 @@ enum Gender {
   UNDISCLOSED
 }
 
+enum OutfitLevel {
+  MODIFIED
+  STOCK
+}
+
+enum ActivityMessageCode {
+  EVENT_ATTENDED
+  RUN_LEAD
+  EVENT_REVIEW_SUBMITTED
+  RUN_REPORT_SUBMITTED
+  GALLERY_PHOTO_SUBMITTED
+  GALLERY_PHOTOS_SUBMITTED
+  PROFILE_PHOTO_SUBMITTED
+  RIGBOOK_PHOTO_SUBMITTED
+  # COMMENTED
+  MEMBERSHIP_GRANTED
+}
+
+enum MembershipMessageCode {
+  ACCOUNT_CREATED
+  ACCOUNT_UNLOCKED
+  ACCOUNT_CHANGED    
+  ACCOUNT_REJECTED
+  DUES_PAID
+  OFFICE_ADDED
+  OFFICE_REMOVED
+  TITLE_ADDED
+  TITLE_REMOVED
+  MEMBERSHIP_ELIGIBLE
+  GUEST_RESTRICTED
+}
+
+enum EventType {
+  RUN
+  COLLECTION
+  FUNDRAISING
+  MEETING
+  CLINIC
+  SOCIAL
+}
+
 scalar DateTime
 
 type User {
@@ -82,6 +123,7 @@ type User {
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
   joined: DateTime
+  lastLogin: DateTime
   firstName: String!
   lastName: String!
   email: String! @unique
@@ -107,10 +149,10 @@ type User {
   votesReceived: [Vote] @relation(name: "VotesRecdUser")
   votedFor: [Vote] @relation(name: "VotedUser")
   comfortLevel: String
-  log: [LogItem] @relation(name: "LogMember")
+  activityLog: [ActivityLogItem] @relation(name: "LogItemActivity")
   membershipLog: [MembershipLogItem] @relation(name: "LogItemMember")
   membershipLogContributions: [MembershipLogItem]
-    @relation(name: "LogItemInitiator")
+    @relation(name: "LogItemLogger")
   eventsCreated: [Event] @relation(name: "EventCreator")
   eventsRSVPd: [RSVP] @relation(name: "UserRSVP")
   eventsHosted: [Event] @relation(name: "EventHost")
@@ -158,6 +200,7 @@ type Event {
   id: ID! @unique @id
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+  type: EventType!
   title: String!
   creator: User! @relation(name: "EventCreator")
   description: String
@@ -283,27 +326,30 @@ type Vehicle {
   name: String
   trim: String
   image: CloudinaryImage
+  outfitLevel: OutfitLevel
   mods: [String] @scalarList(strategy: RELATION)
 }
 
-type LogItem {
+type ActivityLogItem {
   id: ID! @unique @id
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+  time: DateTime!
   message: String!
-  user: User! @relation(name: "LogMember")
-  event: Event
+  messageCode: ActivityMessageCode!
+  user: User! @relation(name: "LogItemActivity")
+  link: String
 }
 
 type MembershipLogItem {
   id: ID! @unique @id
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  startTime: DateTime!
-  endTime: DateTime
+  time: DateTime!
   message: String!
+  messageCode: MembershipMessageCode!
   user: User! @relation(name: "LogItemMember")
-  initiator: User! @relation(name: "LogItemInitiator")
+  logger: User @relation(name: "LogItemLogger")
 }
 
 type RigImage {

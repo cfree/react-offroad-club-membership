@@ -4,7 +4,6 @@ import { isAtLeastGuestMember, isNotLocked } from '../lib/utils';
 
 const Home = () => (
   <Gate>
-    <h2>Dashboard</h2>
     <Dashboard />
   </Gate>
 );

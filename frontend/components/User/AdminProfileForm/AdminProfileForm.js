@@ -115,6 +115,7 @@ class AdminProfileForm extends Component {
           }
 
           const { user } = queryData;
+          {/* isOnSponsorList: user.isOnSponsorList ? 'yes' : 'no', */}
           const userAdminFormValues = {
             title: user.title,
             isCharterMember: user.isCharterMember ? 'yes' : 'no',
@@ -220,6 +221,42 @@ class AdminProfileForm extends Component {
                             />
                           </div>
                         </StyledFormField>
+
+                        {/* <StyledFormField>
+                          <div className="profile-form-label">
+                            Is On Sponsor List? (4wd.com, etc.)
+                          </div>
+                          <div className="profile-form-field">
+                            <label htmlFor="isOnSponsorList">
+                              <Field
+                                type="radio"
+                                id="isOnSponsorListYes"
+                                name="isOnSponsorList"
+                                value="yes"
+                                checked={
+                                  formikProps.values.isOnSponsorList === 'yes'
+                                }
+                              />
+                              Yes
+                            </label>
+                            <label htmlFor="isOnSponsorListNo">
+                              <Field
+                                type="radio"
+                                id="isOnSponsorListNo"
+                                name="isOnSponsorList"
+                                value="no"
+                                checked={
+                                  formikProps.values.isOnSponsorList === 'no'
+                                }
+                              />
+                              No
+                            </label>
+                            <FormikErrorMessage
+                              name="isOnSponsorList"
+                              component="div"
+                            />
+                          </div>
+                        </StyledFormField> */}
 
                         <StyledFormField>
                           <label

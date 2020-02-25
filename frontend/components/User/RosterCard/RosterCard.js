@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import Link from 'next/link';
+import get from 'lodash/get';
+
 import {
   getMemberType,
   getPhoneNumber,
@@ -12,10 +14,10 @@ const StyledRosterCard = styled.div`
   padding: 5px 10px;
   display: grid;
   grid-column-gap: 10px;
-  grid-template-columns: 30px 1fr 1fr 1fr auto auto;
+  grid-template-columns: 30px 300px 1fr 1fr 1fr;
 
   &:nth-child(even) {
-    background: tomato;
+    background: ${({ theme }) => theme.colors.white_dark};
   }
 
   .member__img {
@@ -27,10 +29,15 @@ const StyledRosterCard = styled.div`
     position: relative;
     vertical-align: middle;
   }
+
+  .member__actions {
+    display: flex;
+    justify-content: space-between;
+  }
 `;
 
 const RosterCard = ({ user }) => {
-  const { phone } = user.contactInfo || { phone: '' };
+  const phone = get(user, 'contactInfo.phone', '');
 
   return (
     <StyledRosterCard>
@@ -43,23 +50,25 @@ const RosterCard = ({ user }) => {
         {user.firstName} {user.lastName}
       </span>
       <span>{getMemberType(user.accountType)}</span>
-      {phone !== null && <span>{getPhoneNumber(phone)}</span>}
-      <Link
-        href={{
-          pathname: 'message',
-          query: { to: user.username },
-        }}
-      >
-        <a>Message</a>
-      </Link>
-      <Link href={`/profile/${user.username}`}>
-        <a>View</a>
-      </Link>
-      <Filter roleCheck={isAtLeastBoardMember}>
-        <Link href={`/admin-profile/${user.username}`}>
-          <a>Edit</a>
+      {phone && <span>{getPhoneNumber(phone)}</span>}
+      <span className="member__actions">
+        <Link
+          href={{
+            pathname: 'message',
+            query: { to: user.username },
+          }}
+        >
+          <a>Message</a>
         </Link>
-      </Filter>
+        <Link href={`/profile/${user.username}`}>
+          <a>View</a>
+        </Link>
+        <Filter roleCheck={isAtLeastBoardMember}>
+          <Link href={`/admin-profile/${user.username}`}>
+            <a>Edit</a>
+          </Link>
+        </Filter>
+      </span>
     </StyledRosterCard>
   );
 };

@@ -7,7 +7,7 @@ const StyledRigbook = styled.ul`
   padding: 0;
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(4, minmax(250px, 1fr));
+  grid-template-columns: repeat(4, minmax(200px, 1fr));
   grid-gap: 10px;
 `;
 

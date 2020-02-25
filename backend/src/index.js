@@ -9,6 +9,29 @@ const server = createServer();
 
 server.express.use(cookieParser());
 
+// Daily Automation:::
+
+// Automatically change Active Guest status to Limited if 3 runs attended
+//   and send email
+
+// Automatically change Active Full Member status to Past Due
+//   if no dues received after 1/1 of each year
+//   and send email
+
+// Automatically change Past Due Full Member status to Delinquent
+//   if no dues received after 3/31 of each year
+//   and send email
+
+// Automatically change Delinquent Full Member status to Inactive
+//   if no dues received in the last year
+//   and send email
+
+// Transactional Emails: 
+// - Event Reminders (if RSVP yes, 1 day in advance)
+// - Post run: Run Report
+// - Post run Review/Photos
+
+
 // Decode the JWT to get user ID on each request
 server.express.use(async (req, res, next) => {
   const { token } = req.cookies;

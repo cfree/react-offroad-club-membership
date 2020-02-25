@@ -33,7 +33,7 @@ const AdminTrailsPage = ({ query }) => {
   const { component, title } = page(action);
 
   return (
-    <Gate redirect="/admin-trails">
+    <Gate redirect={`/admin-trails${action ? `/${action}` : ''}`}>
       <ul>
         <li>
           <Link href="/admin-trails/create">

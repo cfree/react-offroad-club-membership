@@ -6,7 +6,7 @@ const MessagePage = ({ query }) => {
   const { to } = query;
 
   return (
-    <Gate typeCheck={isAtLeastGuestMember} redirect="/message">
+    <Gate typeCheck={isAtLeastGuestMember} redirect={`/message${to ? `/to=${to}` : ''}`}>
       <Message recipients={to} />
     </Gate>
   );

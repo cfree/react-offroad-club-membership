@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { format } from 'date-fns';
 import { Formik, Field, ErrorMessage as FormikErrorMessage } from 'formik';
 
 import { trailSchema } from './trailForm.schema';

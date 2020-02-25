@@ -48,12 +48,10 @@ const StyledFooter = styled.footer`
 const Footer = () => {
   return <StyledFooter>
     <img src="/static/img/logo.png" alt="Logo" />
-    <p>
-      &copy; {format(Date.now(), 'YYYY')} {siteName}
-    </p>
-    <Link href="/">
-      <a title="Report bugs">🐛</a>
-    </Link>
+    <p>{siteName}</p>
+    <p>&copy; 1986 - {format(Date.now(), 'YYYY')}</p>
+    
+    <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSdnyq--8m4mnyQfbrJdQYLxb3sO3OIi4glRIBwdEqP-S2Dxww/viewform?usp=sf_link" title="Report bugs">🐛</a>
   </StyledFooter>;
 }
 

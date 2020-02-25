@@ -4,7 +4,7 @@ import { isAtLeastGuestMember, isNotLocked } from '../lib/utils';
 
 const EventPage = ({ query }) => {
   return (
-    <Gate>
+    <Gate redirect={`/event/${query.id}`}>
       <EventDetails id={query.id} />
     </Gate>
   );

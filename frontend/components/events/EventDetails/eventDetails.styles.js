@@ -1,10 +1,12 @@
 import styled from 'styled-components';
 
-export const StyledEventHeader = styled.header`
-  padding: 20px 40px 40px;
-  position: relative;
-  display: flex;
-  /* justify-content: space-between; */
+export const StyledEvent = styled.div`
+  .event__header {
+    padding: 20px 40px 40px;
+    position: relative;
+    display: flex;
+    /* justify-content: space-between; */
+  }
 
   .event__calendar {
     width: 45px;
@@ -27,22 +29,24 @@ export const StyledEventHeader = styled.header`
   .event__leader {
     img {
       float: left;
-      margin-right: 15px;
+      margin-right: 10px;
+      border-radius: 50%;
+      border: 1px solid ${({ theme }) => theme.colors.black_light};
     }
   }
 
   .event__rsvp {
     margin: 10px 0 0 auto;
   }
-`;
 
-export const StyledDetails = styled.div`
-  padding: 40px;
-  position: relative;
-  display: grid;
-  grid-column-gap: 40px;
-  grid-template-columns: 2fr 250px;
-  border-top: 5px solid ${({ theme }) => theme.colors.grey_light};
+  .event__details {
+    padding: 40px;
+    position: relative;
+    display: grid;
+    grid-column-gap: 40px;
+    grid-template-columns: 2fr 250px;
+    border-top: 5px solid ${({ theme }) => theme.colors.grey_light};
+  }
 
   .event__columns {
     /* background: ${({ theme }) => theme.colors.grey};
@@ -72,5 +76,12 @@ export const StyledDetails = styled.div`
     & + .event__section {
       margin-top: 20px;
     }
+  }
+
+  .event__attendees {
+    display: grid;
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
+    grid-template-columns: 1fr 1fr 1fr;
   }
 `;

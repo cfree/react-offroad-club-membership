@@ -1,5 +1,29 @@
 import { accountTypes as types } from './constants';
 
+export const sortByDateAsc = (key) => {
+  return (a, b) => {
+    if (a[key] > b[key]) {
+      return 1;
+    }
+    if (a[key] < b[key]) {
+      return -1;
+    }
+    return 0;
+  }
+}
+
+export const sortByDateDesc = (key) => {
+  return (a, b) => {
+    if (a[key] < b[key]) {
+      return 1;
+    }
+    if (a[key] > b[key]) {
+      return -1;
+    }
+    return 0;
+  }
+}
+
 export const getMemberType = type => {
   return `${types[type] || 'Guest'} Member`;
 };

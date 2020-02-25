@@ -6,6 +6,38 @@ import { isAdmin, isNotLocked } from '../../../lib/utils';
 const Admin = () => (
   <>
     <div>
+      <h3>At A Glance</h3>
+
+      <h4>Stats</h4>
+      <ul>
+        <li>Active Full Members: 45</li>
+        <li>Needed for Quorum: 45</li>
+        <li>Increase over previous year: 38% (no new members allowed; over 35%)</li>
+      </ul>
+
+      <h4>Active Members Per Year</h4>
+      {/* Bar chart */}
+
+      <h4>Locked New Accounts</h4>
+      <ul>
+        <li>Meowface McDuck</li>
+      </ul>
+      
+      <h4>Eligible for Membership</h4>
+      <p>18 years of age or order, have attended at least one run and one meeting</p>
+      <ul>
+        <li>Bosco Relli</li>
+      </ul>
+
+      <h4>Asked to Join</h4>
+      <p>Have attended 3 runs, but accounts are now limited. Are not yet eligible for membership</p>
+      <ul>
+        <li>Ronald McDonald</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Tools</h3>
+
       <ul>
         <Filter roleCheck={isAdmin} statusCheck={isNotLocked}>
           <li>
@@ -22,6 +54,11 @@ const Admin = () => (
         <li>
           <Link href="/admin-trails">
             <a>Trails</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/admin-quorum">
+            <a>Meeting Quorum</a>
           </Link>
         </li>
         {/* <li>
@@ -73,24 +110,6 @@ const Admin = () => (
       </ul> */}
       {/* <Results admin /> */}
     </div>
-    {/* <div>
-      <h3>At a Glance</h3>
-      <ul>
-        <li>
-          New User Registrations
-          <ul>
-            <li>So and So</li>
-            <li>The ugly one</li>
-            <li>Whatsherface</li>
-            <li>(See all)</li>
-          </ul>
-        </li> */}
-    {/* <li>Newest Members</li> */}
-    {/* <li>Recent Delinquents</li>
-        <li>Maxed Out Events</li>
-        <li>Potential New Members</li> */}
-    {/* </ul>
-    </div> */}
   </>
 );
 

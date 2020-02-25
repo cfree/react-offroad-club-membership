@@ -1,1 +1,1 @@
-export { default } from './Rsvp';
+export { default, RSVP_MUTATION } from './Rsvp';

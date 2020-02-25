@@ -33,7 +33,7 @@ const SettingsPage = ({ query }) => {
   const { component, title } = page(settings);
 
   return (
-    <Gate redirect="/settings">
+    <Gate redirect={`/settings${settings ? `/${settings}` : ''}`}>
       <ul>
         <li>
           <Link href="/settings/profile">

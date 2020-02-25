@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import Loading from '../../utility/Loading';
 
-const RSVP_MUTATION = gql`
+export const RSVP_MUTATION = gql`
   mutation RSVP_MUTATION($rsvp: RSVPInput) {
     setRSVP(rsvp: $rsvp) {
       message
@@ -163,14 +163,14 @@ export default class Rsvp extends Component {
                   >
                     Yes
                   </button>
-                  <button
+                  {/* <button
                     disabled={
                       loading || this.state.status === 'MAYBE'
                     }
                     onClick={() => this.handleClick('MAYBE', setRsvp)}
                   >
                     Maybe
-                  </button>
+                  </button> */}
                   <button
                     disabled={
                       loading || this.state.status === 'CANT_GO'

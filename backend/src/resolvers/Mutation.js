@@ -91,6 +91,19 @@ const Mutations = {
     // Set the cookie with the token
     ctx.response.cookie("token", token, tokenSettings);
 
+    // Update role
+    await ctx.db.mutation.updateUser(
+      {
+        data: {
+          lastLogin: new Date()
+        },
+        where: {
+          id: ctx.request.userId
+        }
+      },
+      info
+    );
+
     // Return the user
     return user;
   },
@@ -951,7 +964,7 @@ const Mutations = {
       }
     } catch (e) {
       console.error(e);
-      throw new Error("Unable to delete old rig image");
+      throw new Error("Unable to delete old avatar");
     }
 
     // Remove from user
@@ -1076,6 +1089,51 @@ const Mutations = {
       return { message: "Unable to update rig image" };
     }
     return { message: "Rig image deleted" };
+  },
+  async updateVehicle(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error("User must be logged in");
+    }
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
+
+    const { vehicle, id: vehicleId } = args;
+    const { outfitLevel, mods, ...restVehicle } = vehicle;
+
+    const data = {
+      vehicle: {
+        upsert: {
+          create: {
+            outfitLevel: outfitLevel && outfitLevel != 0 ? outfitLevel : null,
+            mods: {
+              set: mods || []
+            },
+            ...restVehicle
+          },
+          update: {
+            outfitLevel: outfitLevel && outfitLevel != 0 ? outfitLevel : null,
+            mods: {
+              set: mods || []
+            },
+            ...restVehicle
+          }
+        }
+      }
+    };
+
+    const results = await ctx.db.mutation.updateUser(
+      {
+        data,
+        where: {
+          id: ctx.request.userId
+        }
+      },
+      info
+    );
+
+    return { message: "Your vehicle has been updated" };
   },
   async submitElection(parent, args, ctx, info) {
     // Logged in?

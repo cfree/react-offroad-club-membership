@@ -41,6 +41,13 @@ const MEMBERSHIP_QUERY = gql`
   }
 `;
 
+const StyledRosterHeader = styled.div`
+  padding: 5px 10px;
+  display: grid;
+  grid-column-gap: 10px;
+  grid-template-columns: 30px 300px 1fr 1fr 1fr;
+`;
+
 export class Roster extends Component {
   static defaultProps = {
     filters: {
@@ -67,9 +74,15 @@ export class Roster extends Component {
 
           return (
             <StyledRoster>
-              <strong>Name</strong>
-              <strong>Account Type</strong>
-              <strong>Phone</strong>
+              <StyledRosterHeader>
+                <span />
+                <strong>Name</strong>
+                <strong>Account Type</strong>
+                <strong>Phone</strong>
+                <span />
+                <span />
+                <span />
+              </StyledRosterHeader>
               {data.users.map(user => (
                 <RosterCard key={user.id} user={user} />
               ))}

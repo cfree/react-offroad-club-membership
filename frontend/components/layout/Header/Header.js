@@ -6,8 +6,9 @@ import Nav from '../Nav';
 import { siteName } from '../../../config';
 
 const StyledHeader = styled.header`
-  border-bottom: 10px solid ${({ theme }) => theme.colors.grey_light};
-  padding: 10px;
+  /* border-bottom: 5px solid ${({ theme }) => theme.colors.grey_light}; */
+  /* padding: 10px; */
+  padding: 10px 10px 15px;
 
   background-repeat: no-repeat, repeat;
   background-size: cover, 100%;
@@ -16,14 +17,30 @@ const StyledHeader = styled.header`
   background-image: linear-gradient(
     to bottom, 
     ${rgba('white', 1)} 0%, 
-    ${rgba('white', 0.8)} 80%, 
+    ${rgba('white', 0.5)} 80%, 
     ${rgba('white', 0.5)} 100%),
     url('/static/img/header.jpg');
 
   text-align: center;
   position: relative;
-  border-bottom: 1px solid lighten(${({ theme }) => theme.colors.grey_light}, 40%);
- `;
+  /* border-bottom: 1px solid lighten(${({ theme }) => theme.colors.grey_light}, 40%); */
+
+  &::after {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    content: '';
+    height: 7px;
+    background: lighten(${({ theme }) => theme.colors.grey_light}, 40%);
+    background-image: linear-gradient(
+      -90deg,
+      rgb(75,87,103) 0%,
+      rgb(206,49,44) 85%,
+      rgb(255,55,45) 95%
+    );
+  }
+`;
 
 const StyledNav = styled.div`
   max-width: 1000px;
@@ -56,7 +73,7 @@ const Header = () => (
       <Link href="/">
         <a>
           <img className="logo-image" src="/static/img/logo.png" alt={siteName} height="60" />
-          {/* <h1>{siteName}</h1> */}
+          {/* <h1>{siteNameShort}</h1> */}
         </a>
       </Link>
       <Nav />

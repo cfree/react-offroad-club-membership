@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import get from 'lodash/get';
 
-import { getMemberType } from '../../../lib/utils';
+import { getMemberType, isAtLeastRunLeader } from '../../../lib/utils';
 import {
   offices,
   DEFAULT_AVATAR_SRC,
@@ -17,20 +17,21 @@ import {
   StyledTitles,
   StyledContent,
 } from './rigbookCard.styles';
+import Filter from '../../Login/Filter';
 
 const RigbookCard = ({ user }) => {
-  const RIG_SRC = get(user.rig, 'image.url');
-  const AVATAR_SRC = get(user.avatar, 'url');
+  const RIG_SRC = get(user, 'rig.image.url', DEFAULT_RIG_SRC);
+  const AVATAR_SRC = get(user, 'avatar.url', DEFAULT_AVATAR_SRC);
 
   return (
     <StyledRigbookCard>
       <div className="user-photos">
         <StyledVehicleImg
-          src={RIG_SRC || DEFAULT_RIG_SRC}
+          src={RIG_SRC}
           alt={`${user.firstName}'s Vehicle`}
         />
         <StyledUserImg
-          src={AVATAR_SRC || DEFAULT_AVATAR_SRC}
+          src={AVATAR_SRC}
           alt={user.firstName}
         />
       </div>
@@ -49,32 +50,38 @@ const RigbookCard = ({ user }) => {
           </>
         )}
         <h5>
-          {getMemberType(user.accountType)} &bull; Joined{' '}
-          {format(user.joined, 'YYYY')}
+          {getMemberType(user.accountType)}
+          {user.joined && ` • Joined ${format(user.joined, 'YYYY')}`}
         </h5>
       </StyledContent>
       <StyledProfileActionsList>
-        <li>
-          <Link
-            as={`/profile/${user.username}`}
-            href={{
-              pathname: 'profile',
-              query: { user: user.username },
-            }}
-          >
-            <a>View Profile</a>
-          </Link>
-        </li>
-        <li>
-          <Link
-            href={{
-              pathname: 'message',
-              query: { to: user.username },
-            }}
-          >
-            <a>Message</a>
-          </Link>
-        </li>
+        {user.username && (
+          <>
+            <li>
+              <Link
+                as={`/profile/${user.username}`}
+                href={{
+                  pathname: 'profile',
+                  query: { user: user.username },
+                }}
+              >
+                <a>View Profile</a>
+              </Link>
+            </li>
+            <Filter roleCheck={isAtLeastRunLeader}>
+              <li>
+                <Link
+                  href={{
+                    pathname: 'message',
+                    query: { to: user.username },
+                  }}
+                >
+                  <a>Message</a>
+                </Link>
+              </li>
+            </Filter>
+          </>
+        )}
       </StyledProfileActionsList>
     </StyledRigbookCard>
   );

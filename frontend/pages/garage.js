@@ -5,7 +5,7 @@ const garagePage = () => {
   return (
     <Gate
       typeCheck={isAdmin}
-      redirect="/"
+      redirect="/garage"
     >
       <p>
         Vehicle Information:

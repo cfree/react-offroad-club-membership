@@ -24,9 +24,9 @@ const StyledCalendar = styled.div`
   }
 `;
 
-const Calendar = ({ date }) => {
+const Calendar = ({ date }) => {
   return (
-    <StyledCalendar>
+    <StyledCalendar title={format(date, 'MM-DD-YYYY')}>
       <div className="date">{format(date, 'D')}</div>
       <div className="month">{format(date, 'MMM')}</div>
     </StyledCalendar>

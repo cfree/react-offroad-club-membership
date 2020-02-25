@@ -116,11 +116,44 @@ const Query = {
     return ctx.db.query.user(
       {
         where: {
-          id: ctx.request.user.id
+          id: ctx.request.userId
         }
       },
       info
     );
+  },
+  async getDuesLastReceived(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error("You must be logged in");
+    }
+    // Requesting user has proper role?
+    hasRole(ctx.request.user, ["ADMIN", "OFFICER"]);
+
+    // Requesting user has proper account type?
+    hasAccountType(ctx.request.user, ["FULL"]);
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
+
+    const userQuery =
+      args.username === "self"
+        ? { id: ctx.request.userId }
+        : { username: args.username };
+
+    // If they do, query the user
+    const results = await ctx.db.query.membershipLogItems(
+      {
+        where: {
+          AND: [{ user: userQuery }, { messageCode: "DUES_PAID" }]
+        },
+        orderBy: "createdAt_DESC",
+        first: 1
+      },
+      info
+    );
+
+    return { time: results.length > 0 ? results[0].time : null };
   },
   async getOfficer(parent, args, ctx, info) {
     // Logged in?
@@ -253,13 +286,62 @@ const Query = {
     // Requesting user has proper account status?
     hasAccountStatus(ctx.request.user, ["ACTIVE"]);
 
+    let query = {
+      where: {
+        startTime_gte: new Date().toISOString()
+      },
+      orderBy: "startTime_ASC"
+    };
+
+    if (args.count) {
+      query.first = args.count;
+    }
+
     // If they do, query all the users
+    return ctx.db.query.events(query, info);
+  },
+  async getUserEvents(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error("You must be logged in");
+    }
+
+    // Requesting user has proper role?
+    hasRole(ctx.request.user, ["ADMIN", "OFFICER", "RUN_MASTER"]);
+
+    // Requesting user has proper account type?
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
+
+    const userQuery =
+      args.username === "self"
+        ? { id: ctx.request.userId }
+        : { username: args.username };
+
+    if (args.eventType) {
+      return ctx.db.query.events(
+        {
+          where: {
+            AND: [
+              { type: args.eventType },
+              { startTime_lte: new Date().toISOString() },
+              { rsvps_some: { member: userQuery } }
+            ]
+          },
+          orderBy: "startTime_DESC"
+        },
+        info
+      );
+    }
+
     return ctx.db.query.events(
       {
         where: {
-          startTime_gte: new Date().toISOString()
+          AND: [
+            { startTime_lte: new Date().toISOString() },
+            { rsvps_some: { member: userQuery } }
+          ]
         },
-        orderBy: "startTime_ASC"
+        orderBy: "startTime_DESC"
       },
       info
     );
@@ -293,18 +375,73 @@ const Query = {
     // Requesting user has proper account status?
     hasAccountStatus(ctx.request.user, ["ACTIVE"]);
 
-    console.log("EVENT ID", args.eventId);
-
-    // If they do, query all the users
     const result = await ctx.db.query.event(
       {
         where: { id: args.eventId }
       },
       info
     );
-    console.log("RESULT", result);
     return result;
   },
+  async getNextEvent(parent, args, ctx, info) {
+    // Logged in?
+    if (!ctx.request.userId) {
+      throw new Error("You must be logged in");
+    }
+
+    // Requesting user has proper account status?
+    hasAccountStatus(ctx.request.user, ["ACTIVE"]);
+
+    try {
+      const results = await ctx.db.query.events(
+        {
+          where: { startTime_gte: new Date().toISOString() },
+          orderBy: "startTime_ASC",
+          first: 1
+        },
+        info
+      );
+
+      return results.length > 0 ? results[0] : {};
+    } catch (e) {
+      throw new Error(e);
+    }
+  },
+  // async getMyNextEvent(parent, args, ctx, info) {
+  //   // Logged in?
+  //   if (!ctx.request.userId) {
+  //     throw new Error("You must be logged in");
+  //   }
+
+  //   // Requesting user has proper account status?
+  //   hasAccountStatus(ctx.request.user, ["ACTIVE"]);
+
+  //   try {
+  //     // const results = await ctx.db.query.user(
+  //     //   {
+  //     //     where: {
+  //     //       startTime_gte: new Date().toISOString(),
+  //     //       rsvps_every: {
+  //     //         member: {
+  //     //           id: ctx.request.userId
+  //     //         }
+  //     //       }
+  //     //     },
+  //     //     orderBy: "startTime_ASC",
+  //     //     first: 1,
+  //     //   },
+  //     //   info
+  //     // );
+
+  //     const results = await ctx.db.query
+
+  //     console.log(results);
+
+  //     return results.length > 0 ? results[0]: {};
+  //   } catch (e) {
+  //     throw new Error(e);
+  //   }
+  // },
   async getTrails(parent, args, ctx, info) {
     // Logged in?
     if (!ctx.request.userId) {

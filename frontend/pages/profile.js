@@ -3,7 +3,11 @@ import Profile from '../components/user/Profile';
 
 const ProfilePage = ({ query }) => {
   return (
-    <Gate>{query.user ? <Profile username={query.user} /> : <Profile />}</Gate>
+    <Gate
+      redirect="/profile"
+    >
+      {query.user ? <Profile username={query.user} /> : <Profile />}
+    </Gate>
   );
 };
 

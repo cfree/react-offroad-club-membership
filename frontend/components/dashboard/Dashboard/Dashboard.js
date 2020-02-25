@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import styled from 'styled-components';
-import { lighten } from 'polished';
+import { lighten, rgba } from 'polished';
 
 import Filter from '../../Login/Filter';
 import PollingPlace from '../../voting/PollingPlace';
@@ -17,6 +17,10 @@ import {
 } from '../../../lib/utils';
 
 import { StyledContainer } from '../dashboard.styles';
+
+const StyledDashboard = styled.div`
+  margin-top: 50px;
+`;
 
 const StyledHalf = styled.div`
   display: grid;
@@ -35,25 +39,79 @@ const StyledThird = styled.div`
 `;
 
 const StyledRosterLink = styled.a`
-  padding: 20px;
-  background: ${lighten(0.3, 'red')};
+  padding: 20px 30px;
   font-size: 32px;
   display: block;
   color: white;
   cursor: pointer;
+  transition: 0.3s;
+  position: relative;
+  overflow: hidden;
+
+  &:before {
+    content: '';
+    background: url('static/img/toyota.jpg');
+    background-image: linear-gradient(
+      90deg,
+      ${({ theme }) => rgba(theme.colors.grey_light, 1)} 0%,${({ theme }) => rgba(theme.colors.grey_light, 0.75)} 0%
+    ),
+    url('static/img/toyota.jpg');
+    background-size: cover;
+    background-position: center bottom;
+    top: 0;
+    height: 100%;
+    left: 0;
+    width: 100%;
+    position: absolute;
+    transition: 0.3s;
+    z-index: -1;
+  }
+
+  &:hover:before,
+  &:focus:before {
+    transform: scale(1.2);
+    transition: 0.3s;
+  }
 `;
 
 const StyledDocumentLink = styled.a`
-  padding: 20px;
-  background: ${lighten(0.3, 'red')};
+  padding: 20px 30px;
   font-size: 32px;
   display: block;
   color: white;
   cursor: pointer;
+  transition: 0.3s;
+  position: relative;
+  overflow: hidden;
+
+  &:before {
+    content: '';
+    background: url('static/img/docs.jpg');
+    background-image: linear-gradient(
+      90deg,
+      ${({ theme }) => rgba(theme.colors.grey_light, 1)} 0%,${({ theme }) => rgba(theme.colors.grey_light, 0.65)} 0%
+    ),
+    url('static/img/docs.jpg');
+    background-size: cover;
+    background-position: center;
+    top: 0;
+    height: 100%;
+    left: 0;
+    width: 100%;
+    position: absolute;
+    transition: 0.3s;
+    z-index: -1;
+  }
+
+  &:hover:before,
+  &:focus:before {
+    transform: scale(1.2);
+    transition: 0.3s;
+  }
 `;
 
 const Dashboard = () => (
-  <>
+  <StyledDashboard>
     <Filter statusCheck={isNotLocked}>
       <StyledThird>
         <StyledContainer>
@@ -72,7 +130,7 @@ const Dashboard = () => (
         </StyledContainer>
         <StyledContainer>
           <Link href="/documents">
-            <StyledRosterLink>Documents</StyledRosterLink>
+            <StyledDocumentLink>Documents</StyledDocumentLink>
           </Link>
         </StyledContainer>
         {/* <StyledContainer>
@@ -95,9 +153,11 @@ const Dashboard = () => (
       {/* <PollingPlace /> */}
     </Filter>
     <Filter statusCheck={isLocked}>
-      <p>Your account is being reviewed, please check back later.</p>
+      <p>
+        Your account is being reviewed. To expedite this process, <Link href="/settings/profile"><a>fill out your profile</a></Link> and <Link href="/settings/garage"><a>add your rig</a></Link>.
+      </p>
     </Filter>
-  </>
+  </StyledDashboard>
 );
 
 export default Dashboard;
